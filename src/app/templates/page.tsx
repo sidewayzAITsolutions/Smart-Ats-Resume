@@ -1,16 +1,46 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
-  FileText, Star, Shield, Zap, Filter, CheckCircle, Lock,
-  TrendingUp, Award, Users, Clock, ArrowRight, X, Sparkles,
-  BarChart, Target, Eye, Briefcase, Code, Heart, GraduationCap,
-  Building, Palette, DollarSign, Globe, Microscope, Crown
-} from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
-import { usePremiumStatus } from '@/hooks/usePremiumStatus';
-import   UnifiedNavigation from '@/components/UnifiedNavigation';
+  FileText,
+  Star,
+  Shield,
+  Zap,
+  Filter,
+  CheckCircle,
+  Lock,
+  TrendingUp,
+  Award,
+  Users,
+  Clock,
+  ArrowRight,
+  X,
+  Sparkles,
+  BarChart,
+  Target,
+  Eye,
+  Briefcase,
+  Code,
+  Heart,
+  GraduationCap,
+  Building,
+  Palette,
+  DollarSign,
+  Globe,
+  Microscope,
+  Crown,
+  Hammer,
+  Stethoscope,
+  FlaskConical,
+  Calculator,
+  Wrench,
+  BookOpen,
+} from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import UnifiedNavigation from "@/components/UnifiedNavigation";
+import UserDropdown from "@/components/UserDropdown";
 
 // Premium Upgrade Banner Component
 const PremiumUpgradeBanner = () => (
@@ -21,79 +51,104 @@ const PremiumUpgradeBanner = () => (
     <div className="relative z-10">
       <div className="flex items-center justify-center gap-3 mb-4">
         <Crown className="w-10 h-10 animate-bounce text-yellow-300" />
-        <h3 className="text-2xl md:text-3xl font-bold">Unlock ALL Premium Templates!</h3>
-        <Crown className="w-10 h-10 animate-bounce text-yellow-300" style={{ animationDelay: '0.5s' }} />
+        <h3 className="text-2xl md:text-3xl font-bold">
+          Unlock ALL Premium Templates!
+        </h3>
+        <Crown
+          className="w-10 h-10 animate-bounce text-yellow-300"
+          style={{ animationDelay: "0.5s" }}
+        />
       </div>
       <p className="mb-2 text-pink-100 text-lg">
-        🚀 <strong>3x More Interviews</strong> • 🎯 <strong>98% ATS Pass Rate</strong> • ⚡ <strong>AI-Powered Optimization</strong>
+        🚀 <strong>3x More Interviews</strong> • 🎯{" "}
+        <strong>98% ATS Pass Rate</strong> • ⚡{" "}
+        <strong>AI-Powered Optimization</strong>
       </p>
       <p className="mb-6 text-pink-200 text-sm">
-        Join 50,000+ job seekers who landed their dream jobs with our premium templates
+        Join 50,000+ job seekers who landed their dream jobs with our premium
+        templates
       </p>
       <Link href="/pricing">
         <button className="px-8 py-4 bg-white text-pink-600 font-bold rounded-xl hover:bg-pink-50 transform hover:scale-105 transition-all cursor-pointer shadow-lg text-lg">
-          Get Premium Access - Only $19.99/month
+          Get Premium Access - Only $22/month
         </button>
       </Link>
-      <p className="text-xs mt-3 text-pink-200">✨  Cancel anytime</p>
+      <p className="text-xs mt-3 text-pink-200">✨ Cancel anytime</p>
     </div>
   </div>
 );
 
 const EnhancedTemplatesPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [showPreview, setShowPreview] = useState<TemplateType | null>(null);
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
 
   // Use the premium status hook
-  const { isPremium, loading: premiumLoading, error: premiumError, refreshStatus } = usePremiumStatus();
+  const {
+    isPremium,
+    loading: premiumLoading,
+    error: premiumError,
+    refreshStatus,
+  } = usePremiumStatus();
 
-  const [userData, setUserData] = useState<{email?: string; name?: string} | null>(null);
+  const [userData, setUserData] = useState<{
+    email?: string;
+    name?: string;
+  } | null>(null);
+  const [userLoading, setUserLoading] = useState(true);
 
   // Check user basic data on component mount
   useEffect(() => {
     const checkUserData = async () => {
       try {
+        setUserLoading(true);
         const supabase = createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
 
         if (authError || !user) {
-          console.log('No authenticated user found');
+          console.log("No authenticated user found");
           setUserData(null);
+          setUserLoading(false);
           return;
         }
 
         // Get basic user profile data (premium status handled by hook)
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('email, full_name')
-          .eq('id', user.id)
+          .from("profiles")
+          .select("email, full_name")
+          .eq("id", user.id)
           .single();
 
         if (profileError) {
-          console.error('Error fetching user profile:', profileError);
+          console.error("Error fetching user profile:", profileError);
           // Fallback to basic user data
           setUserData({
-            email: user.email || '',
-            name: user.user_metadata?.full_name || 'User'
+            email: user.email || "",
+            name: user.user_metadata?.full_name || "User",
           });
+          setUserLoading(false);
           return;
         }
 
         // Set user data (premium status comes from hook)
         setUserData({
-          email: profile?.email || user.email || '',
-          name: profile?.full_name || user.user_metadata?.full_name || 'User'
+          email: profile?.email || user.email || "",
+          name: profile?.full_name || user.user_metadata?.full_name || "User",
         });
+        setUserLoading(false);
       } catch (error) {
-        console.error('Error checking user status:', error);
+        console.error("Error checking user status:", error);
         setUserData(null);
+        setUserLoading(false);
       }
     };
 
     checkUserData();
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('upgraded') === 'true') {
+    if (urlParams.get("upgraded") === "true") {
       // Clear any cached data and refresh user status
       setTimeout(() => {
         checkUserData();
@@ -103,573 +158,424 @@ const EnhancedTemplatesPage = () => {
 
   const templates = [
     {
-      id: 'modern-pro',
-      name: 'Modern Professional',
-      category: 'professional',
-      description: 'Clean, modern design perfect for corporate roles',
+      id: "medical-professional",
+      name: "Medical Professional",
+      category: "industry",
+      description:
+        "LaTeX template designed for physicians, residents, and healthcare professionals",
       atsScore: 98,
-      isPremium: false,
+      isPremium: true,
       popularityRank: 1,
-      downloads: 15420,
+      downloads: 18450,
       rating: 4.9,
-      features: ['ATS Optimized', 'Keyword Rich', 'Clean Layout', 'Easy to Scan'],
-      industries: ['Technology', 'Finance', 'Consulting', 'Marketing'],
+      features: [
+        "ATS Optimized",
+        "License Display",
+        "Board Certifications",
+        "Clinical Experience",
+      ],
+      industries: ["Healthcare", "Medical", "Hospital", "Clinical", "Nursing"],
       preview: {
-        name: 'Sarah Johnson',
-        title: 'Senior Marketing Manager',
-        email: 'sarah.johnson@email.com',
-        phone: '(555) 123-4567',
-        location: 'New York, NY',
-        summary: 'Results-driven marketing professional with 8+ years experience...',
+        name: "[Firstname Lastname, M.D./D.O.]",
+        title: "Medical Professional",
+        email: "[your.email@server.com]",
+        phone: "[Phone Number]",
+        location: "[City, State ZIP]",
+        summary:
+          "Professional summary highlighting medical expertise and clinical experience...",
         experience: [
-          { title: 'Senior Marketing Manager', company: 'Tech Corp', years: '2020-Present' },
-          { title: 'Marketing Manager', company: 'Growth Inc', years: '2018-2020' }
+          {
+            title: "[Your Title, e.g., Attending Physician]",
+            company: "[Hospital/Clinic Name]",
+            years: "[Month YYYY] - Present",
+          },
+          {
+            title: "[Previous Position]",
+            company: "[Previous Hospital]",
+            years: "[Start - End]",
+          },
         ],
-        skills: ['Digital Marketing', 'SEO/SEM', 'Data Analysis', 'Team Leadership']
-      }
+        skills: [
+          "Medical License",
+          "Board Certification",
+          "DEA License",
+          "ACLS/BLS/PALS",
+        ],
+        sections: [
+          "Licensure & Certifications",
+          "Education & Training",
+          "Research & Publications",
+        ],
+      },
     },
     {
-      id: 'software-engineer',
-      name: 'Software Engineer Pro',
-      category: 'technical',
-      description: 'Optimized for developers with technical skills showcase',
+      id: "academic-research",
+      name: "Academic Research",
+      category: "professional",
+      description:
+        "LaTeX template for Ph.D. candidates, postdocs, and research professionals",
       atsScore: 97,
-      isPremium: false,
+      isPremium: true,
       popularityRank: 2,
-      downloads: 23560,
-      rating: 4.95,
-      features: ['Tech Stack Focus', 'Project Highlights', 'GitHub Integration', 'Skills Matrix'],
-      industries: ['Software Development', 'Engineering', 'IT', 'DevOps'],
+      downloads: 12340,
+      rating: 4.8,
+      features: [
+        "Publication Focus",
+        "Research Interests",
+        "Grant History",
+        "ORCID Integration",
+      ],
+      industries: [
+        "Academia",
+        "Research",
+        "University",
+        "Science",
+        "Education",
+      ],
       preview: {
-        name: 'Alex Chen',
-        title: 'Full Stack Developer',
-        email: 'alex.chen@email.com',
-        phone: '(555) 234-5678',
-        location: 'San Francisco, CA',
-        summary: 'Full stack developer with expertise in React, Node.js, and cloud technologies...',
+        name: "Dr. Firstname Lastname",
+        title: "Research Professional",
+        email: "[email@domain.com]",
+        phone: "[Phone Number]",
+        location: "[City, State, ZIP]",
+        summary:
+          "Research interests in [Interest Area 1], [Interest Area 2], [Interest Area 3]...",
         experience: [
-          { title: 'Senior Developer', company: 'StartupXYZ', years: '2021-Present' },
-          { title: 'Full Stack Developer', company: 'WebSolutions', years: '2019-2021' }
+          {
+            title: "[Job Title, e.g., Postdoctoral Fellow]",
+            company: "[University/Institution Name]",
+            years: "[Dates]",
+          },
         ],
-        skills: ['JavaScript', 'React', 'Node.js', 'AWS', 'Python', 'Docker']
-      }
+        skills: [
+          "Research Methods",
+          "Grant Writing",
+          "Teaching",
+          "Publications",
+        ],
+        sections: [
+          "Education",
+          "Research Interests",
+          "Publications",
+          "Grants & Fellowships",
+        ],
+      },
     },
     {
-      id: 'executive-elite',
-      name: 'Executive Elite',
-      category: 'executive',
-      description: 'Sophisticated template for senior leadership positions',
+      id: "finance-professional",
+      name: "Finance Professional",
+      category: "professional",
+      description:
+        "LaTeX template for finance professionals, analysts, and MBA graduates",
       atsScore: 96,
       isPremium: true,
       popularityRank: 3,
-      downloads: 12350,
-      rating: 4.95,
-      features: ['Executive Format', 'Achievement Focus', 'Leadership Emphasis', 'Board Ready'],
-      industries: ['C-Suite', 'Management', 'Director Level', 'VP Positions'],
-      preview: {
-        name: 'Michael Thompson',
-        title: 'Chief Operating Officer',
-        email: 'mthompson@email.com',
-        phone: '(555) 345-6789',
-        location: 'Chicago, IL',
-        summary: 'Transformational executive with 15+ years driving operational excellence...',
-        experience: [
-          { title: 'Chief Operating Officer', company: 'Fortune 500 Co', years: '2019-Present' },
-          { title: 'VP of Operations', company: 'Global Corp', years: '2015-2019' }
-        ],
-        skills: ['Strategic Planning', 'P&L Management', 'Change Management', 'M&A']
-      }
-    },
-    {
-      id: 'creative-designer',
-      name: 'Creative Designer',
-      category: 'creative',
-      description: 'Stand out with visual appeal while maintaining ATS compatibility',
-      atsScore: 92,
-      isPremium: true,
-      popularityRank: 5,
-      downloads: 8930,
-      rating: 4.8,
-      features: ['Creative Layout', 'Portfolio Section', 'Visual Hierarchy', 'Brand Colors'],
-      industries: ['Design', 'UX/UI', 'Marketing', 'Advertising'],
-      preview: {
-        name: 'Emma Williams',
-        title: 'Senior UX Designer',
-        email: 'emma.w@email.com',
-        phone: '(555) 456-7890',
-        location: 'Los Angeles, CA',
-        summary: 'Creative UX designer passionate about user-centered design...',
-        experience: [
-          { title: 'Senior UX Designer', company: 'Design Studio', years: '2020-Present' },
-          { title: 'UX Designer', company: 'Digital Agency', years: '2018-2020' }
-        ],
-        skills: ['Figma', 'Adobe Creative Suite', 'Prototyping', 'User Research']
-      }
-    },
-    {
-      id: 'data-scientist',
-      name: 'Data Science Expert',
-      category: 'technical',
-      description: 'Highlight analytical skills and technical expertise',
-      atsScore: 96,
-      isPremium: false,
-      popularityRank: 4,
-      downloads: 14280,
-      rating: 4.88,
-      features: ['Technical Skills', 'Project Results', 'Publications', 'Certifications'],
-      industries: ['Data Science', 'Analytics', 'Machine Learning', 'AI'],
-      preview: {
-        name: 'David Kumar',
-        title: 'Senior Data Scientist',
-        email: 'dkumar@email.com',
-        phone: '(555) 567-8901',
-        location: 'Seattle, WA',
-        summary: 'Data scientist specializing in machine learning and predictive analytics...',
-        experience: [
-          { title: 'Senior Data Scientist', company: 'Tech Giant', years: '2020-Present' },
-          { title: 'Data Scientist', company: 'Analytics Co', years: '2018-2020' }
-        ],
-        skills: ['Python', 'R', 'Machine Learning', 'SQL', 'TensorFlow', 'Tableau']
-      }
-    },
-    {
-      id: 'healthcare-hero',
-      name: 'Healthcare Professional',
-      category: 'industry',
-      description: 'Tailored for medical and healthcare professionals',
-      atsScore: 95,
-      isPremium: true,
-      popularityRank: 6,
-      downloads: 9460,
-      rating: 4.92,
-      features: ['Medical Terms', 'Certification Focus', 'Clinical Format', 'HIPAA Aware'],
-      industries: ['Healthcare', 'Medical', 'Nursing', 'Clinical Research'],
-      preview: {
-        name: 'Dr. Rachel Martinez',
-        title: 'Registered Nurse',
-        email: 'rmartinez@email.com',
-        phone: '(555) 678-9012',
-        location: 'Houston, TX',
-        summary: 'Compassionate RN with 10+ years in critical care and emergency medicine...',
-        experience: [
-          { title: 'Senior Registered Nurse', company: 'City Hospital', years: '2018-Present' },
-          { title: 'Registered Nurse', company: 'Medical Center', years: '2014-2018' }
-        ],
-        skills: ['Patient Care', 'Emergency Medicine', 'IV Therapy', 'EMR Systems']
-      }
-    },
-    {
-      id: 'sales-professional',
-      name: 'Sales Champion',
-      category: 'professional',
-      description: 'Results-focused template for sales professionals',
-      atsScore: 97,
-      isPremium: false,
-      popularityRank: 7,
-      downloads: 11890,
+      downloads: 23450,
       rating: 4.85,
-      features: ['Achievement Metrics', 'Revenue Focus', 'Client Success', 'Quota Performance'],
-      industries: ['Sales', 'Business Development', 'Account Management', 'SaaS'],
+      features: [
+        "Technical Skills",
+        "Certifications",
+        "Financial Modeling",
+        "MBA Focus",
+      ],
+      industries: [
+        "Finance",
+        "Banking",
+        "Investment",
+        "Corporate Finance",
+        "Consulting",
+      ],
       preview: {
-        name: 'James Wilson',
-        title: 'Senior Sales Executive',
-        email: 'jwilson@email.com',
-        phone: '(555) 789-0123',
-        location: 'Dallas, TX',
-        summary: 'Top-performing sales executive with consistent 150%+ quota achievement...',
+        name: "Firstname Lastname, [MBA/CFA]",
+        title: "Finance Professional",
+        email: "[email@domain.com]",
+        phone: "[Phone Number]",
+        location: "[City, State]",
+        summary:
+          "Results-driven finance professional with expertise in FP&A, corporate strategy, and M&A...",
         experience: [
-          { title: 'Senior Sales Executive', company: 'SaaS Corp', years: '2019-Present' },
-          { title: 'Sales Representative', company: 'Tech Sales Inc', years: '2017-2019' }
+          {
+            title: "[Job Title]",
+            company: "[Company Name]",
+            years: "[Month YYYY] - Present",
+          },
+          {
+            title: "[Previous Job Title]",
+            company: "[Previous Company]",
+            years: "[Start - End]",
+          },
         ],
-        skills: ['Salesforce', 'Negotiation', 'Pipeline Management', 'Cold Calling']
-      }
+        skills: [
+          "Advanced Excel",
+          "Financial Modeling",
+          "DCF Valuation",
+          "SQL",
+          "Tableau",
+        ],
+        sections: [
+          "Professional Summary",
+          "Professional Experience",
+          "Education",
+          "Certifications",
+        ],
+      },
     },
     {
-      id: 'finance-expert',
-      name: 'Finance Professional',
-      category: 'professional',
-      description: 'Structured template for finance and accounting roles',
-      atsScore: 98,
-      isPremium: true,
-      popularityRank: 8,
-      downloads: 10320,
-      rating: 4.91,
-      features: ['Financial Metrics', 'Compliance Focus', 'Technical Skills', 'Certifications'],
-      industries: ['Finance', 'Accounting', 'Banking', 'Investment'],
-      preview: {
-        name: 'Jennifer Park',
-        title: 'Senior Financial Analyst',
-        email: 'jpark@email.com',
-        phone: '(555) 890-1234',
-        location: 'Boston, MA',
-        summary: 'CPA with expertise in financial analysis and strategic planning...',
-        experience: [
-          { title: 'Senior Financial Analyst', company: 'Investment Bank', years: '2020-Present' },
-          { title: 'Financial Analyst', company: 'Consulting Firm', years: '2018-2020' }
-        ],
-        skills: ['Excel', 'Financial Modeling', 'SAP', 'Risk Analysis', 'CPA']
-      }
-    },
-    {
-      id: 'teacher-educator',
-      name: 'Education Professional',
-      category: 'industry',
-      description: 'Perfect for teachers and education professionals',
-      atsScore: 94,
-      isPremium: false,
-      popularityRank: 9,
-      downloads: 8760,
-      rating: 4.87,
-      features: ['Certification Display', 'Teaching Methods', 'Student Success', 'Curriculum'],
-      industries: ['Education', 'Teaching', 'Training', 'Academic'],
-      preview: {
-        name: 'Lisa Anderson',
-        title: 'High School Teacher',
-        email: 'landerson@email.com',
-        phone: '(555) 901-2345',
-        location: 'Denver, CO',
-        summary: 'Dedicated educator with 12+ years fostering student growth...',
-        experience: [
-          { title: 'Lead Teacher', company: 'Lincoln High School', years: '2018-Present' },
-          { title: 'Teacher', company: 'Washington Middle School', years: '2012-2018' }
-        ],
-        skills: ['Curriculum Development', 'Classroom Management', 'Google Classroom', 'IEP']
-      }
-    },
-    {
-      id: 'recent-graduate',
-      name: 'Fresh Graduate',
-      category: 'entry-level',
-      description: 'Clean design emphasizing education and potential',
+      id: "engineering-student",
+      name: "Engineering Student",
+      category: "entry-level",
+      description:
+        "LaTeX template perfect for engineering students and recent graduates",
       atsScore: 99,
       isPremium: false,
-      popularityRank: 10,
-      downloads: 19540,
-      rating: 4.82,
-      features: ['Education Focus', 'Internships', 'Projects', 'Skills Emphasis'],
-      industries: ['Entry Level', 'Internships', 'Recent Grads', 'Students'],
+      popularityRank: 4,
+      downloads: 32540,
+      rating: 4.8,
+      features: [
+        "Education Focus",
+        "Project Showcase",
+        "Technical Skills",
+        "Leadership Activities",
+      ],
+      industries: [
+        "Engineering",
+        "Technology",
+        "Entry Level",
+        "Student",
+        "STEM",
+      ],
       preview: {
-        name: 'Tyler Roberts',
-        title: 'Recent Graduate',
-        email: 'troberts@email.com',
-        phone: '(555) 012-3456',
-        location: 'Austin, TX',
-        summary: 'Recent Computer Science graduate seeking entry-level position...',
+        name: "Firstname Lastname",
+        title: "Engineering Student",
+        email: "[email@domain.com]",
+        phone: "[Phone Number]",
+        location: "[City, State]",
+        summary:
+          "Mechanical Engineering student with hands-on project experience...",
         experience: [
-          { title: 'Software Intern', company: 'Tech Startup', years: 'Summer 2023' },
-          { title: 'IT Help Desk', company: 'University IT', years: '2022-2023' }
+          {
+            title: "[Job Title, e.g., Engineering Intern]",
+            company: "[Company Name]",
+            years: "[Dates]",
+          },
         ],
-        skills: ['Java', 'Python', 'Git', 'Agile', 'Problem Solving']
-      }
+        skills: ["MATLAB", "SolidWorks", "Python", "C++", "AutoCAD"],
+        sections: [
+          "Education",
+          "Skills",
+          "Projects",
+          "Experience",
+          "Leadership & Activities",
+        ],
+      },
     },
     {
-      id: 'project-manager',
-      name: 'Project Manager Pro',
-      category: 'professional',
-      description: 'Showcase project leadership and delivery success',
-      atsScore: 96,
+      id: "creative-designer",
+      name: "Creative Designer",
+      category: "creative",
+      description:
+        "LaTeX template for UX/UI designers and creative professionals",
+      atsScore: 94,
       isPremium: true,
-      popularityRank: 11,
-      downloads: 13670,
-      rating: 4.89,
-      features: ['Project Metrics', 'Team Leadership', 'Agile/Scrum', 'Budget Management'],
-      industries: ['Project Management', 'IT', 'Construction', 'Consulting'],
+      popularityRank: 5,
+      downloads: 15670,
+      rating: 4.7,
+      features: [
+        "Portfolio Focus",
+        "Visual Layout",
+        "Project Showcase",
+        "Design Tools",
+      ],
+      industries: ["Design", "UX/UI", "Creative", "Digital Media", "Branding"],
       preview: {
-        name: 'Robert Chang',
-        title: 'Senior Project Manager',
-        email: 'rchang@email.com',
-        phone: '(555) 123-4567',
-        location: 'San Diego, CA',
-        summary: 'PMP-certified project manager with track record of on-time delivery...',
+        name: "Firstname Lastname",
+        title: "[UX/UI Designer | Brand Strategist]",
+        email: "[email@domain.com]",
+        phone: "[Phone Number]",
+        location: "your-portfolio.com",
+        summary:
+          "A multidisciplinary designer creating intuitive, human-centered digital experiences...",
         experience: [
-          { title: 'Senior Project Manager', company: 'Global Tech', years: '2019-Present' },
-          { title: 'Project Manager', company: 'Solutions Inc', years: '2016-2019' }
+          {
+            title: "[Job Title]",
+            company: "[Company/Agency Name]",
+            years: "[Month YYYY] - Present",
+          },
+          {
+            title: "[Previous Job Title]",
+            company: "[Previous Company]",
+            years: "[Start - End]",
+          },
         ],
-        skills: ['PMP', 'Agile', 'Scrum', 'JIRA', 'Risk Management', 'MS Project']
-      }
+        skills: [
+          "UX/UI",
+          "Figma",
+          "Adobe Creative Suite",
+          "Prototyping",
+          "User Research",
+        ],
+        sections: [
+          "Profile",
+          "Experience",
+          "Selected Projects",
+          "Proficiencies",
+        ],
+      },
     },
     {
-      id: 'customer-service',
-      name: 'Customer Success Star',
-      category: 'professional',
-      description: 'Highlight customer service excellence and satisfaction',
-      atsScore: 95,
-      isPremium: false,
-      popularityRank: 12,
-      downloads: 7890,
-      rating: 4.83,
-      features: ['Customer Metrics', 'Communication Skills', 'Problem Resolution', 'CRM Tools'],
-      industries: ['Customer Service', 'Support', 'Hospitality', 'Retail'],
-      preview: {
-        name: 'Maria Garcia',
-        title: 'Customer Success Manager',
-        email: 'mgarcia@email.com',
-        phone: '(555) 234-5678',
-        location: 'Phoenix, AZ',
-        summary: 'Customer-focused professional with 95%+ satisfaction ratings...',
-        experience: [
-          { title: 'Customer Success Manager', company: 'Service Pro', years: '2020-Present' },
-          { title: 'Customer Service Rep', company: 'Retail Giant', years: '2018-2020' }
-        ],
-        skills: ['Zendesk', 'Communication', 'Conflict Resolution', 'Salesforce']
-      }
-    },
-    {
-      id: 'cybersecurity-expert',
-      name: 'Cybersecurity Specialist',
-      category: 'technical',
-      description: 'Security-focused template for InfoSec professionals',
-      atsScore: 96,
-      isPremium: true,
-      popularityRank: 13,
-      downloads: 9870,
-      rating: 4.90,
-      features: ['Security Certifications', 'Threat Analysis', 'Compliance Focus', 'Tool Expertise'],
-      industries: ['Cybersecurity', 'InfoSec', 'IT Security', 'Risk Management'],
-      preview: {
-        name: 'Kevin O\'Brien',
-        title: 'Senior Security Engineer',
-        email: 'kobrien@email.com',
-        phone: '(555) 345-6789',
-        location: 'Washington, DC',
-        summary: 'CISSP-certified security professional with expertise in threat detection...',
-        experience: [
-          { title: 'Senior Security Engineer', company: 'CyberDef Inc', years: '2019-Present' },
-          { title: 'Security Analyst', company: 'SecureNet', years: '2017-2019' }
-        ],
-        skills: ['CISSP', 'Penetration Testing', 'SIEM', 'Incident Response', 'Python', 'Firewall']
-      }
-    },
-    {
-      id: 'hr-professional',
-      name: 'HR Leader',
-      category: 'professional',
-      description: 'Comprehensive template for HR professionals',
-      atsScore: 97,
-      isPremium: false,
-      popularityRank: 14,
-      downloads: 10230,
-      rating: 4.86,
-      features: ['HRIS Systems', 'Recruitment Metrics', 'Policy Development', 'Employee Relations'],
-      industries: ['Human Resources', 'Talent Acquisition', 'HR Management', 'People Ops'],
-      preview: {
-        name: 'Patricia White',
-        title: 'HR Director',
-        email: 'pwhite@email.com',
-        phone: '(555) 456-7890',
-        location: 'Atlanta, GA',
-        summary: 'Strategic HR leader with 12+ years driving organizational growth...',
-        experience: [
-          { title: 'HR Director', company: 'Growth Corp', years: '2019-Present' },
-          { title: 'Senior HR Manager', company: 'TalentFirst', years: '2016-2019' }
-        ],
-        skills: ['Workday', 'Talent Management', 'SHRM-CP', 'Employee Engagement', 'Compliance']
-      }
-    },
-    {
-      id: 'marketing-digital',
-      name: 'Digital Marketing Pro',
-      category: 'creative',
-      description: 'Data-driven template for digital marketers',
-      atsScore: 95,
-      isPremium: true,
-      popularityRank: 15,
-      downloads: 11450,
-      rating: 4.88,
-      features: ['Campaign Metrics', 'SEO/SEM Focus', 'Analytics Tools', 'ROI Emphasis'],
-      industries: ['Digital Marketing', 'Content Marketing', 'Social Media', 'Growth Marketing'],
-      preview: {
-        name: 'Ashley Thompson',
-        title: 'Digital Marketing Manager',
-        email: 'athompson@email.com',
-        phone: '(555) 567-8901',
-        location: 'Austin, TX',
-        summary: 'ROI-focused digital marketer with proven track record in SEM/SEO...',
-        experience: [
-          { title: 'Digital Marketing Manager', company: 'TechStart', years: '2020-Present' },
-          { title: 'Marketing Specialist', company: 'MediaCo', years: '2018-2020' }
-        ],
-        skills: ['Google Ads', 'SEO', 'Analytics', 'HubSpot', 'Facebook Ads', 'Content Strategy']
-      }
-    },
-    {
-      id: 'lawyer-attorney',
-      name: 'Legal Professional',
-      category: 'industry',
-      description: 'Formal template for attorneys and legal professionals',
+      id: "software-developer",
+      name: "Software Developer",
+      category: "technical",
+      description:
+        "LaTeX template optimized for software engineers and developers",
       atsScore: 98,
       isPremium: true,
-      popularityRank: 16,
-      downloads: 7650,
-      rating: 4.93,
-      features: ['Bar Admissions', 'Case Highlights', 'Practice Areas', 'Legal Writing'],
-      industries: ['Law', 'Legal', 'Corporate Counsel', 'Litigation'],
+      popularityRank: 6,
+      downloads: 28560,
+      rating: 4.9,
+      features: [
+        "Tech Stack Focus",
+        "GitHub Integration",
+        "Project Links",
+        "Clean Layout",
+      ],
+      industries: [
+        "Software Development",
+        "Technology",
+        "Engineering",
+        "Web Development",
+      ],
       preview: {
-        name: 'Jonathan Davis, Esq.',
-        title: 'Senior Associate Attorney',
-        email: 'jdavis@lawfirm.com',
-        phone: '(555) 678-9012',
-        location: 'New York, NY',
-        summary: 'Corporate attorney with expertise in M&A and securities law...',
+        name: "Firstname Lastname",
+        title: "Software Developer",
+        email: "[email@domain.com]",
+        phone: "[Phone Number]",
+        location: "[City, State]",
+        summary:
+          "Full-stack developer with expertise in modern web technologies...",
         experience: [
-          { title: 'Senior Associate', company: 'Big Law LLP', years: '2019-Present' },
-          { title: 'Associate Attorney', company: 'Legal Partners', years: '2016-2019' }
+          {
+            title: "[Job Title]",
+            company: "[Company Name]",
+            years: "[Month YYYY] - Present",
+          },
+          {
+            title: "[Previous Job Title]",
+            company: "[Previous Company]",
+            years: "[Start - End]",
+          },
         ],
-        skills: ['Corporate Law', 'M&A', 'Securities', 'Contract Negotiation', 'Litigation']
-      }
+        skills: [
+          "Python",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "AWS",
+          "Docker",
+          "PostgreSQL",
+        ],
+        sections: [
+          "Technical Skills",
+          "Professional Experience",
+          "Projects",
+          "Education",
+        ],
+      },
     },
     {
-      id: 'architect-design',
-      name: 'Architecture & Design',
-      category: 'creative',
-      description: 'Portfolio-ready template for architects',
-      atsScore: 93,
+      id: "basic-professional",
+      name: "Basic Professional",
+      category: "basic",
+      description: "Clean, simple LaTeX template suitable for any profession",
+      atsScore: 99,
       isPremium: false,
-      popularityRank: 17,
-      downloads: 6890,
-      rating: 4.84,
-      features: ['Project Portfolio', 'Software Skills', 'Design Awards', 'LEED Focus'],
-      industries: ['Architecture', 'Interior Design', 'Urban Planning', 'Construction'],
+      popularityRank: 7,
+      downloads: 45230,
+      rating: 4.7,
+      features: [
+        "ATS Optimized",
+        "Clean Layout",
+        "Easy to Customize",
+        "Universal Design",
+      ],
+      industries: [
+        "All Industries",
+        "General Purpose",
+        "Entry Level",
+        "Professional",
+      ],
       preview: {
-        name: 'Sofia Martinez',
-        title: 'Senior Architect',
-        email: 'smartinez@email.com',
-        phone: '(555) 789-0123',
-        location: 'Miami, FL',
-        summary: 'LEED-certified architect specializing in sustainable design...',
+        name: "Your Name",
+        title: "Your Professional Title",
+        email: "your.email@example.com",
+        phone: "(555) 000-0000",
+        location: "Your City, State",
+        summary:
+          "Professional summary highlighting your key qualifications and experience...",
         experience: [
-          { title: 'Senior Architect', company: 'Design Studio', years: '2018-Present' },
-          { title: 'Project Architect', company: 'BuildGreen', years: '2015-2018' }
+          {
+            title: "Your Job Title",
+            company: "Company Name",
+            years: "Start - End",
+          },
+          {
+            title: "Previous Position",
+            company: "Previous Company",
+            years: "Start - End",
+          },
         ],
-        skills: ['AutoCAD', 'Revit', 'SketchUp', 'LEED AP', 'Project Management', '3D Modeling']
-      }
+        skills: ["Skill 1", "Skill 2", "Skill 3", "Skill 4", "Skill 5"],
+        sections: [
+          "Education",
+          "Experience",
+          "Skills",
+          "Additional Information",
+        ],
+      },
     },
-    {
-      id: 'mechanical-engineer',
-      name: 'Mechanical Engineer',
-      category: 'technical',
-      description: 'Technical template for mechanical engineers',
-      atsScore: 97,
-      isPremium: false,
-      popularityRank: 18,
-      downloads: 8920,
-      rating: 4.87,
-      features: ['CAD Skills', 'Project Results', 'Technical Specs', 'Manufacturing'],
-      industries: ['Mechanical Engineering', 'Manufacturing', 'Automotive', 'Aerospace'],
-      preview: {
-        name: 'Richard Chen',
-        title: 'Senior Mechanical Engineer',
-        email: 'rchen@email.com',
-        phone: '(555) 890-1234',
-        location: 'Detroit, MI',
-        summary: 'Innovative mechanical engineer with 10+ years in automotive design...',
-        experience: [
-          { title: 'Senior Mechanical Engineer', company: 'AutoTech', years: '2019-Present' },
-          { title: 'Mechanical Engineer', company: 'Motors Inc', years: '2015-2019' }
-        ],
-        skills: ['SolidWorks', 'CATIA', 'FEA', 'GD&T', 'Six Sigma', 'Lean Manufacturing']
-      }
-    },
-    {
-      id: 'pharmacist-medical',
-      name: 'Pharmacist Professional',
-      category: 'industry',
-      description: 'Clinical template for pharmacy professionals',
-      atsScore: 96,
-      isPremium: true,
-      popularityRank: 19,
-      downloads: 5670,
-      rating: 4.91,
-      features: ['License Display', 'Clinical Skills', 'Drug Knowledge', 'Patient Care'],
-      industries: ['Pharmacy', 'Healthcare', 'Clinical', 'Pharmaceutical'],
-      preview: {
-        name: 'Dr. Angela Kim, PharmD',
-        title: 'Clinical Pharmacist',
-        email: 'akim@email.com',
-        phone: '(555) 901-2345',
-        location: 'San Francisco, CA',
-        summary: 'Board-certified clinical pharmacist specializing in oncology...',
-        experience: [
-          { title: 'Clinical Pharmacist', company: 'Regional Medical Center', years: '2018-Present' },
-          { title: 'Staff Pharmacist', company: 'Community Pharmacy', years: '2015-2018' }
-        ],
-        skills: ['Clinical Pharmacy', 'Oncology', 'Drug Interactions', 'Patient Counseling', 'Epic']
-      }
-    },
-    {
-      id: 'real-estate-agent',
-      name: 'Real Estate Professional',
-      category: 'professional',
-      description: 'Sales-focused template for real estate agents',
-      atsScore: 94,
-      isPremium: false,
-      popularityRank: 20,
-      downloads: 7230,
-      rating: 4.81,
-      features: ['Sales Metrics', 'Property Types', 'Client Success', 'Market Knowledge'],
-      industries: ['Real Estate', 'Property Management', 'Commercial Real Estate', 'Residential'],
-      preview: {
-        name: 'Brandon Taylor',
-        title: 'Senior Real Estate Agent',
-        email: 'btaylor@email.com',
-        phone: '(555) 012-3456',
-        location: 'Los Angeles, CA',
-        summary: 'Top-producing agent with $50M+ in sales and 200+ transactions...',
-        experience: [
-          { title: 'Senior Agent', company: 'Premier Realty', years: '2017-Present' },
-          { title: 'Real Estate Agent', company: 'HomeSales Inc', years: '2014-2017' }
-        ],
-        skills: ['MLS', 'Negotiation', 'Market Analysis', 'CRM', 'Property Valuation', 'Contracts']
-      }
-    },
-    {
-      id: 'supply-chain',
-      name: 'Supply Chain Manager',
-      category: 'professional',
-      description: 'Logistics-focused template for supply chain pros',
-      atsScore: 96,
-      isPremium: true,
-      popularityRank: 21,
-      downloads: 8450,
-      rating: 4.85,
-      features: ['Logistics Metrics', 'Cost Reduction', 'Vendor Management', 'ERP Systems'],
-      industries: ['Supply Chain', 'Logistics', 'Operations', 'Procurement'],
-      preview: {
-        name: 'Michelle Wong',
-        title: 'Supply Chain Director',
-        email: 'mwong@email.com',
-        phone: '(555) 123-4567',
-        location: 'Chicago, IL',
-        summary: 'Strategic supply chain leader with expertise in global logistics...',
-        experience: [
-          { title: 'Supply Chain Director', company: 'Global Logistics', years: '2019-Present' },
-          { title: 'Sr. Supply Chain Manager', company: 'ShipCo', years: '2016-2019' }
-        ],
-        skills: ['SAP', 'Lean Six Sigma', 'Inventory Management', 'Forecasting', 'Vendor Relations']
-      }
-    }
   ];
 
   const categories = [
-    { id: 'all', name: 'All Templates', icon: <FileText className="w-4 h-4" /> },
-    { id: 'professional', name: 'Professional', icon: <Briefcase className="w-4 h-4" /> },
-    { id: 'technical', name: 'Technical', icon: <Code className="w-4 h-4" /> },
-    { id: 'creative', name: 'Creative', icon: <Palette className="w-4 h-4" /> },
-    { id: 'executive', name: 'Executive', icon: <Building className="w-4 h-4" /> },
-    { id: 'industry', name: 'Industry Specific', icon: <Globe className="w-4 h-4" /> },
-    { id: 'entry-level', name: 'Entry Level', icon: <GraduationCap className="w-4 h-4" /> }
+    {
+      id: "all",
+      name: "All Templates",
+      icon: <FileText className="w-4 h-4" />,
+    },
+    { id: "basic", name: "Basic", icon: <FileText className="w-4 h-4" /> },
+    {
+      id: "professional",
+      name: "Professional",
+      icon: <Briefcase className="w-4 h-4" />,
+    },
+    { id: "technical", name: "Technical", icon: <Code className="w-4 h-4" /> },
+    { id: "creative", name: "Creative", icon: <Palette className="w-4 h-4" /> },
+    {
+      id: "industry",
+      name: "Industry Specific",
+      icon: <Globe className="w-4 h-4" />,
+    },
+    {
+      id: "entry-level",
+      name: "Entry Level",
+      icon: <GraduationCap className="w-4 h-4" />,
+    },
   ];
 
-  const filteredTemplates = selectedCategory === 'all' 
-    ? templates 
-    : templates.filter(t => t.category === selectedCategory);
+  const filteredTemplates =
+    selectedCategory === "all"
+      ? templates
+      : templates.filter((t) => t.category === selectedCategory);
 
-  type TemplateType = typeof templates[number];
+  type TemplateType = (typeof templates)[number];
   interface TemplatePreviewModalProps {
     template: TemplateType | null;
     onClose: () => void;
   }
-  const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({ template, onClose }) => {
+
+  const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
+    template,
+    onClose,
+  }) => {
     if (!template) return null;
 
     return (
@@ -691,23 +597,27 @@ const EnhancedTemplatesPage = () => {
           <div className="grid md:grid-cols-2 gap-8 p-6">
             <div className="bg-gray-800 rounded-2xl p-8 flex items-center justify-center">
               <div className="w-full max-w-sm h-96 bg-white rounded-xl shadow-xl overflow-hidden">
-                <EnhancedResumePreview template={template} />
+                <LaTeXResumePreview template={template} />
               </div>
             </div>
 
             <div className="space-y-6">
               <div>
-                <h4 className="text-lg font-semibold text-white mb-3">ATS Performance</h4>
+                <h4 className="text-lg font-semibold text-white mb-3">
+                  ATS Performance
+                </h4>
                 <div className="bg-green-900/30 rounded-xl p-4 border border-green-700/50">
                   <div className="flex items-center justify-between mb-3">
                     <span className="font-medium text-gray-300">ATS Score</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold text-green-400">{template.atsScore}</span>
+                      <span className="text-3xl font-bold text-green-400">
+                        {template.atsScore}
+                      </span>
                       <span className="text-gray-500">/100</span>
                     </div>
                   </div>
                   <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-500"
                       style={{ width: `${template.atsScore}%` }}
                     ></div>
@@ -716,7 +626,9 @@ const EnhancedTemplatesPage = () => {
               </div>
 
               <div>
-                <h4 className="text-lg font-semibold text-white mb-3">Key Features</h4>
+                <h4 className="text-lg font-semibold text-white mb-3">
+                  Key Features
+                </h4>
                 <div className="grid grid-cols-2 gap-3">
                   {template.features.map((feature, idx) => (
                     <div key={idx} className="flex items-center gap-2">
@@ -728,10 +640,15 @@ const EnhancedTemplatesPage = () => {
               </div>
 
               <div>
-                <h4 className="text-lg font-semibold text-white mb-3">Best For</h4>
+                <h4 className="text-lg font-semibold text-white mb-3">
+                  Best For
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {template.industries.map((industry, idx) => (
-                    <span key={idx} className="px-3 py-1 bg-teal-900/30 text-teal-300 rounded-full text-sm border border-teal-700/50">
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-teal-900/30 text-teal-300 rounded-full text-sm border border-teal-700/50"
+                    >
                       {industry}
                     </span>
                   ))}
@@ -743,17 +660,15 @@ const EnhancedTemplatesPage = () => {
                   onClick={() => {
                     onClose();
                     if (template.isPremium && !isPremium) {
-                      // Redirect to pricing for premium templates if user is not premium
-                      window.location.href = '/pricing';
+                      window.location.href = "/pricing";
                     } else {
-                      // Navigate to builder with template
                       window.location.href = `/builder?template=${template.id}`;
                     }
                   }}
                   className={`flex-1 font-semibold py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 ${
                     template.isPremium && !isPremium
-                      ? 'bg-gradient-to-r from-pink-600 to-pink-500 text-white'
-                      : 'bg-gradient-to-r from-teal-600 to-amber-600 text-white'
+                      ? "bg-gradient-to-r from-pink-600 to-pink-500 text-white"
+                      : "bg-gradient-to-r from-teal-600 to-amber-600 text-white"
                   }`}
                 >
                   {template.isPremium && !isPremium ? (
@@ -768,7 +683,7 @@ const EnhancedTemplatesPage = () => {
                     </>
                   )}
                 </button>
-                <button 
+                <button
                   onClick={onClose}
                   className="px-6 py-3 border-2 border-gray-700 rounded-xl font-medium text-gray-300 hover:bg-gray-800 transition-colors"
                 >
@@ -782,393 +697,551 @@ const EnhancedTemplatesPage = () => {
     );
   };
 
-  // Replace the ResumePreview component in your templates page with this enhanced version
+  const LaTeXResumePreview: React.FC<{ template: TemplateType }> = ({
+    template,
+  }) => {
+    const baseStyles =
+      "h-full text-xs leading-tight overflow-hidden bg-white text-black p-4";
 
-const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template }) => {
-  const baseStyles = "h-full text-xs leading-tight overflow-hidden";
-  
-  // Modern Professional Template
-  if (template.id === 'modern-pro') {
-    return (
-      <div className={`${baseStyles} bg-white text-gray-900 p-4 font-professional`}>
-        <div className="border-l-4 border-blue-500 pl-3 mb-3">
-          <div className="font-bold text-lg text-blue-900 tracking-tight leading-tight">{template.preview.name}</div>
-          <div className="text-blue-600 font-medium tracking-wide">{template.preview.title}</div>
-          <div className="text-gray-600 text-[10px] font-light tracking-wide">{template.preview.location} • {template.preview.phone}</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-semibold text-blue-800 text-[10px] uppercase tracking-wide mb-1 border-b border-blue-200">Summary</div>
-          <div className="text-gray-700 text-[10px]">{template.preview.summary.substring(0, 80)}...</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-semibold text-blue-800 text-[10px] uppercase tracking-wide mb-1 border-b border-blue-200">Experience</div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="mb-2">
-              <div className="font-medium text-[10px] text-blue-900">{exp.title}</div>
-              <div className="text-gray-600 text-[10px]">{exp.company} • {exp.years}</div>
+    // Medical Professional Template (LaTeX style)
+    if (template.id === "medical-professional") {
+      return (
+        <div className={`${baseStyles} font-serif`}>
+          <div className="text-center mb-3">
+            <div className="text-base font-bold">{template.preview.name}</div>
+            <div className="text-[10px] text-gray-700 mt-1">
+              {template.preview.location}
+              <br />
+              {template.preview.phone} · {template.preview.email} · LinkedIn
+              Profile
             </div>
-          ))}
-        </div>
-        
-        <div>
-          <div className="font-semibold text-blue-800 text-[10px] uppercase tracking-wide mb-1 border-b border-blue-200">Skills</div>
-          <div className="grid grid-cols-2 gap-1">
-            {template.preview.skills.slice(0, 6).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <div key={idx} className="text-[10px] text-gray-700">• {skill}</div>
-            ))}
+          </div>
+
+          <div className="border-t border-gray-400 my-2"></div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Professional Summary
+            </div>
+            <div className="border-t border-gray-300 mb-1"></div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Licensure & Certifications
+            </div>
+            <div className="border-t border-gray-300 mb-1"></div>
+            <div className="text-[9px] leading-relaxed">
+              • Medical License: [State], License #[Number]
+              <br />
+              • Board Certification: [Board Name]
+              <br />
+              • DEA License: #[Number]
+              <br />• ACLS/BLS/PALS: Certified
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Education & Training
+            </div>
+            <div className="border-t border-gray-300 mb-1"></div>
+            <div className="text-[9px]">
+              <div className="mb-1">
+                <span className="font-bold">Fellowship, [Subspecialty]</span>
+                <span className="float-right">[YYYY] - [YYYY]</span>
+                <br />
+                <i>[Institution], [City, State]</i>
+              </div>
+              <div className="mb-1">
+                <span className="font-bold">Residency, [Specialty]</span>
+                <span className="float-right">[YYYY] - [YYYY]</span>
+                <br />
+                <i>[Institution], [City, State]</i>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  // Software Engineer Template
-  if (template.id === 'software-engineer') {
-    return (
-      <div className={`${baseStyles} bg-gray-900 text-white p-4 font-mono`}>
-        <div className="border border-green-400 p-2 mb-3">
-          <div className="text-green-400 font-bold">{template.preview.name.toUpperCase()}</div>
-          <div className="text-green-300 text-[10px]">$ whoami: {template.preview.title}</div>
-          <div className="text-gray-400 text-[10px]">{template.preview.location}</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="text-green-400 text-[10px] mb-1">~/profile</div>
-          <div className="text-gray-300 text-[10px] pl-2">{template.preview.summary.substring(0, 70)}...</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="text-green-400 text-[10px] mb-1">~/experience</div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="text-[10px] pl-2 mb-1">
-              <div className="text-white">├── {exp.title}</div>
-              <div className="text-gray-400">└── {exp.company} ({exp.years})</div>
+    // Academic Research Template (LaTeX style)
+    if (template.id === "academic-research") {
+      return (
+        <div className={`${baseStyles} font-serif`}>
+          <div className="text-center mb-3">
+            <div className="text-base font-bold">{template.preview.name}</div>
+            <div className="text-[10px] text-gray-700 mt-1">
+              [Street Address] · [City, State, ZIP]
+              <br />
+              {template.preview.phone} · {template.preview.email} · LinkedIn ·
+              ORCID
             </div>
-          ))}
-        </div>
-        
-        <div>
-          <div className="text-green-400 text-[10px] mb-1">~/skills</div>
-          <div className="text-[10px] pl-2">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: number) => (
-                <span key={idx} className="text-yellow-300">{skill}{idx < 3 ? ', ' : ''}</span>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Education
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              <div className="mb-1">
+                <span className="font-bold">Ph.D. in [Your Field]</span>
+                <span className="float-right">[Year]</span>
+                <br />
+                [University Name], [City, State]
+                <br />
+                Dissertation: "[Title of Your Dissertation]"
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Research Interests
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">{template.preview.summary}</div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Academic Appointments
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              {template.preview.experience.map((exp, idx) => (
+                <div key={idx} className="mb-1">
+                  <span className="font-bold">{exp.title}</span>
+                  <span className="float-right">{exp.years}</span>
+                  <br />
+                  {exp.company}
+                </div>
               ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Executive Elite Template
-  if (template.id === 'executive-elite') {
-    return (
-      <div className={`${baseStyles} bg-white text-gray-900 p-4`}>
-        <div className="text-center mb-3 border-b-2 border-gray-800 pb-2">
-          <div className="font-bold text-lg tracking-wide">{template.preview.name.toUpperCase()}</div>
-          <div className="text-gray-600 font-medium italic">{template.preview.title}</div>
-          <div className="text-gray-500 text-[10px]">{template.preview.location} | {template.preview.phone}</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-bold text-gray-800 text-[10px] tracking-wider mb-1">EXECUTIVE SUMMARY</div>
-          <div className="text-gray-700 text-[10px] leading-relaxed">{template.preview.summary.substring(0, 90)}...</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-bold text-gray-800 text-[10px] tracking-wider mb-1">LEADERSHIP EXPERIENCE</div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="mb-2">
-              <div className="font-semibold text-[10px]">{exp.title}</div>
-              <div className="text-gray-600 text-[10px] italic">{exp.company} | {exp.years}</div>
             </div>
-          ))}
-        </div>
-        
-        <div>
-          <div className="font-bold text-gray-800 text-[10px] tracking-wider mb-1">CORE COMPETENCIES</div>
-          <div className="grid grid-cols-2 gap-0.5">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <div key={idx} className="text-[10px] text-gray-700">▪ {skill}</div>
-            ))}
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  // Creative Designer Template
-  if (template.id === 'creative-designer') {
-    return (
-      <div className={`${baseStyles} bg-gradient-to-br from-purple-50 to-pink-50 p-4`}>
-        <div className="text-center mb-3">
-          <div className="font-bold text-lg text-purple-800">{template.preview.name}</div>
-          <div className="text-pink-600 font-medium">{template.preview.title}</div>
-          <div className="w-full h-1 bg-gradient-to-r from-purple-400 to-pink-400 my-1 rounded"></div>
-          <div className="text-gray-600 text-[10px]">{template.preview.location}</div>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <div>
-            <div className="font-semibold text-purple-700 text-[10px] mb-1">ABOUT</div>
-            <div className="text-gray-700 text-[10px]">{template.preview.summary.substring(0, 50)}...</div>
-          </div>
-          <div>
-            <div className="font-semibold text-pink-700 text-[10px] mb-1">CONTACT</div>
-            <div className="text-gray-600 text-[10px]">{template.preview.email}</div>
-          </div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-semibold text-purple-700 text-[10px] mb-1">EXPERIENCE</div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="mb-1.5">
-              <div className="font-medium text-[10px] text-purple-800">{exp.title}</div>
-              <div className="text-pink-600 text-[10px]">{exp.company}</div>
+    // Finance Professional Template (LaTeX style)
+    if (template.id === "finance-professional") {
+      return (
+        <div className={`${baseStyles} font-serif`}>
+          <div className="text-center mb-3">
+            <div className="text-base font-bold">{template.preview.name}</div>
+            <div className="text-[10px] text-gray-700 mt-1">
+              {template.preview.location} · {template.preview.phone} ·{" "}
+              {template.preview.email} · LinkedIn
             </div>
-          ))}
-        </div>
-        
-        <div>
-          <div className="font-semibold text-purple-700 text-[10px] mb-1">SKILLS</div>
-          <div className="flex flex-wrap gap-1">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <span key={idx} className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded">
-                {skill}
-              </span>
-            ))}
           </div>
-        </div>
-      </div>
-    );
-  }
 
-  // Data Science Expert Template
-  if (template.id === 'data-scientist') {
-    return (
-      <div className={`${baseStyles} bg-white text-gray-900 p-4`}>
-        <div className="mb-3 border-l-4 border-teal-500 pl-3">
-          <div className="font-bold text-lg text-teal-800">{template.preview.name}</div>
-          <div className="text-teal-600 font-medium">{template.preview.title}</div>
-          <div className="text-gray-500 text-[10px]">{template.preview.location} • {template.preview.phone}</div>
-        </div>
-        
-        <div className="grid grid-cols-5 gap-2 mb-3">
-          <div className="col-span-3">
-            <div className="font-semibold text-teal-700 text-[10px] mb-1">PROFILE</div>
-            <div className="text-gray-700 text-[10px]">{template.preview.summary.substring(0, 60)}...</div>
-          </div>
-          <div className="col-span-2">
-            <div className="font-semibold text-teal-700 text-[10px] mb-1">TECH STACK</div>
-            {template.preview.skills.slice(0, 3).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <div key={idx} className="text-[10px] text-gray-600">▶ {skill}</div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-semibold text-teal-700 text-[10px] mb-1 flex items-center">
-            <span className="w-2 h-2 bg-teal-500 rounded-full mr-1"></span>
-            EXPERIENCE
-          </div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="mb-1.5 ml-3">
-              <div className="font-medium text-[10px] text-teal-800">{exp.title}</div>
-              <div className="text-gray-600 text-[10px]">{exp.company} | {exp.years}</div>
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Professional Summary
             </div>
-          ))}
-        </div>
-        
-        <div className="bg-teal-50 p-2 rounded">
-          <div className="font-semibold text-teal-700 text-[10px] mb-1">KEY TECHNOLOGIES</div>
-          <div className="flex flex-wrap gap-1">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <span key={idx} className="text-[10px] px-1 py-0.5 bg-teal-100 text-teal-700 rounded">
-                {skill}
-              </span>
-            ))}
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">{template.preview.summary}</div>
           </div>
-        </div>
-      </div>
-    );
-  }
 
-  // Healthcare Professional Template
-  if (template.id === 'healthcare-hero') {
-    return (
-      <div className={`${baseStyles} bg-white text-gray-900 p-4`}>
-        <div className="text-center mb-3 border-b border-blue-300 pb-2">
-          <div className="font-bold text-lg text-blue-900">{template.preview.name}</div>
-          <div className="text-blue-600 font-medium">{template.preview.title}</div>
-          <div className="text-blue-500 text-[10px]">Licensed Healthcare Professional</div>
-          <div className="text-gray-600 text-[10px]">{template.preview.location} • {template.preview.phone}</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-semibold text-blue-800 text-[10px] mb-1 bg-blue-50 p-1 rounded">PROFESSIONAL SUMMARY</div>
-          <div className="text-gray-700 text-[10px]">{template.preview.summary.substring(0, 70)}...</div>
-        </div>
-        
-        <div className="mb-3">
-          <div className="font-semibold text-blue-800 text-[10px] mb-1 bg-blue-50 p-1 rounded">CLINICAL EXPERIENCE</div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="mb-1.5 border-l-2 border-blue-200 pl-2">
-              <div className="font-medium text-[10px] text-blue-900">{exp.title}</div>
-              <div className="text-gray-600 text-[10px]">{exp.company} • {exp.years}</div>
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Professional Experience
             </div>
-          ))}
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              {template.preview.experience.map((exp, idx) => (
+                <div key={idx} className="mb-2">
+                  <div className="flex justify-between">
+                    <span className="font-bold">{exp.title}</span>
+                    <span>{exp.years}</span>
+                  </div>
+                  <div>{exp.company}</div>
+                  <div className="ml-2 mt-1">
+                    • Achievement or responsibility
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Skills & Certifications
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              <span className="font-bold">Technical:</span>{" "}
+              {template.preview.skills.slice(0, 3).join(", ")}
+              <br />
+              <span className="font-bold">Financial:</span>{" "}
+              {template.preview.skills.slice(3).join(", ")}
+            </div>
+          </div>
         </div>
-        
-        <div>
-          <div className="font-semibold text-blue-800 text-[10px] mb-1 bg-blue-50 p-1 rounded">CORE COMPETENCIES</div>
-          <div className="grid grid-cols-2 gap-1">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <div key={idx} className="text-[10px] text-gray-700 flex items-center">
-                <span className="w-1 h-1 bg-blue-500 rounded-full mr-1"></span>
-                {skill}
+      );
+    }
+
+    // Engineering Student Template (LaTeX style)
+    if (template.id === "engineering-student") {
+      return (
+        <div className={`${baseStyles} font-serif`}>
+          <div className="text-center mb-3">
+            <div className="text-base font-bold">{template.preview.name}</div>
+            <div className="text-[10px] text-gray-700 mt-1">
+              {template.preview.location} · {template.preview.phone} ·{" "}
+              {template.preview.email} · LinkedIn
+            </div>
+          </div>
+            <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Education
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              <div className="flex justify-between">
+                <span className="font-bold">[University Name]</span>
+                <span>[City, State]</span>
+              </div>
+              <div>
+                [Degree, e.g., Bachelor of Science in Mechanical Engineering]
+              </div>
+              <div>• GPA: [3.8/4.0]; Honors: [Dean's List]</div>
+              <div>
+                • Relevant Coursework: Thermodynamics, Fluid Mechanics, CAD/CAM
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Skills
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              <div>
+                <span className="font-bold">Technical:</span>{" "}
+                {template.preview.skills.slice(0, 3).join(", ")}
+              </div>
+              <div>
+                <span className="font-bold">Software:</span>{" "}
+                {template.preview.skills.slice(3).join(", ")}
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider mb-1">
+              Experience
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div className="text-[9px]">
+              {template.preview.experience.map((exp, idx) => (
+                <div key={idx} className="mb-1">
+                  <div className="flex justify-between">
+                    <span className="font-bold">{exp.title}</span>
+                    <span>{exp.years}</span>
+                  </div>
+                  <div>{exp.company}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Creative Designer Template (LaTeX style)
+    if (template.id === "creative-designer") {
+      return (
+        <div className={`${baseStyles} font-sans`}>
+          <div className="text-center mb-3">
+            <div className="text-base font-bold">{template.preview.name}</div>
+            <div className="text-[10px] text-gray-700 mt-1">
+              {template.preview.title}
+              <br />
+              {template.preview.location}
+              <br />
+              {template.preview.phone} · {template.preview.email} · LinkedIn
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold mb-1">Profile</div>
+            <div className="text-[9px] text-gray-700">
+              {template.preview.summary}
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold mb-1">Experience</div>
+            {template.preview.experience.map((exp, idx) => (
+              <div key={idx} className="text-[9px] mb-2">
+                <div className="flex justify-between">
+                  <span className="font-semibold">{exp.title}</span>
+                  <span>{exp.years}</span>
+                </div>
+                <div className="text-gray-600">{exp.company}</div>
+                <div className="ml-2 mt-1">• Key achievement or project</div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
-    );
-  }
 
-  // Healthcare Professional Template
-  if (template.id === 'healthcare-hero') {
-    return (
-      <div className={`${baseStyles} bg-blue-50 text-gray-900 p-4`}>
-        <div className="text-center mb-3 border-b border-blue-200 pb-2">
-          <div className="font-bold text-lg text-blue-800">{template.preview.name}</div>
-          <div className="text-blue-600 font-medium">{template.preview.title}</div>
-          <div className="text-gray-600 text-[10px]">{template.preview.location} • {template.preview.phone}</div>
-        </div>
-
-        <div className="mb-3">
-          <div className="font-semibold text-blue-700 text-[10px] mb-1 flex items-center">
-            <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-            PROFESSIONAL SUMMARY
-          </div>
-          <div className="text-gray-700 text-[10px] leading-relaxed">{template.preview.summary.substring(0, 80)}...</div>
-        </div>
-
-        <div className="mb-3">
-          <div className="font-semibold text-blue-700 text-[10px] mb-1 flex items-center">
-            <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-            CLINICAL EXPERIENCE
-          </div>
-          {template.preview.experience.slice(0, 2).map((exp: any, idx: number) => (
-            <div key={idx} className="mb-2 ml-3">
-              <div className="font-medium text-[10px] text-blue-800">{exp.title}</div>
-              <div className="text-blue-600 text-[10px]">{exp.company} • {exp.years}</div>
+          <div className="mb-3">
+            <div className="text-[10px] font-bold mb-1">Selected Projects</div>
+            <div className="text-[9px]">
+              <div className="mb-1">
+                <span className="font-semibold">[Project Title]</span> | Mobile
+                App Redesign
+                <br />
+                <span className="text-gray-600">
+                  Full case study at portfolio.com/project-1
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
-
-        <div>
-          <div className="font-semibold text-blue-700 text-[10px] mb-1 flex items-center">
-            <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-            CORE COMPETENCIES
           </div>
-          <div className="grid grid-cols-2 gap-1">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <div key={idx} className="text-[10px] text-gray-700">+ {skill}</div>
+
+          <div>
+            <div className="text-[10px] font-bold mb-1">Proficiencies</div>
+            <div className="text-[9px]">
+              <div>
+                <span className="font-semibold">Design:</span> UX/UI,
+                Wireframing, Prototyping
+              </div>
+              <div>
+                <span className="font-semibold">Tools:</span>{" "}
+                {template.preview.skills.slice(1, 4).join(", ")}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Software Developer Template (LaTeX style)
+    if (template.id === "software-developer") {
+      return (
+        <div className={`${baseStyles} font-mono text-[9px]`}>
+          <div className="text-center mb-3">
+            <div className="text-sm font-bold">{template.preview.name}</div>
+            <div className="text-[9px] text-gray-700 mt-1">
+              {template.preview.location} · {template.preview.phone} ·{" "}
+              {template.preview.email}
+              <br />
+              LinkedIn · GitHub · Portfolio
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase mb-1">
+              Technical Skills
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div>
+              <span className="font-semibold">Languages:</span>{" "}
+              {template.preview.skills.slice(0, 3).join(", ")}
+              <br />
+              <span className="font-semibold">Frameworks:</span>{" "}
+              {template.preview.skills.slice(3, 5).join(", ")}
+              <br />
+              <span className="font-semibold">Tools:</span>{" "}
+              {template.preview.skills.slice(5).join(", ")}
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase mb-1">
+              Professional Experience
+            </div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            {template.preview.experience.map((exp, idx) => (
+              <div key={idx} className="mb-2">
+                <div className="flex justify-between">
+                  <span className="font-bold">{exp.title}</span>
+                  <span>{exp.years}</span>
+                </div>
+                <div className="text-gray-600">{exp.company}</div>
+                <div className="ml-2 mt-1">• Built scalable APIs...</div>
+              </div>
             ))}
           </div>
-        </div>
-      </div>
-    );
-  }
 
-  // Sales Professional Template
-  if (template.id === 'sales-professional') {
-    return (
-      <div className={`${baseStyles} bg-gradient-to-br from-green-50 to-emerald-50 p-4`}>
-        <div className="mb-3">
-          <div className="font-bold text-lg text-green-800">{template.preview.name}</div>
-          <div className="text-green-600 font-semibold">{template.preview.title}</div>
-          <div className="text-gray-600 text-[10px]">{template.preview.location} • {template.preview.phone}</div>
-          <div className="w-full h-1 bg-gradient-to-r from-green-400 to-emerald-400 my-1 rounded"></div>
-        </div>
-
-        <div className="mb-3">
-          <div className="font-bold text-green-700 text-[10px] mb-1">🎯 SALES PERFORMANCE</div>
-          <div className="text-gray-700 text-[10px] leading-relaxed">{template.preview.summary.substring(0, 70)}...</div>
-        </div>
-
-        <div className="mb-3">
-          <div className="font-bold text-green-700 text-[10px] mb-1">💼 EXPERIENCE</div>
-          {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-            <div key={idx} className="mb-2">
-              <div className="font-medium text-[10px] text-green-800">{exp.title}</div>
-              <div className="text-green-600 text-[10px]">{exp.company} | {exp.years}</div>
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase mb-1">Projects</div>
+            <div className="border-t border-gray-800 mb-1"></div>
+            <div>
+              <div className="font-semibold">[Project Name] [GitHub Link]</div>
+              <div className="text-gray-600">
+                Tech Stack: React, Python, AWS
+              </div>
+              <div className="ml-2">• Key feature or achievement</div>
             </div>
-          ))}
+          </div>
         </div>
+      );
+    }
 
-        <div>
-          <div className="font-bold text-green-700 text-[10px] mb-1">⚡ KEY SKILLS</div>
-          <div className="flex flex-wrap gap-1">
-            {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-              <span key={idx} className="text-[8px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full">
-                {skill}
-              </span>
+    // Basic Professional Template (LaTeX style)
+    if (template.id === "basic-professional") {
+      return (
+        <div className={`${baseStyles} font-serif`}>
+          <div className="text-center mb-3">
+            <div className="text-base font-bold">{template.preview.name}</div>
+            <div className="text-sm">{template.preview.title}</div>
+            <div className="text-[10px] text-gray-700 mt-1">
+              {template.preview.location} · {template.preview.phone} ·{" "}
+              {template.preview.email}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-400 my-2"></div>
+
+          <div className="mb-3">
+            <div className="text-[11px] font-bold mb-1">
+              Professional Summary
+            </div>
+            <div className="text-[10px] text-gray-700">
+              {template.preview.summary}
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-[11px] font-bold mb-1">Experience</div>
+            {template.preview.experience.map((exp, idx) => (
+              <div key={idx} className="text-[10px] mb-2">
+                <div className="font-semibold">
+                  {exp.title} - {exp.company}
+                </div>
+                <div className="text-gray-600">{exp.years}</div>
+                <div className="ml-2 mt-1">
+                  • Key responsibility or achievement
+                </div>
+              </div>
             ))}
           </div>
+
+          <div className="mb-3">
+            <div className="text-[11px] font-bold mb-1">Education</div>
+            <div className="text-[10px]">
+              <div className="font-semibold">Bachelor's Degree</div>
+              <div className="text-gray-600">University Name, Year</div>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] font-bold mb-1">Skills</div>
+            <div className="text-[10px]">
+              {template.preview.skills.join(" • ")}
+            </div>
+          </div>
         </div>
+      );
+    }
+
+    // Default fallback
+    return (
+      <div className={baseStyles}>
+        <div className="text-center">Default Template Preview</div>
       </div>
     );
-  }
+  };
 
-  // Default template (fallback)
-  return (
-    <div className={`${baseStyles} bg-white text-gray-900 p-4`}>
-      <div className="text-center mb-3">
-        <div className="font-bold text-sm">{template.preview.name}</div>
-        <div className="text-gray-600 text-xs">{template.preview.title}</div>
-        <div className="text-gray-500 text-[10px] mt-0.5">
-          {template.preview.location} • {template.preview.phone}
-        </div>
-      </div>
-      
-      <div className="mb-3">
-        <div className="font-semibold text-[10px] uppercase tracking-wide mb-1">Summary</div>
-        <div className="text-gray-700 text-[10px] leading-relaxed">
-          {template.preview.summary.substring(0, 60)}...
-        </div>
-      </div>
-      
-      <div className="mb-3">
-        <div className="font-semibold text-[10px] uppercase tracking-wide mb-1">Experience</div>
-        {template.preview.experience.slice(0, 2).map((exp: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; years: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
-          <div key={idx} className="mb-1.5">
-            <div className="font-medium text-[10px]">{exp.title}</div>
-            <div className="text-gray-600 text-[10px]">{exp.company} • {exp.years}</div>
-          </div>
-        ))}
-      </div>
-      
-      <div>
-        <div className="font-semibold text-[10px] uppercase tracking-wide mb-1">Skills</div>
-        <div className="flex flex-wrap gap-1">
-          {template.preview.skills.slice(0, 4).map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
-            <span key={idx} className="text-[10px] px-1.5 py-0.5 bg-gray-100 rounded text-gray-700">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Replace the existing ResumePreview component with this new EnhancedResumePreview
+  // Get icon for template based on category/industry
+  const getTemplateIcon = (templateId: string) => {
+    switch (templateId) {
+      case "medical-professional":
+        return <Stethoscope className="w-5 h-5" />;
+      case "academic-research":
+        return <BookOpen className="w-5 h-5" />;
+      case "finance-professional":
+        return <Calculator className="w-5 h-5" />;
+      case "engineering-student":
+        return <Wrench className="w-5 h-5" />;
+      case "creative-designer":
+        return <Palette className="w-5 h-5" />;
+      case "software-developer":
+        return <Code className="w-5 h-5" />;
+      default:
+        return <FileText className="w-5 h-5" />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black relative">
-      {/* UnifiedNavigation */}
-      <UnifiedNavigation />
+      {/* UnifiedNavigation with Build button */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-[73px]">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-start">
+                <img
+                  src="/horse-logo.png"
+                  alt="SmartATS"
+                  className="w-14 h-14 mr-3"
+                />
+                <span className="text-xl font-bold text-white">SmartATS</span>
+                <span className="ml-2 px-2 py-1 bg-teal-900/50 border border-teal-700/50 rounded-full text-xs font-medium text-teal-300">
+                  Resume
+                </span>
+              </Link>
+            </div>
+
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/templates"
+                className="text-gray-300 hover:text-white font-medium transition-colors"
+              >
+                Templates
+              </Link>
+              <Link
+                href="/enterprise"
+                className="text-gray-300 hover:text-white font-medium transition-colors"
+              >
+                Enterprise
+              </Link>
+              <Link
+                href="/ats-guide"
+                className="text-gray-300 hover:text-white font-medium transition-colors"
+              >
+                ATS Guide
+              </Link>
+            </nav>
+
+            <div className="flex items-center space-x-4">
+              <Link href="/builder">
+                <button className="px-4 py-2 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                  <Hammer className="w-4 h-4" />
+                  Build
+                </button>
+              </Link>
+              {userLoading ? (
+                <div className="px-4 py-2 border border-gray-700 text-gray-300 font-medium rounded-lg flex items-center gap-2">
+                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-600 border-t-gray-300"></div>
+                  Loading...
+                </div>
+              ) : userData ? (
+                <UserDropdown
+                  userData={{
+                    email: userData.email,
+                    name: userData.name,
+                    isPremium: isPremium,
+                  }}
+                />
+              ) : (
+                <Link href="/login">
+                  <button className="px-4 py-2 border border-gray-700 text-gray-300 font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Sign In
+                  </button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Spacer for fixed navigation */}
+      <div className="h-[73px]"></div>
 
       {/* Premium Banner for Non-Premium Users - Top of Page */}
       {!isPremium && (
@@ -1182,7 +1255,11 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
       {/* Background Logo - Large and Faded */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-5">
-          <img src="/horse-logo.png" alt="" className="w-full h-full object-contain" />
+          <img
+            src="/horse-logo.png"
+            alt=""
+            className="w-full h-full object-contain"
+          />
         </div>
       </div>
 
@@ -1192,37 +1269,47 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
         <div className="relative max-w-6xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-900/50 border border-teal-700/50 rounded-full mb-6">
             <Shield className="w-4 h-4 text-teal-400" />
-            <span className="text-sm font-medium text-teal-300">All Templates Pass 98.4% of ATS Systems</span>
+            <span className="text-sm font-medium text-teal-300">
+              Professional LaTeX Templates with 98%+ ATS Score
+            </span>
           </div>
-          
-          <h1 className="text-5xl font-bold text-white mb-4">
+
+          <h1 className="text-7xl font-bold text-purple-200 mb-4">
             Choose Your Perfect
-            <span className="block mt-2 text-gradient-primary from-teal-400 to-amber-400 bg-tranparent ">
-              ATS-Beating Template
+            <span className="block mt-2 text-gradient-primary from-teal-400 to-amber-400 bg-transparent">
+              LaTeX Resume Template
             </span>
           </h1>
-          
-          <p className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
-            Professional templates designed to pass ATS filters and impress recruiters. 
-            Each template is tested against Workday, Taleo, iCIMS, and 50+ ATS systems.
+
+          <div className="flex items-center justify-center">
+            <div className="relative">
+              <img
+                alt="SmartATS Enterprise Dashboard"
+                className="w-80 h-85 rounded-2xl shadow-2xl border border-gray-700"
+                src="/Donkey.png"
+              />
+            </div>
+          </div>
+
+          <p className="font-bold text-4xl text-yellow-100">Simplified LaTeX Resume Designs That Actually Work!<br />
+            At Smart ATS We Prioritize Getting You<br />
+            <span className="font-bold text-6xl text-pink-600">HIRED</span>
           </p>
 
           <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-teal-400 mb-1">98%</div>
+              <div className="text-4xl font-bold text-teal-400 mb-1">98%</div>
               <div className="text-sm text-gray-500">ATS Pass Rate</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-amber-400 mb-1">21+</div>
-              <div className="text-sm text-gray-500">Job-Specific Templates</div>
+              <div className="text-4xl font-bold text-amber-400 mb-1">7</div>
+              <div className="text-sm text-gray-500">LaTeX Templates</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-400 mb-1">3x</div>
+              <div className="text-4xl font-bold text-green-400 mb-1">3x</div>
               <div className="text-sm text-gray-500">More Interviews</div>
             </div>
           </div>
-
-
         </div>
       </section>
 
@@ -1236,8 +1323,8 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                 onClick={() => setSelectedCategory(category.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === category.id
-                    ? 'bg-gradient-to-r from-teal-600 to-amber-600 text-white shadow-lg'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
+                    ? "bg-gradient-to-r from-teal-600 to-amber-600 text-white shadow-lg"
+                    : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
                 }`}
               >
                 {category.icon}
@@ -1251,16 +1338,14 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
       {/* Templates Grid */}
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
-
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemplates.map((template) => (
               <div
                 key={template.id}
                 className={`group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden ${
                   template.isPremium
-                    ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-2 border-gradient-to-r from-amber-400 to-orange-400 hover:border-amber-300 hover:shadow-amber-400/20'
-                    : 'bg-gray-900 border border-gray-800'
+                    ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-2 border-gradient-to-r from-amber-400 to-orange-400 hover:border-amber-300 hover:shadow-amber-400/20"
+                    : "bg-gray-900 border border-gray-800"
                 }`}
                 onMouseEnter={() => setHoveredTemplate(template.id)}
                 onMouseLeave={() => setHoveredTemplate(null)}
@@ -1280,13 +1365,6 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                   </div>
                 )}
 
-                {/* Premium Corner Accent */}
-                {template.isPremium && (
-                  <div className="absolute top-0 left-0 w-16 h-16 overflow-hidden">
-                    <div className="absolute top-0 left-0 w-0 h-0 border-l-16 border-t-16 border-l-transparent border-t-amber-400 opacity-80"></div>
-                  </div>
-                )}
-
                 {/* Popularity Badge */}
                 {template.popularityRank <= 3 && (
                   <div className="absolute top-4 left-4 z-10">
@@ -1298,24 +1376,32 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                 )}
 
                 {/* Template Preview */}
-                <div 
+                <div
                   className="h-64 relative overflow-hidden cursor-pointer bg-gray-800"
                   onClick={() => setShowPreview(template)}
                 >
                   <div className="absolute inset-0 flex items-center justify-center p-6">
-                    <div className="w-full max-w-[200px] h-full bg-white rounded-lg shadow-xl transform transition-transform duration-300"
-                      style={{ 
-                        transform: hoveredTemplate === template.id ? 'scale(1.05) rotate(-1deg)' : 'scale(1)'
+                    <div
+                      className="w-full max-w-[200px] h-full bg-white rounded-lg shadow-xl transform transition-transform duration-300"
+                      style={{
+                        transform:
+                          hoveredTemplate === template.id
+                            ? "scale(1.05) rotate(-1deg)"
+                            : "scale(1)",
                       }}
                     >
-                      <EnhancedResumePreview template={template} />
+                      <LaTeXResumePreview template={template} />
                     </div>
                   </div>
 
                   {/* Hover Overlay */}
-                  <div className={`absolute inset-0 bg-black/60 flex items-center justify-center transition-opacity duration-300 ${
-                    hoveredTemplate === template.id ? 'opacity-100' : 'opacity-0'
-                  }`}>
+                  <div
+                    className={`absolute inset-0 bg-black/60 flex items-center justify-center transition-opacity duration-300 ${
+                      hoveredTemplate === template.id
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
                     <button className="bg-white text-gray-900 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transform hover:scale-105 transition-transform">
                       <Eye className="w-5 h-5" />
                       Preview Template
@@ -1324,45 +1410,114 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                 </div>
 
                 {/* Template Info */}
-                <div className={`p-6 ${template.isPremium ? 'bg-gradient-to-b from-gray-800/50 to-gray-900/50' : ''}`}>
+                <div
+                  className={`p-6 ${
+                    template.isPremium
+                      ? "bg-gradient-to-b from-gray-800/50 to-gray-900/50"
+                      : ""
+                  }`}
+                >
                   <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className={`text-xl font-bold mb-1 ${template.isPremium ? 'text-amber-100' : 'text-white'}`}>
-                        {template.name}
-                        {template.isPremium && <span className="ml-2 text-amber-400">✨</span>}
-                      </h3>
-                      <p className={`text-sm ${template.isPremium ? 'text-amber-200/80' : 'text-gray-400'}`}>
-                        {template.description}
-                      </p>
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          template.isPremium ? "bg-amber-400/20" : "bg-gray-800"
+                        }`}
+                      >
+                        {getTemplateIcon(template.id)}
+                      </div>
+                      <div>
+                        <h3
+                          className={`text-xl font-bold mb-1 ${
+                            template.isPremium ? "text-amber-100" : "text-white"
+                          }`}
+                        >
+                          {template.name}
+                          {template.isPremium && (
+                            <span className="ml-2 text-amber-400">✨</span>
+                          )}
+                        </h3>
+                        <p
+                          className={`text-sm ${
+                            template.isPremium
+                              ? "text-amber-200/80"
+                              : "text-gray-400"
+                          }`}
+                        >
+                          {template.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
                   {/* Enhanced Stats for Premium */}
-                  <div className={`grid grid-cols-3 gap-3 mb-4 ${template.isPremium ? 'bg-amber-400/10 rounded-lg p-3 border border-amber-400/20' : ''}`}>
+                  <div
+                    className={`grid grid-cols-3 gap-3 mb-4 ${
+                      template.isPremium
+                        ? "bg-amber-400/10 rounded-lg p-3 border border-amber-400/20"
+                        : ""
+                    }`}
+                  >
                     <div className="text-center">
-                      <div className={`text-sm font-bold ${template.isPremium ? 'text-amber-300' : 'text-white'}`}>
+                      <div
+                        className={`text-sm font-bold ${
+                          template.isPremium ? "text-amber-300" : "text-white"
+                        }`}
+                      >
                         {template.atsScore}%
                       </div>
-                      <div className={`text-xs ${template.isPremium ? 'text-amber-200/70' : 'text-gray-500'}`}>
+                      <div
+                        className={`text-xs ${
+                          template.isPremium
+                            ? "text-amber-200/70"
+                            : "text-gray-500"
+                        }`}
+                      >
                         ATS Score
                       </div>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <Star className={`w-3 h-3 fill-amber-400 ${template.isPremium ? 'text-amber-300' : 'text-amber-400'}`} />
-                        <span className={`text-sm font-bold ${template.isPremium ? 'text-amber-300' : 'text-white'}`}>
+                        <Star
+                          className={`w-3 h-3 fill-amber-400 ${
+                            template.isPremium
+                              ? "text-amber-300"
+                              : "text-amber-400"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm font-bold ${
+                            template.isPremium ? "text-amber-300" : "text-white"
+                          }`}
+                        >
                           {template.rating}
                         </span>
                       </div>
-                      <div className={`text-xs ${template.isPremium ? 'text-amber-200/70' : 'text-gray-500'}`}>
+                      <div
+                        className={`text-xs ${
+                          template.isPremium
+                            ? "text-amber-200/70"
+                            : "text-gray-500"
+                        }`}
+                      >
                         Rating
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className={`text-sm font-bold ${template.isPremium ? 'text-amber-300' : 'text-white'}`}>
+                      <div
+                        className={`text-sm font-bold ${
+                          template.isPremium ? "text-amber-300" : "text-white"
+                        }`}
+                      >
                         {(template.downloads / 1000).toFixed(1)}k
                       </div>
-                      <div className={`text-xs ${template.isPremium ? 'text-amber-200/70' : 'text-gray-500'}`}>
+                      <div
+                        className={`text-xs ${
+                          template.isPremium
+                            ? "text-amber-200/70"
+                            : "text-gray-500"
+                        }`}
+                      >
                         Uses
                       </div>
                     </div>
@@ -1375,11 +1530,12 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                         key={idx}
                         className={`text-xs px-3 py-1.5 rounded-full border font-medium ${
                           template.isPremium
-                            ? 'bg-amber-400/20 text-amber-200 border-amber-400/30'
-                            : 'bg-gray-800 text-gray-300 border-gray-700'
+                            ? "bg-amber-400/20 text-amber-200 border-amber-400/30"
+                            : "bg-gray-800 text-gray-300 border-gray-700"
                         }`}
                       >
-                        {template.isPremium && '✨ '}{feature}
+                        {template.isPremium && "✨ "}
+                        {feature}
                       </span>
                     ))}
                   </div>
@@ -1389,10 +1545,11 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                     <div className="mb-4 p-3 bg-amber-400/10 rounded-lg border border-amber-400/20">
                       <div className="flex items-center gap-2 text-amber-300 text-sm font-medium">
                         <Crown className="w-4 h-4" />
-                        Premium Benefits
+                        Premium LaTeX Benefits
                       </div>
                       <div className="text-xs text-amber-200/80 mt-1">
-                        AI-optimized • Advanced layouts • Priority support
+                        Professional typesetting • Academic standards • Priority
+                        support
                       </div>
                     </div>
                   )}
@@ -1401,23 +1558,21 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
                   <button
                     onClick={() => {
                       if (template.isPremium && !isPremium) {
-                        // Redirect to pricing for premium templates if user is not premium
-                        window.location.href = '/pricing';
+                        window.location.href = "/pricing";
                       } else {
-                        // Navigate to builder with template
                         window.location.href = `/builder?template=${template.id}`;
                       }
                     }}
                     className={`w-full py-4 rounded-xl font-bold transition-all duration-200 flex items-center justify-center gap-2 text-lg ${
                       template.isPremium
-                        ? 'bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 text-gray-900 hover:shadow-xl hover:shadow-amber-400/25 transform hover:scale-[1.02]'
-                        : 'bg-gradient-to-r from-teal-600 to-amber-600 text-white hover:shadow-lg'
+                        ? "bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 text-gray-900 hover:shadow-xl hover:shadow-amber-400/25 transform hover:scale-[1.02]"
+                        : "bg-gradient-to-r from-teal-600 to-amber-600 text-white hover:shadow-lg"
                     }`}
                   >
                     {template.isPremium && !isPremium ? (
                       <>
                         <Crown className="w-5 h-5" />
-                        Upgrade for $19.99/mo
+                        Upgrade for $22/mo
                       </>
                     ) : (
                       <>
@@ -1434,8 +1589,6 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
         </div>
       </section>
 
-
-
       {/* CTA Section */}
       <section className="py-16 px-6 bg-gradient-to-br from-teal-900/20 to-amber-900/20">
         <div className="max-w-4xl mx-auto text-center">
@@ -1443,10 +1596,11 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
             Can't Find the Perfect Template?
           </h2>
           <p className="text-xl text-gray-300 mb-6">
-            Start with our smart builder and create a custom ATS-optimized resume
+            Start with our smart builder and create a custom ATS-optimized
+            resume
           </p>
-          <button 
-            onClick={() => window.location.href = '/builder'}
+          <button
+            onClick={() => (window.location.href = "/builder")}
             className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2 mx-auto"
           >
             <Zap className="w-5 h-5" />
@@ -1457,9 +1611,9 @@ const EnhancedResumePreview: React.FC<{ template: TemplateType }> = ({ template 
       </section>
 
       {/* Template Preview Modal */}
-      <TemplatePreviewModal 
-        template={showPreview} 
-        onClose={() => setShowPreview(null)} 
+      <TemplatePreviewModal
+        template={showPreview}
+        onClose={() => setShowPreview(null)}
       />
     </div>
   );

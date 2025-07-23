@@ -511,7 +511,7 @@ const PremiumUpgradeBanner = ({ feature }: { feature: string }) => (
     </p>
     <Link href='/pricing'>
       <button className='px-6 py-3 bg-white text-pink-600 font-bold rounded-lg hover:bg-pink-50 transform hover:scale-105 transition-all cursor-pointer'>
-        Upgrade to Premium - Only $19.99/month
+        Upgrade to Premium - Only $22/month
       </button>
     </Link>
     <p className='text-xs mt-2 text-pink-200'>

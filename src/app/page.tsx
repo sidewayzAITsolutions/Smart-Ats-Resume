@@ -256,20 +256,20 @@ const Page: React.FC = () => {
               </button>
             </div>
 
-            <p className="text-xl md:text-2xl text-red-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              <span className="font-bold text-gray-200">ATS makes a decision in 6 seconds or less!</span>
-              <span className="font-bold text-red-200"> Deciding your future in the time it takes to tie your shoes.</span>
+            <p className="text-xl md:text-4xl text-red-400 mb-12 max-w-5xl mx-auto leading-relaxed">
+              <span className="font-bold text-gray-200">A Builder That Is</span>
+              <span className="font-bold text-red-500"> Putting The Power Back In Human Hands!</span>
             </p>
 
             {/* Trust Indicators */}
              <div className="flex flex-wrap items-center justify-center gap-4 text-md text-gray-500">
              <div className="flex flex-wrap items-center justify-center gap-8 text md text-gray-500">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-400" />
+                <TrendingUp className="w-7 h-7 text-green-400" />
                 <span><strong className="text-gray-300">60%</strong> faster hiring with ATS optimization</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-400" />
+                <Award className="w-7 h-7 text-amber-400" />
                 <span><strong className="text-gray-300">94%</strong> of recruiters rely on ATS</span>
               </div>
             </div>
@@ -445,11 +445,11 @@ const Page: React.FC = () => {
                     <th className="text-left p-6 text-gray-400 font-medium">Features</th>
                     <th className="text-center p-6">
                       <div className="flex flex-col items-center gap-2">
-                        <div className="bg-gradient-to-br from-teal-600 to-amber-600 p-2 rounded-lg">
-                          <img src="/horse-logo.png" alt="SmartATS Logo" className="w-10 h-10 object-contain" />
+                        <div className="bg-black p-2 rounded-lg">
+                          <img src="/horse-logo.png" alt="SmartATS Logo" className="w-12 h-12 object-contain" />
                         </div>
                         <span className="text-white font-bold">SmartATS</span>
-                        <span className="text-green-400 text-sm">$19.99/mo</span>
+                        <span className="text-green-400 text-sm">$22/mo</span>
                       </div>
                     </th>
                     <th className="text-center p-6">
@@ -561,9 +561,9 @@ const Page: React.FC = () => {
 
             <div className="mt-12 text-center">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-900/30 to-green-800/30 border border-green-700/50 rounded-xl">
-                <Sparkles className="w-5 h-5 text-green-400" />
+                <Sparkles className="w-7 h-7 text-green-400" />
                 <p className="text-green-300 font-medium">
-                  SmartATS SAVES you DOLLARS! <span className="text-green-400 font-bold">30% more</span> than competitors
+                  SmartATS SAVES you TIME and DOLLARS while giving you the BEST Quality! <span className="text-green-400 font-bold">30% more</span> than competitors
                 </p>
               </div>
             </div>
@@ -600,7 +600,13 @@ const Page: React.FC = () => {
               ))}
             </div>
 
-            {/* Summary */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-5">
+               <img src="/Donkey.png" alt="" className="w-12 h-12 object-contain" />
+             </div>
+            </div>
+
+           {/* Summary */}
             <div className="bg-gradient-to-r from-teal-900/30 to-amber-900/30 border border-teal-500/30 rounded-2xl p-8 text-center">
               <p className="text-lg text-gray-200 leading-relaxed max-w-4xl mx-auto">
                 {WhyChooseSmartATS.summary}
@@ -719,9 +725,9 @@ const Page: React.FC = () => {
                 </div>
 
                 <div className="mt-8 p-4 bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl text-center">
-                  <div className="text-3xl font-bold text-white mb-1">$49.99</div>
-                  <div className="text-amber-100 text-sm">per user/month</div>
-                  <div className="text-xs text-amber-200 mt-1">Billed annually</div>
+                  <div className="text-3xl font-bold text-white mb-1">$99.99</div>
+                  <div className="text-amber-100 text-sm">per month</div>
+                  <div className="text-xs text-amber-200 mt-1">Billed monthly</div>
                 </div>
               </div>
             </div>

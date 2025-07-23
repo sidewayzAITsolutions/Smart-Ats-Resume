@@ -69,9 +69,9 @@ const LogoSplashScreen = () => {
         <div className={`absolute -bottom-32 left-1/2 transform -translate-x-1/2 whitespace-nowrap transition-all duration-500 ${
           isExiting ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
         }`}>
-          <h2 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-amber-300 text-center">
-            Welcome to SmartATS<br />
-            <span className="text-6xl">Putting People Back in Front of People</span>
+          <h2 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-amber-100 text-center">
+            Welcome to SmartATS Resume<br />
+            <span className="text-purple-300 text-4xl gap-2">Putting People Back in Front of People</span>
           </h2>
         </div>
       </div>

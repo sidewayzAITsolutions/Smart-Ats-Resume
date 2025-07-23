@@ -2,21 +2,57 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClientFromRequest } from '@/lib/supabase/server';
 import Stripe from 'stripe';
 
+// Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 });
 
 export async function POST(req: NextRequest) {
+  console.log('Create checkout session endpoint called');
+
   try {
-    const { priceId } = await req.json();
-    
+    // Check if Stripe secret key is configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is not configured');
+      return NextResponse.json(
+        { error: 'Stripe is not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
+    // Parse request body
+    const body = await req.json();
+    const { priceId } = body;
+
+    console.log('Received priceId:', priceId);
+
+    // Validate priceId
+    if (!priceId) {
+      console.error('No priceId provided in request');
+      return NextResponse.json(
+        { error: 'Price ID is required' },
+        { status: 400 }
+      );
+    }
+
     // Get authenticated user
     const { supabase } = createClientFromRequest(req);
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
+
+    console.log('Auth check - User ID:', user?.id);
+
+    if (authError) {
+      console.error('Auth error:', authError);
       return NextResponse.json(
-        { error: 'Authentication required' },
+        { error: 'Authentication error: ' + authError.message },
+        { status: 401 }
+      );
+    }
+
+    if (!user) {
+      console.error('No authenticated user found');
+      return NextResponse.json(
+        { error: 'Authentication required. Please sign in.' },
         { status: 401 }
       );
     }
@@ -28,50 +64,67 @@ export async function POST(req: NextRequest) {
       .eq('id', user.id)
       .single();
 
-    if (profileError || !profile) {
-      return NextResponse.json(
-        { error: 'User profile not found' },
-        { status: 404 }
-      );
+    if (profileError) {
+      console.error('Profile error:', profileError);
     }
 
-    // Ensure user email exists and is verified
-    if (!user.email) {
-      return NextResponse.json(
-        { error: 'User email is missing or not verified' },
-        { status: 400 }
-      );
-    }
+    // Handle Pro plan
+    let successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/stripe/success?session_id={CHECKOUT_SESSION_ID}`;
+    let cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/pricing`;
 
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      customer_email: user.email,
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: `${req.nextUrl.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.nextUrl.origin}/pricing?canceled=true`,
-      metadata: {
-        userId: user.id,
-        userEmail: user.email,
-      },
-      subscription_data: {
+    // Check if this is a subscription or one-time payment
+    const isSubscription = priceId.startsWith('price_'); // Stripe price IDs start with price_
+
+    try {
+      // Log the price ID for debugging
+      console.log('Using price ID:', priceId);
+      console.log('Creating checkout session for user:', user.email);
+
+      // Create checkout session
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: isSubscription ? 'subscription' : 'payment',
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        customer_email: user.email,
+        client_reference_id: user.id,
         metadata: {
           userId: user.id,
+          userEmail: user.email || '',
         },
-      },
-    });
+        // For subscriptions, you might want to enable the customer portal
+        ...(isSubscription && {
+          subscription_data: {
+            metadata: {
+              userId: user.id,
+            },
+          },
+        }),
+      });
 
-    return NextResponse.json({ url: session.url });
-  } catch (error) {
-    console.error('Error creating checkout session:', error);
+      console.log('Checkout session created:', session.id);
+
+      return NextResponse.json({
+        url: session.url,
+        sessionId: session.id
+      });
+    } catch (stripeError: any) {
+      console.error('Stripe error:', stripeError);
+      return NextResponse.json(
+        { error: `Failed to create checkout session: ${stripeError.message}` },
+        { status: 500 }
+      );
+    }
+  } catch (error: any) {
+    console.error('Unexpected error:', error);
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: 'An unexpected error occurred: ' + error.message },
       { status: 500 }
     );
   }

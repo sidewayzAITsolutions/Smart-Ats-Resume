@@ -81,7 +81,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ userData, className = '' })
       {/* Dropdown Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 border border-gray-700 hover:border-gray-600"
+        className="flex items-center space-x-2 px-4 py-2 bg-white-800 hover:bg-orange-800 text-white rounded-lg transition-all duration-200 border border-teal-400 hover:border-purple-600"
         aria-haspopup="true"
         aria-expanded={isOpen}
       >

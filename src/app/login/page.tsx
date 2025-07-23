@@ -208,11 +208,6 @@ function LoginContent() {
             </Link>
           </p>
         </div>
-
-        {/* Temporary debug component */}
-        <div className="mt-8">
-          <GoogleAuthTest />
-        </div>
       </div>
     </div>
   );

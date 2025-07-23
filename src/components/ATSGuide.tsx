@@ -21,7 +21,7 @@ import {
 
 const ATSGuide: FC = () => {
   const stats = [
-    { number: "Over 90%", label: "Fortune 500 companies use ATS", icon: <Users className="w-6 h-6" /> },
+    { number: "Over 95%", label: "Fortune 500 companies use ATS", icon: <Users className="w-6 h-6" /> },
     { number: "6 sec", label: "Average ATS scan time", icon: <Clock className="w-6 h-6" /> },
     { number: "75%", label: "Resumes filtered out by ATS", icon: <Shield className="w-6 h-6" /> },
     { number: "3x", label: "Higher interview rate with optimization", icon: <TrendingUp className="w-6 h-6" /> }

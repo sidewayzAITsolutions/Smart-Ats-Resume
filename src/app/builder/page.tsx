@@ -9,7 +9,6 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import  UnifiedNavigation  from '@/components/UnifiedNavigation'
 import { createClient } from '@/lib/supabase/client';
-import  UserDropdown  from '@/components/UserDropdown';
 
 import toast from 'react-hot-toast'
 import {
@@ -511,7 +510,7 @@ const PremiumUpgradeBanner = ({ feature }: { feature: string }) => (
     </p>
     <Link href='/pricing'>
       <button className='px-6 py-3 bg-white text-pink-600 font-bold rounded-lg hover:bg-pink-50 transform hover:scale-105 transition-all cursor-pointer'>
-        Upgrade to Premium - Only $19.99/month
+        Upgrade to Premium - Only $22/month
       </button>
     </Link>
     <p className='text-xs mt-2 text-pink-200'>
@@ -547,7 +546,16 @@ const SectionNav = ({
 
   return (
     <div className='bg-gray-900 border-b border-gray-800 sticky top-0 z-20'>
-      <div className='flex items-center gap-1 p-4 overflow-x-auto'>
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+      <div className='flex items-center gap-3 p-4 overflow-x-auto scrollbar-hide'>
         {(
           [
             {
@@ -585,6 +593,12 @@ const SectionNav = ({
               label: 'Skills',
               icon: <Zap className='w-4 h-4' />,
               isPremium: true
+            },
+            {
+              id: 'additional',
+              label: 'Additional',
+              icon: <Plus className='w-4 h-4' />,
+              isPremium: false
             }
           ] as {
             id: SectionName
@@ -597,16 +611,20 @@ const SectionNav = ({
             key={section.id}
             type='button'
             onClick={() => handleSectionClick(section.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all cursor-pointer relative ${
+            disabled={section.isPremium && !userData?.isPremium}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all cursor-pointer relative whitespace-nowrap min-w-fit ${
               currentSection === section.id
-                ? 'bg-gradient-to-r from-teal-600 to-amber-600 text-white shadow-lg'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800'
-            }`}
+                ? 'bg-gradient-to-r from-teal-600 to-amber-600 text-white shadow-lg transform scale-105'
+                : section.isPremium && !userData?.isPremium
+                ? 'text-gray-500 hover:text-gray-400 bg-gray-800/50 cursor-not-allowed opacity-60'
+                : 'text-gray-400 hover:text-white hover:bg-gray-800 hover:scale-102'
+            } ${section.isPremium && !userData?.isPremium ? 'border border-pink-400/30' : ''}`}
+            title={section.isPremium && !userData?.isPremium ? `${section.label} - Premium Feature` : section.label}
           >
             {section.icon}
-            <span className='hidden sm:inline'>{section.label}</span>
+            <span className='hidden sm:inline text-sm font-medium'>{section.label}</span>
             {section.isPremium && !userData?.isPremium && (
-              <Crown className='w-3 h-3 text-pink-400 absolute -top-1 -right-1' />
+              <Crown className='w-3 h-3 text-pink-400 absolute -top-1 -right-1 animate-pulse' />
             )}
           </button>
         ))}
@@ -3414,180 +3432,308 @@ function EnhancedATSResumeBuilderContent() {
   }
 
   const handleFileUpload = async (file: File | null) => {
-    if (!file) {
-      setUploadedFile(null)
-      return
-    }
-
-    const validTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ]
-
-    if (!validTypes.includes(file.type)) {
-      alert('Please upload a PDF, DOC, or DOCX file only.')
-      return
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      // 10MB limit
-      alert('File size must be less than 10MB.')
-      return
-    }
-
-    setUploadedFile(file)
-    setIsAnalyzing(true)
-
-    const formData = new FormData()
-    formData.append('resume', file)
-
-    try {
-      console.log('Sending request to parse-resume API');
-      const response = await fetch('/api/parse-resume', {
-        method: 'POST',
-        body: formData
-      })
-
-      console.log('Response status:', response.status);
-      console.log('Response content-type:', response.headers.get('content-type'));
-
-      const response_data = await parseResumeResponse(response)
-      console.log('Parsed response data:', response_data);
-
-      // Check if there was a parsing error
-      const parsedData = newFunction(response_data)
-
-      // Update the state with the data returned from the API
-      // Only update fields that have meaningful data
-      if (parsedData.personal) {
-        const updatedPersonal: typeof resumeData.personal = {
-          ...resumeData.personal
-        }
-        Object.keys(parsedData.personal).forEach((key: string) => {
-          if (
-            key in updatedPersonal &&
-            parsedData.personal[key] &&
-            typeof parsedData.personal[key] === 'string' &&
-            parsedData.personal[key].trim()
-          ) {
-            // @ts-expect-error: Indexing by key is safe here due to the check above
-            updatedPersonal[key] = parsedData.personal[key]
-          }
-        })
-        updateResumeData('personal', () => updatedPersonal)
-      }
-
-      if (parsedData.summary && parsedData.summary.trim()) {
-        updateResumeData('summary', () => parsedData.summary)
-      }
-
-      if (parsedData.experience && parsedData.experience.length > 0) {
-        // Filter out empty experiences
-        const validExperiences = parsedData.experience.filter(
-          (exp: { company?: string; position?: string }) =>
-            (exp.company &&
-              exp.company.trim() &&
-              exp.company !== 'Company Name') ||
-            (exp.position &&
-              exp.position.trim() &&
-              exp.position !== 'Position Title')
-        )
-        if (validExperiences.length > 0) {
-          updateResumeData('experience', () => validExperiences)
-        }
-      }
-
-      if (parsedData.education && parsedData.education.length > 0) {
-        // Filter out empty education entries
-        const validEducation = parsedData.education.filter(
-          (edu: { school?: string; degree?: string }) =>
-            (edu.school && edu.school.trim() && edu.school !== 'School Name') ||
-            (edu.degree && edu.degree.trim() && edu.degree !== 'Degree')
-        )
-        if (validEducation.length > 0) {
-          updateResumeData('education', () => validEducation)
-        }
-      }
-
-      if (parsedData.skills && parsedData.skills.length > 0) {
-        // Filter out empty or generic skills
-        const validSkills = parsedData.skills.filter(
-          (skill: string) => skill && skill.trim() && skill.length > 1
-        )
-        if (validSkills.length > 0) {
-          updateResumeData('skills', (prevSkills: string[]) => [
-            ...new Set([...prevSkills, ...validSkills])
-          ])
-        }
-      }
-
-      // Show success message with details
-      const extractedFields = []
-      if (parsedData.personal?.fullName) extractedFields.push('name')
-      if (parsedData.personal?.email) extractedFields.push('email')
-      if (parsedData.personal?.phone) extractedFields.push('phone')
-      if (parsedData.summary) extractedFields.push('summary')
-      if (parsedData.experience?.length > 0) extractedFields.push('experience')
-      if (parsedData.education?.length > 0) extractedFields.push('education')
-      if (parsedData.skills?.length > 0) extractedFields.push('skills')
-
-      if (extractedFields.length > 0) {
-        alert(
-          `Success! Extracted: ${extractedFields.join(
-            ', '
-          )}.\n\nPlease review the information and make any necessary adjustments.`
-        )
-        // Auto-navigate to personal section to review
-        setCurrentSection('personal')
-      } else {
-        alert(
-          "File uploaded successfully, but we couldn't extract much information. Please fill in the fields manually."
-        )
-      }
-    } catch (error: unknown) {
-      console.error('Error parsing resume:', error)
-      let message = 'An unknown error occurred.'
-      if (error instanceof Error) {
-        message = error.message
-      }
-      alert(
-        `Error: ${message}\n\nPlease try again or fill in the fields manually.`
-      )
-    } finally {
-      setIsAnalyzing(false)
-    }
-
-    function newFunction(response_data: any) {
-      if (response_data?.error) {
-        console.warn('Parsing warning:', response_data.error)
-        alert(
-          `Warning: ${response_data.error}\n\nSome information may not have been extracted correctly. Please review and fill in any missing details.`
-        )
-      }
-
-      // Extract the parsed data from the response
-      const parsedData = response_data?.data || response_data
-      return parsedData
-    }
-
-    async function parseResumeResponse(response: Response) {
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Error response:', errorText)
-        throw new Error(`Failed to parse resume from server: ${errorText}`)
-      }
-
-      try {
-        const response_data = await response.json()
-        console.log('Successfully parsed JSON response:', response_data)
-        return response_data
-      } catch (parseError) {
-        console.error('JSON parse error:', parseError)
-        throw new Error('Invalid JSON response from server')
-      }
-    }
+  if (!file) {
+    setUploadedFile(null)
+    return
   }
+
+  // Validate file type
+  const validTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ]
+
+  if (!validTypes.includes(file.type)) {
+    toast.error('Please upload a PDF, DOC, or DOCX file only.')
+    return
+  }
+
+  // Validate file size (10MB limit)
+  if (file.size > 10 * 1024 * 1024) {
+    toast.error('File size must be less than 10MB.')
+    return
+  }
+
+  setUploadedFile(file)
+  setIsAnalyzing(true)
+
+  // Show loading toast
+  const loadingToast = toast.loading('Analyzing your resume...')
+
+  const formData = new FormData()
+  formData.append('resume', file)
+
+  try {
+    const response = await fetch('/api/parse-resume', {
+      method: 'POST',
+      body: formData
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to parse resume')
+    }
+
+    if (!data.success || !data.data) {
+      throw new Error('Invalid response from server')
+    }
+
+    const parsedData = data.data
+
+    // Track what was successfully extracted
+    const extractedSections: string[] = []
+
+    // Update personal information
+    if (parsedData.personal) {
+      const personalUpdates: Partial<typeof resumeData.personal> = {}
+      let hasPersonalData = false
+
+      if (parsedData.personal.fullName?.trim()) {
+        personalUpdates.fullName = parsedData.personal.fullName
+        hasPersonalData = true
+      }
+      if (parsedData.personal.email?.trim()) {
+        personalUpdates.email = parsedData.personal.email
+        hasPersonalData = true
+      }
+      if (parsedData.personal.phone?.trim()) {
+        personalUpdates.phone = parsedData.personal.phone
+        hasPersonalData = true
+      }
+      if (parsedData.personal.linkedin?.trim()) {
+        personalUpdates.linkedin = parsedData.personal.linkedin
+        hasPersonalData = true
+      }
+      if (parsedData.personal.github?.trim()) {
+        personalUpdates.github = parsedData.personal.github
+        hasPersonalData = true
+      }
+
+      if (hasPersonalData) {
+        updateResumeData('personal', (prev) => ({ ...prev, ...personalUpdates }))
+        extractedSections.push('contact information')
+      }
+    }
+
+    // Update summary
+    if (parsedData.summary?.trim()) {
+      updateResumeData('summary', () => parsedData.summary)
+      extractedSections.push('summary')
+    }
+
+    // Update experience
+    if (parsedData.experience && parsedData.experience.length > 0) {
+      const validExperiences = parsedData.experience.filter(
+        (exp: any) => exp.company?.trim() || exp.position?.trim()
+      )
+      
+      if (validExperiences.length > 0) {
+        // Map experiences to ensure they have all required fields
+        const mappedExperiences = validExperiences.map((exp: any, index: number) => ({
+          id: Date.now() + index,
+          company: exp.company || '',
+          position: exp.position || '',
+          startDate: exp.startDate || '',
+          endDate: exp.endDate || '',
+          current: exp.current || false,
+          location: exp.location || '',
+          description: exp.description || '',
+          achievements: Array.isArray(exp.achievements) 
+            ? exp.achievements.filter((a: string) => a?.trim()) 
+            : []
+        }))
+        
+        updateResumeData('experience', () => mappedExperiences)
+        extractedSections.push(`${mappedExperiences.length} work experience(s)`)
+      }
+    }
+
+    // Update education
+    if (parsedData.education && parsedData.education.length > 0) {
+      const validEducation = parsedData.education.filter(
+        (edu: any) => edu.school?.trim() || edu.degree?.trim()
+      )
+      
+      if (validEducation.length > 0) {
+        // Map education to ensure they have all required fields
+        const mappedEducation = validEducation.map((edu: any, index: number) => ({
+          id: Date.now() + 1000 + index,
+          school: edu.school || '',
+          degree: edu.degree || '',
+          field: edu.field || '',
+          startYear: edu.startYear || '',
+          endYear: edu.endYear || '',
+          gpa: edu.gpa || '',
+          honors: edu.honors || ''
+        }))
+        
+        updateResumeData('education', () => mappedEducation)
+        extractedSections.push(`${mappedEducation.length} education entry(ies)`)
+      }
+    }
+
+    // Update skills
+    if (parsedData.skills && parsedData.skills.length > 0) {
+      const validSkills = parsedData.skills.filter(
+        (skill: string) => skill?.trim() && skill.length > 1
+      )
+      
+      if (validSkills.length > 0) {
+        updateResumeData('skills', (prevSkills) => {
+          // Merge with existing skills, avoiding duplicates
+          const allSkills = [...new Set([...prevSkills, ...validSkills])]
+          return allSkills
+        })
+        extractedSections.push(`${validSkills.length} skills`)
+      }
+    }
+
+    // Dismiss loading toast
+    toast.dismiss(loadingToast)
+
+    // Show success or partial success message
+    if (extractedSections.length > 0) {
+      toast.success(
+        <div>
+          <strong>Resume parsed successfully!</strong>
+          <br />
+          <span className="text-sm">
+            Extracted: {extractedSections.join(', ')}
+          </span>
+        </div>,
+        { duration: 5000 }
+      )
+
+      // Navigate to personal section to review
+      setCurrentSection('personal')
+      
+      // Show a helper message
+      setTimeout(() => {
+        toast('Please review the extracted information and fill in any missing details.', {
+          icon: '📝',
+          duration: 6000
+        })
+      }, 2000)
+    } else {
+      toast(
+        'Could not extract information from the resume. Please check the file format or enter details manually.',
+        { 
+          duration: 6000,
+          icon: '⚠️',
+          style: {
+            background: '#FEF3C7', // Amber-100 for warning
+            color: '#92400E' // Amber-800 for warning text
+          }
+        }
+      )
+    }
+
+  } catch (error) {
+    console.error('Error parsing resume:', error)
+    
+    // Dismiss loading toast
+    toast.dismiss(loadingToast)
+    
+    // Show error message
+    toast.error(
+      <div>
+        <strong>Failed to parse resume</strong>
+        <br />
+        <span className="text-sm">
+          {error instanceof Error ? error.message : 'Unknown error occurred'}
+        </span>
+      </div>,
+      { duration: 6000 }
+    )
+    
+    // Reset uploaded file on error
+    setUploadedFile(null)
+  } finally {
+    setIsAnalyzing(false)
+  }
+}
+
+// Add this enhanced drag and drop UI component where the file upload area is rendered
+const FileUploadArea = ({ 
+  dragOver, 
+  handleDragOver, 
+  handleDragLeave, 
+  handleDrop, 
+  fileInputRef, 
+  handleFileUpload, 
+  uploadedFile, 
+  isAnalyzing 
+}: any) => (
+  <div
+    className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer relative ${
+      isAnalyzing
+        ? 'border-yellow-400 bg-yellow-900/20 animate-pulse'
+        : dragOver
+        ? 'border-green-400 bg-green-900/20 scale-105'
+        : uploadedFile
+        ? 'border-green-400 bg-green-900/10'
+        : 'border-gray-600 hover:border-green-500 hover:bg-green-900/10'
+    }`}
+    onDragOver={handleDragOver}
+    onDragLeave={handleDragLeave}
+    onDrop={handleDrop}
+    onClick={() => !isAnalyzing && fileInputRef.current?.click()}
+  >
+    <input
+      ref={fileInputRef}
+      type='file'
+      accept='.pdf,.doc,.docx'
+      onChange={e => handleFileUpload(e.target.files?.[0] || null)}
+      className='hidden'
+      disabled={isAnalyzing}
+    />
+
+    {isAnalyzing ? (
+      <div className='space-y-3'>
+        <Loader className='w-12 h-12 text-yellow-400 mx-auto animate-spin' />
+        <p className='text-yellow-400 font-medium'>Analyzing your resume...</p>
+        <p className='text-gray-400 text-sm'>This may take a few seconds</p>
+      </div>
+    ) : uploadedFile ? (
+      <div className='space-y-2'>
+        <CheckCircle className='w-12 h-12 text-green-400 mx-auto' />
+        <p className='text-green-400 font-medium'>{uploadedFile.name}</p>
+        <p className='text-gray-400 text-sm'>File uploaded successfully!</p>
+        <button
+          onClick={e => {
+            e.stopPropagation()
+            setUploadedFile(null)
+            if (fileInputRef.current) {
+              fileInputRef.current.value = ''
+            }
+          }}
+          className='text-gray-400 hover:text-white text-sm underline cursor-pointer'
+        >
+          Upload different file
+        </button>
+      </div>
+    ) : (
+      <div className='space-y-2'>
+        {dragOver ? (
+          <>
+            <Download className='w-12 h-12 text-green-400 mx-auto animate-bounce' />
+            <p className='text-green-400 font-medium'>Drop your resume here!</p>
+          </>
+        ) : (
+          <>
+            <FileText className='w-12 h-12 text-gray-400 mx-auto' />
+            <p className='text-gray-300 font-medium'>Drag & drop your resume here</p>
+            <p className='text-gray-400 text-sm'>or click to browse files</p>
+            <p className='text-gray-500 text-xs'>Supports PDF, DOC, DOCX • Max 10MB</p>
+          </>
+        )}
+      </div>
+    )}
+  </div>
+)
+
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -3745,11 +3891,8 @@ function EnhancedATSResumeBuilderContent() {
         saveStatus={saveStatus}
         onPreview={() => setShowPreview(true)}
         onExportPDF={handlePDFDownload}
-        userData={rawUser ? { user: rawUser, profile: rawProfile } : null}
+        userData={userData}
       />
-      <div className="fixed top-4 right-4 z-50">
-        <UserDropdown userData={userData} />
-      </div>
 
       {/* Background Logo - Large and Faded */}
       <div className='fixed inset-0 overflow-hidden pointer-events-none'>
@@ -3760,6 +3903,15 @@ function EnhancedATSResumeBuilderContent() {
             className='w-full h-full object-contain'
           />
         </div>
+      </div>
+  
+      {/* Donkey Image - Left Side */}
+      <div className='fixed left-44 bottom-28 z-10 pointer-events-none'>
+        <img
+          src='/logo.png'
+          alt=''
+          className='w-50 h-80'
+        />
       </div>
 
       {/* Main Content Area */}
@@ -3983,7 +4135,7 @@ function EnhancedATSResumeBuilderContent() {
       {showPreview && (
         <div className='fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden'>
-            <div className='flex items-center justify-between p-6 border-b'>
+            <div className='flex items-center justify-between p-6 border-b border-gray-200'>
               <h2 className='text-2xl font-bold text-gray-900'>
                 Resume Preview
               </h2>
@@ -4057,7 +4209,8 @@ function EnhancedATSResumeBuilderContent() {
                 </button>
                 <button
                   onClick={() => setShowPreview(false)}
-                  className='p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer'
+                  className='p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer flex items-center justify-center'
+                  title='Close Preview'
                 >
                   <X className='w-5 h-5 text-gray-600' />
                 </button>
@@ -4140,7 +4293,7 @@ function EnhancedATSResumeBuilderContent() {
                       <h2 className='text-xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-3'>
                         Professional Experience
                       </h2>
-                      {resumeData.experience.map((exp, index) => (
+                      {resumeData.experience.map((exp) => (
                         <div key={exp.id} className='mb-6'>
                           <div className='flex justify-between items-start mb-2'>
                             <div>
@@ -4201,7 +4354,7 @@ function EnhancedATSResumeBuilderContent() {
                       <h2 className='text-xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-3'>
                         Education
                       </h2>
-                      {resumeData.education.map((edu, index) => (
+                      {resumeData.education.map((edu) => (
                         <div key={edu.id} className='mb-4'>
                           <div className='flex justify-between items-start'>
                             <div>

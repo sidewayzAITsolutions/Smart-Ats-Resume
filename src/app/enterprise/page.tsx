@@ -177,10 +177,10 @@ const EnterprisePage = () => {
               </div>
 
               <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="text-5xl md:text-6xl font-bold text-white">$49.99</span>
+                <span className="text-5xl md:text-6xl font-bold text-white">$99.99</span>
                 <span className="text-gray-300 text-xl">/month</span>
               </div>
-              <p className="text-amber-200">per user • billed annually</p>
+              <p className="text-amber-200">billed monthly</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">

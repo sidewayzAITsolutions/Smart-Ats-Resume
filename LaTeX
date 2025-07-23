@@ -1,0 +1,189 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Medical Professional Resume
+%
+% Created by Gemini for website use
+%
+% This template is designed for physicians, residents, medical students,
+% and other healthcare professionals.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt, letterpaper]{article}
+
+% PACKAGES
+\usepackage[utf8]{inputenc}
+\usepackage{geometry} % For page margins
+\usepackage{helvet}   % For a clean, sans-serif font for headings
+\usepackage{mathptmx} % Use Times font for body text
+\usepackage{hyperref} % For clickable links (email, websites)
+\usepackage{sectsty}  % To customize section headings
+\usepackage{enumitem} % For customizing lists
+
+% PAGE LAYOUT
+\geometry{
+    left=0.75in,
+    right=0.75in,
+    top=0.6in,
+    bottom=0.6in
+}
+
+% Remove page numbers
+\pagestyle{empty}
+
+% Set paragraph spacing instead of indentation
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% HYPERLINK SETUP (makes links black and not boxed)
+\hypersetup{
+    colorlinks=true,
+    urlcolor=black,
+    linkcolor=black,
+    citecolor=black,
+}
+
+% SECTION HEADING STYLE
+% This creates a clean line under each section title
+\sectionfont{\fontsize{12}{15}\selectfont\bfseries\MakeUppercase}
+\renewcommand{\thesection}{} % Remove section numbering
+\newcommand{\sectionbreak}{\section}
+
+% DOCUMENT START
+\begin{document}
+
+%================================================
+% HEADER (Your Name and Contact Information)
+%================================================
+\begin{center}
+    {\Huge \bfseries John A. Doe, M.D.} % Your Name and Credentials
+    \vspace{4pt}
+    \rule{\textwidth}{0.5pt} % Horizontal line
+    \vspace{4pt}
+    123 Main Street, Anytown, ST 12345 \\
+    (123) 456-7890 $\cdot$ \href{mailto:john.doe@email.com}{john.doe@email.com} $\cdot$ \href{https://www.linkedin.com/in/yourprofile}{linkedin.com/in/yourprofile}
+\end{center}
+
+%================================================
+% PROFESSIONAL SUMMARY (Optional but Recommended)
+%================================================
+\sectionbreak*{Professional Summary}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+Compassionate and board-certified [Your Specialty] physician with [Number] years of experience in [Type of Setting, e.g., a fast-paced hospital environment, academic medicine, private practice]. Proven ability to diagnose and treat a wide range of conditions while demonstrating a commitment to patient-centered care and evidence-based medicine. Seeking to leverage expertise in [Specific Skill, e.g., minimally invasive surgery, complex diagnostics] to contribute to a leading healthcare institution.
+
+%================================================
+% LICENSURE & CERTIFICATIONS
+%================================================
+\sectionbreak*{Licensure \& Certifications}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Medical License:} [State], License #[Your License Number], Expires: [MM/YYYY]
+    \item \textbf{Board Certification:} American Board of [Your Specialty], Certified [YYYY]
+    \item \textbf{DEA License:} Full, Unrestricted, Expires: [MM/YYYY]
+    \item \textbf{Certifications:} ACLS, BLS, PALS (Certified through [YYYY])
+    % Add other relevant certifications (e.g., ATLS, NALS)
+\end{itemize}
+
+%================================================
+% EDUCATION & TRAINING
+%================================================
+\sectionbreak*{Education \& Training}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+
+\textbf{Fellowship, [Your Subspecialty]} \hfill [YYYY] - [YYYY] \\
+\textit{[Name of Institution]}, [City, State]
+
+\vspace{0.5em}
+
+\textbf{Residency, [Your Specialty]} \hfill [YYYY] - [YYYY] \\
+\textit{[Name of Institution]}, [City, State]
+
+\vspace{0.5em}
+
+\textbf{Doctor of Medicine (M.D.)} \hfill [YYYY] \\
+\textit{[Name of University School of Medicine]}, [City, State]
+\begin{itemize}[leftmargin=*, topsep=0pt, partopsep=0pt, itemsep=0pt]
+    \item \textit{Honors:} [e.g., Alpha Omega Alpha Honor Medical Society, Magna Cum Laude]
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Bachelor of Science, [Your Major]} \hfill [YYYY] \\
+\textit{[Name of University]}, [City, State]
+
+%================================================
+% PROFESSIONAL EXPERIENCE
+%================================================
+\sectionbreak*{Professional Experience}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+
+\textbf{[Your Title, e.g., Attending Physician]}, [Department] \hfill [Month YYYY] - Present \\
+\textit{[Hospital/Clinic Name]}, [City, State]
+\begin{itemize}[leftmargin=*, nosep]
+    \item Managed a diverse patient panel in both inpatient and outpatient settings, focusing on [mention specific conditions or patient populations].
+    \item Performed procedures such as [e.g., central line placement, intubations, joint injections] with a high degree of proficiency.
+    \item Led multidisciplinary rounds, collaborating with nurses, pharmacists, and case managers to optimize patient care plans.
+    \item Supervised and mentored medical residents and students, providing clinical teaching and performance evaluations.
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{[Previous Title]}, [Department] \hfill [Month YYYY] - [Month YYYY] \\
+\textit{[Previous Hospital/Clinic Name]}, [City, State]
+\begin{itemize}[leftmargin=*, nosep]
+    \item [Use action verbs: Developed, Implemented, Coordinated, Treated, etc.]
+    \item [Quantify your achievements where possible: e.g., Reduced patient wait times by 15%...]
+\end{itemize}
+
+%================================================
+% RESEARCH & PUBLICATIONS
+%================================================
+\sectionbreak*{Research \& Publications}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+
+% Use a standard citation format like AMA.
+% PEER-REVIEWED PUBLICATIONS
+\textbf{Doe J}, Smith R. Title of Article. \textit{Journal of Important Medicine}. [YYYY];[Vol]([Issue]):[Pages].
+
+% BOOK CHAPTERS
+\textbf{Doe J}. Title of Chapter. In: Editor A, Editor B, eds. \textit{Title of Book}. Publisher; [YYYY].
+
+% PRESENTATIONS & ABSTRACTS
+\textbf{Doe J}, Smith R. \textit{Title of Presentation}. Presented at: Annual Meeting of the [Society Name]; [Month YYYY]; [City, State]. (Oral Presentation)
+
+%================================================
+% HONORS & AWARDS
+%================================================
+\sectionbreak*{Honors \& Awards}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+\begin{tabular}{ll}
+    \textbf{[Award Name]} & \textit{[Awarding Institution/Society], [YYYY]} \\
+    \textbf{Resident of the Year} & \textit{[Residency Program Name], [YYYY]} \\
+    \textbf{Excellence in Teaching Award} & \textit{[Medical School Name], [YYYY]} \\
+\end{tabular}
+
+%================================================
+% SKILLS
+%================================================
+\sectionbreak*{Skills}
+\vspace{-8pt}
+\rule{\textwidth}{0.4pt}
+\vspace{4pt}
+\begin{tabular}{ll}
+    \textbf{Clinical:} & [e.g., Point-of-care ultrasound (POCUS), EGD, Colonoscopy, Advanced airway management] \\
+    \textbf{EHR/EMR:} & Epic (Certified Power User), Cerner, Meditech, Allscripts \\
+    \textbf{Languages:} & English (Native), Spanish (Medical Proficiency) \\
+\end{tabular}
+
+% DOCUMENT END
+\end{document}

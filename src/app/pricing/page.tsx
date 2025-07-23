@@ -7,6 +7,7 @@ import {
   FileText, Building
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { handlePlanSelection, validateStripeConfig } from '@/lib/payment-utils';
 
 const PricingPage = () => {
   const router = useRouter();
@@ -47,7 +48,7 @@ const PricingPage = () => {
     },
     {
       name: 'Pro',
-      price: 19.99,
+      price: 22,
       period: 'month',
       icon: Crown,
       description: 'Most popular for job seekers',
@@ -67,8 +68,8 @@ const PricingPage = () => {
     },
     {
       name: 'Enterprise',
-      price: 49.99,
-      period: 'user/month',
+      price: 99.99,
+      period: 'month',
       icon: Building,
       description: 'For teams and agencies',
       features: [
@@ -89,69 +90,19 @@ const PricingPage = () => {
     }
   ];
 
- const handlePlanSelect = async (planName: string) => {
-  // Handle Enterprise plan
-  if (planName === 'Enterprise') {
-// Option 1: Open email client with pre-filled subject (uncomment to use mailto)
-// const subject = encodeURIComponent('SmartATS Enterprise Plan Inquiry');
-// const body = encodeURIComponent(`Hi SmartATS Team,
-//
-// I'm interested in learning more about the Enterprise plan for my organization.
-//
-// Company Name: [Your Company]
-// Team Size: [Number of Users]
-// Current Needs: [Brief Description]
-//
-// Please contact me at your earliest convenience.
-//
-// Best regards,
-// [Your Name]`);
-// window.location.href = `mailto:enterprise@smartats.com?subject=${subject}&body=${body}`;
-
-// Option 2: Open the contact modal for Enterprise inquiries
-setShowContactModal(true);
-return;
-  }
-
-  // Handle Free plan
-  if (planName === 'Free') {
-    toast.success('Free plan selected!');
-    router.push('/builder');
+const handlePlanSelect = async (planName: string) => {
+  // Validate Stripe configuration before proceeding
+  if (planName === 'Pro' && !validateStripeConfig()) {
     return;
   }
 
-  // Handle Pro plan
-  setLoading(true);
-  setSelectedPlan(planName);
-
-  try {
-    // Create checkout session
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID, // Pro plan price ID from env
-        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}/pricing?canceled=true`,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create checkout session');
-    }
-
-    const { url } = await response.json();
-    
-    // Redirect to Stripe Checkout
-    window.location.href = url;
-  } catch (error) {
-    console.error('Error:', error);
-    toast.error('Failed to start checkout process');
-    setLoading(false);
-    setSelectedPlan('');
-  }
+  await handlePlanSelection(
+    planName,
+    router,
+    setLoading,
+    setSelectedPlan,
+    setShowContactModal
+  );
 };
 
 
@@ -197,7 +148,7 @@ return;
   <div className="container mx-auto px-4 py-16">
     {/* Hero Section */}
     <div className="text-center mb-16">
-      <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
         Choose Your Plan
       </h1>
       <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -216,7 +167,7 @@ return;
             key={tier.name}
             className={`relative rounded-2xl p-8 ${
               isHighlighted
-                ? 'bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500'
+                ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500'
                 : tier.name === 'Enterprise'
                 ? 'bg-gradient-to-br from-amber-900/20 to-orange-900/20 border-2 border-amber-600'
                 : 'bg-gray-900 border border-gray-800'
@@ -238,11 +189,11 @@ return;
               }`}>
                 <Icon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">{tier.name}</h3>
+              <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
               <p className="text-gray-400 mb-6">{tier.description}</p>
               
               <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
                   ${tier.price}
                 </span>
                 <span className="text-gray-400">/{tier.period}</span>
@@ -260,9 +211,9 @@ return;
                 }
               }}
               disabled={loading && selectedPlan === tier.name}
-              className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
+              className={`w-full flex text-orange-400 items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
                 isHighlighted
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg'
+                  ? 'bg-gradient-to-r from-blue-400 to-purple-200 text-white hover:shadow-lg'
                   : tier.name === 'Enterprise'
                   ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:shadow-lg'
                   : tier.price === 0
@@ -283,7 +234,7 @@ return;
             <div className="space-y-3">
               {tier.features.map((feature, index) => (
                 <div key={index} className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <Check className="w-5 h-5 text-green-100 mt-0.5 flex-shrink-0" />
                   <span className="text-sm text-gray-300">{feature}</span>
                 </div>
               ))}
@@ -302,7 +253,7 @@ return;
 
     {/* Enterprise CTA */}
     <div className="bg-gradient-to-br from-amber-900/20 to-orange-900/20 border border-amber-700/30 rounded-2xl p-8 text-center">
-      <h3 className="text-2xl font-bold mb-4">Need a Custom Solution?</h3>
+      <h3 className="text-2xl text-white font-bold mb-4">Need a Custom Solution?</h3>
       <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
         Our Enterprise plan includes volume discounts, custom integrations, and dedicated support for teams of 10+
       </p>
@@ -320,31 +271,31 @@ return;
 
     {/* FAQ Section */}
     <div className="max-w-3xl mx-auto mt-16">
-      <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+      <h2 className="text-3xl font-bold text-white text-center mb-8">Frequently Asked Questions</h2>
       
       <div className="space-y-6">
         <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2">Can I cancel anytime?</h3>
+          <h3 className="text-lg text-orange-400 font-semibold mb-2">Can I cancel anytime?</h3>
           <p className="text-gray-400">Yes! You can cancel your subscription at any time. You'll continue to have access until the end of your billing period.</p>
         </div>
         
         <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2">Do I need a credit card for the free plan?</h3>
+          <h3 className="text-lg text-orange-400 font-semibold mb-2">Do I need a credit card for the free plan?</h3>
           <p className="text-gray-400">No! The free plan is completely free forever, no credit card required.</p>
         </div>
         
         <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2">Can I switch plans later?</h3>
+          <h3 className="text-lg text-orange-400 font-semibold mb-2">Can I switch plans later?</h3>
           <p className="text-gray-400">Absolutely! You can upgrade or downgrade your plan at any time from your account settings.</p>
         </div>
         
         <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2">What's included in Enterprise?</h3>
+          <h3 className="text-lg text-orange-400 font-semibold mb-2">What's included in Enterprise?</h3>
           <p className="text-gray-400">Enterprise includes everything in Pro plus team collaboration, custom branding, API access, dedicated support, and more. Contact sales for details.</p>
         </div>
 
         <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2">How does team billing work?</h3>
+          <h3 className="text-lg text-orange-400 font-semibold mb-2">How does team billing work?</h3>
           <p className="text-gray-400">Enterprise plans are billed per user with volume discounts. You can add or remove team members anytime and we'll prorate the charges.</p>
         </div>
       </div>

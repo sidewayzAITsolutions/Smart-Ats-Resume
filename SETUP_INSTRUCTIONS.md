@@ -59,7 +59,7 @@ STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
 ### Create Products in Stripe
 1. Go to **Products** in Stripe dashboard
 2. Create a product called "Pro Plan Monthly"
-3. Set price to $19.99/month
+3. Set price to $22/month
 4. Copy the price ID to your `.env.local`:
 ```env
 STRIPE_PRICE_ID_PRO_MONTHLY=price_your_price_id_here

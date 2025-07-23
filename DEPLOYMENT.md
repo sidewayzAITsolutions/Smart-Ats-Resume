@@ -195,8 +195,8 @@ supabase db push
 ### Product Setup
 1. Create products in Stripe Dashboard
 2. Set up pricing:
-   - Pro Monthly: $19.99/month
-   - Pro Yearly: $199.99/year (optional)
+   - Pro Monthly: $22/month
+   - Pro Yearly: $220/year (optional)
 3. Copy price IDs to environment variables
 
 ## 🔒 Security Configuration
