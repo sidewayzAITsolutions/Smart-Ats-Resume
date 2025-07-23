@@ -1,7 +1,7 @@
 {
   "version": 2,
   "name": "smartats-resume",
-  "alias": ["smartats.com", "www.smartats.com"],
+  "alias": ["smartatsresume.com", "www.smartatsresume.com"],
   "regions": ["iad1"],
   "framework": "nextjs",
   "buildCommand": "npm run build",
@@ -13,13 +13,13 @@
   },
   "build": {
     "env": {
-      "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-      "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key",
-      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
-      "STRIPE_SECRET_KEY": "@stripe-secret-key",
-      "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
-      "NEXT_PUBLIC_APP_URL": "@app-url"
+      "NEXT_PUBLIC_SUPABASE_URL": "https://uxzpopwpbqfhfsbtlvim.supabase.co",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4enBvcHdwYnFmaGZzYnRsdmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MzM5NDgsImV4cCI6MjA2NjQwOTk0OH0.JMVUyPnpQ1t4LQlyEsVRsZcTGxui4h4MUkJimVN2eog",
+      "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4enBvcHdwYnFmaGZzYnRsdmltIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDgzMzk0OCwiZXhwIjoyMDY2NDA5OTQ4fQ.PP6jHZkw-I4Y8GD9KLnrJ8bN3qw7ZPBNi-Id-wLL2Cc",
+      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_live_51RfIgaEXTLOxdWgMsCB81cRlOu0gBnp6ixcFkx0BSZQeZofUOUwK7SgULmu7tWCblN1ie9Ju18pYnSVw6ky73diP00b7ICyKG5",
+      "STRIPE_SECRET_KEY": "@stipe-secret-key",
+      "STRIPE_WEBHOOK_SECRET": "@stripe-webhook",
+      "NEXT_PUBLIC_APP_URL": "https://smartatsresume.com"
     }
   },
   "functions": {
