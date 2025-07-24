@@ -55,20 +55,7 @@ export async function POST(req: NextRequest) {
       // Continue even if database insert fails
     }
 
-    // TODO: Send notification email to sales team
-    // await sendSalesNotification({
-    //   companyName,
-    //   fullName,
-    //   email,
-    //   phone,
-    //   employees,
-    //   message
-    // });
-
-    // TODO: Send confirmation email to user
-    // await sendConfirmationEmail(email, fullName);
-
-    // Log activity if user is authenticated
+     // Log activity if user is authenticated
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await supabase.rpc('log_activity', {
