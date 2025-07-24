@@ -22,6 +22,7 @@
           "jspdf": "^2.5.1",
           "lucide-react": "^0.469.0",
           "mammoth": "^1.9.1",
+          "natural": "^8.1.0"",
           "next": "^15.4.2",
           "openai": "^4.20.1",
           "pdf-parse": "^1.1.1",
