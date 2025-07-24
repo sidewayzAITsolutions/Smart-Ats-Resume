@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import Stripe from 'stripe';
 
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
+  typescript: true,
 });
 
 const supabase = createClient();
@@ -14,7 +16,7 @@ export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get('stripe-signature')!;
 
-  let event: Stripe.Event;
+  let event;
 
   try {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
@@ -28,27 +30,27 @@ export async function POST(req: NextRequest) {
   try {
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
+        await handleCheckoutSessionCompleted(event.data.object as any);
         break;
-      
+
       case 'customer.subscription.created':
-        await handleSubscriptionCreated(event.data.object as Stripe.Subscription);
+        await handleSubscriptionCreated(event.data.object as any);
         break;
-      
+
       case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
+        await handleSubscriptionUpdated(event.data.object as any);
         break;
-      
+
       case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        await handleSubscriptionDeleted(event.data.object as any);
         break;
-      
+
       case 'invoice.payment_succeeded':
-        await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
+        await handlePaymentSucceeded(event.data.object as any);
         break;
-      
+
       case 'invoice.payment_failed':
-        await handlePaymentFailed(event.data.object as Stripe.Invoice);
+        await handlePaymentFailed(event.data.object as any);
         break;
       
       default:
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+async function handleCheckoutSessionCompleted(session: any) {
   console.log('Processing checkout session completed:', session.id);
   
   const userId = session.metadata?.userId;
@@ -90,7 +92,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   console.log(`✅ User ${userId} upgraded to premium`);
 }
 
-async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
+async function handleSubscriptionCreated(subscription: any) {
   console.log('Processing subscription created:', subscription.id);
   
   const userId = subscription.metadata?.userId;
@@ -119,7 +121,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   console.log(`✅ Subscription created for user ${userId}`);
 }
 
-async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
+async function handleSubscriptionUpdated(subscription: any) {
   console.log('Processing subscription updated:', subscription.id);
   
   const userId = subscription.metadata?.userId;
@@ -146,7 +148,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   console.log(`✅ Subscription updated for user ${userId}: ${subscription.status}`);
 }
 
-async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+async function handleSubscriptionDeleted(subscription: any) {
   console.log('Processing subscription deleted:', subscription.id);
   
   const userId = subscription.metadata?.userId;
@@ -173,7 +175,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   console.log(`✅ User ${userId} downgraded to free`);
 }
 
-async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
+async function handlePaymentSucceeded(invoice: any) {
   console.log('Processing payment succeeded:', invoice.id);
   
   if (invoice.subscription) {
@@ -201,7 +203,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   }
 }
 
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
+async function handlePaymentFailed(invoice: any) {
   console.log('Processing payment failed:', invoice.id);
   
   if (invoice.subscription) {
@@ -227,3 +229,4 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
     }
   }
 }
+
