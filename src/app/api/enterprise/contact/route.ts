@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
@@ -24,7 +24,17 @@ export async function POST(req: NextRequest) {
     }
 
     const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get: async (name) => (await cookieStore).get(name)?.value,
+          set: () => {}, // We don't need to set cookies in this API route
+          remove: () => {} // We don't need to remove cookies in this API route
+        }
+      }
+    );
 
     // Store contact request in database
     const { error: insertError } = await supabase
