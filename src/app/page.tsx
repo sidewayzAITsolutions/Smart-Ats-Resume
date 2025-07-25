@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, JSX } from 'react';
+import Link from 'next/link';
 import { ArrowRight, CheckCircle, Zap, Shield, Star, Target, TrendingUp, BarChart2, X, Menu, Sparkles, Award, FileText, Clock, User } from 'lucide-react';
 import LogoSplashScreen from '@/components/LogoSplashScreen';
 
@@ -833,7 +834,8 @@ const Page: React.FC = () => {
                 <ul className="space-y-2 text-sm">
                   <li><a href="/help" className="hover:text-teal-400 transition-colors">Help Center</a></li>
                   <li><a href="/contact" className="hover:text-teal-400 transition-colors">Contact</a></li>
-                  <li><a href="/privacy" className="hover:text-teal-400 transition-colors">Privacy Policy</a></li>
+                  <li><Link href="/privacypolicy" className="hover:text-teal-400 transition-colors">Privacy Policy</Link></li>
+                  <li><Link href="/termsofservice" className="hover:text-teal-400 transition-colors">Terms of Service</Link></li>
                 </ul>
               </div>
             </div>
