@@ -53,7 +53,7 @@ export default function TermsOfService() {
 
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-2">9. Privacy</h2>
-          <p>Your use of the service is also governed by our <a href="/privacy" className="text-blue-600 underline">Privacy Policy</a>.</p>
+          <p>Your use of the service is also governed by our <a href="/privacypolicy" className="text-blue-600 underline">Privacy Policy</a>.</p>
         </section>
 
         <section className="mb-8">
