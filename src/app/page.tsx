@@ -232,7 +232,7 @@ const Page: React.FC = () => {
               <span className="text-sm font-medium text-gray-300">AI-Powered ATS Optimization for a $17B Market</span>
             </div>
 
-            <h1 className="text-9xl md:text-12xl lg:text-15xl font-bold text-white mb-12 leading-tight " style={{textShadow: '0 0 20px #fbff00ff, 0 0 40px #00c7b3ff, 0 0 60px #00c7b3ff'}}>
+            <h1 className="text-4xl sm:text-6xl md:text-10xl lg:text-15xl font-bold text-white mb-12 leading-tight " style={{textShadow: '0 0 20px #fbff00ff, 0 0 40px #00c7b3ff, 0 0 60px #00c7b3ff'}}>
               Smart ATS<br />
                Resume
             </h1>
@@ -831,9 +831,10 @@ const Page: React.FC = () => {
               <div>
                 <h4 className="font-semibold text-white mb-4">Support</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/help" className="hover:text-teal-400 transition-colors">Help Center</a></li>
                   <li><a href="/contact" className="hover:text-teal-400 transition-colors">Contact</a></li>
-                  <li><a href="/privacy" className="hover:text-teal-400 transition-colors">Privacy Policy</a></li>
+                  <li><a href="/privacy-policy" className="hover:text-teal-400 transition-colors">Privacy Policy</a></li>
+                  <li><a href="/terms-of-service" className="hover:text-teal-400 transition-colors">Terms of Service</a></li>
+
                 </ul>
               </div>
             </div>
