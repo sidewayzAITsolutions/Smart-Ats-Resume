@@ -38,11 +38,25 @@ userData?.user?.email ||
 userData?.user_metadata?.email ||
 ‘user@example.com’
 
-const userName = userData?.name ||
-userData?.full_name ||
-userData?.user?.user_metadata?.full_name ||
-userData?.user_metadata?.full_name ||
-userEmail.split(’@’)[0] // Use email prefix as fallback
+const [userData, setUserData] = useState<any>(null);
+
+useEffect(() => {
+  const fetchUser = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      setUserData({
+        user,
+        email: user.email,
+        name: user.user_metadata?.full_name,
+        isPremium: false // or fetch from your profiles table
+      });
+    }
+  };
+  
+  fetchUser();
+}, []);
 
 const isPremium = userData?.isPremium || userData?.is_premium || false
 
