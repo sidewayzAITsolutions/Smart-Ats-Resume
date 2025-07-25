@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
 
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-2">1. Overview</h2>
-          <p>Smart ATS Resume (“we,” “us,” or “our”) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services at <strong>smartatsresume.com</strong>.</p>
+          <p>Smart ATS Resume ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services at <strong>smartatsresume.com</strong>.</p>
         </section>
 
         <section className="mb-8">
@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">10. Children’s Privacy</h2>
+          <h2 className="text-xl font-semibold mb-2">10. Children's Privacy</h2>
           <p>Smart ATS Resume is not intended for children under 13. We do not knowingly collect data from anyone under this age.</p>
         </section>
 
