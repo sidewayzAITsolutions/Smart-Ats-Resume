@@ -20,9 +20,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check if app URL is configured
+    if (!process.env.NEXT_PUBLIC_APP_URL) {
+      console.error('NEXT_PUBLIC_APP_URL is not configured');
+      return NextResponse.json(
+        { error: 'App URL is not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
     // Parse request body
     const body = await req.json();
-    const { priceId } = body;
+    const { priceId, successUrl: customSuccessUrl, cancelUrl: customCancelUrl } = body;
 
     console.log('Received priceId:', priceId);
 
@@ -31,6 +40,15 @@ export async function POST(req: NextRequest) {
       console.error('No priceId provided in request');
       return NextResponse.json(
         { error: 'Price ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate priceId format
+    if (!priceId.startsWith('price_')) {
+      console.error('Invalid priceId format:', priceId);
+      return NextResponse.json(
+        { error: 'Invalid price ID format' },
         { status: 400 }
       );
     }
@@ -68,9 +86,9 @@ export async function POST(req: NextRequest) {
       console.error('Profile error:', profileError);
     }
 
-    // Handle Pro plan
-    let successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/stripe/success?session_id={CHECKOUT_SESSION_ID}`;
-    let cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/pricing`;
+    // Handle Pro plan - use custom URLs if provided, otherwise use defaults
+    let successUrl = customSuccessUrl || `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
+    let cancelUrl = customCancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/pricing`;
 
     // Check if this is a subscription or one-time payment
     const isSubscription = priceId.startsWith('price_'); // Stripe price IDs start with price_
@@ -81,7 +99,7 @@ export async function POST(req: NextRequest) {
       console.log('Creating checkout session for user:', user.email);
 
       // Create checkout session
-      const session = await stripe.checkout.sessions.create({
+      const sessionConfig = {
         payment_method_types: ['card'],
         mode: isSubscription ? 'subscription' : 'payment',
         line_items: [
@@ -106,7 +124,16 @@ export async function POST(req: NextRequest) {
             },
           },
         }),
+      };
+
+      console.log('Creating Stripe session with config:', {
+        ...sessionConfig,
+        line_items: sessionConfig.line_items,
+        success_url: sessionConfig.success_url,
+        cancel_url: sessionConfig.cancel_url
       });
+
+      const session = await stripe.checkout.sessions.create(sessionConfig);
 
       console.log('Checkout session created:', session.id);
 

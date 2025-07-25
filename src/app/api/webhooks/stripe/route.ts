@@ -66,9 +66,9 @@ export async function POST(req: NextRequest) {
 async function handleCheckoutSessionCompleted(session: any, supabase: any) {
   console.log('Processing checkout session completed:', session.id);
 
-  const userId = session.metadata?.userId;
+  const userId = session.metadata?.userId || session.client_reference_id;
   if (!userId) {
-    console.error('No userId found in session metadata');
+    console.error('No userId found in session metadata or client_reference_id');
     return;
   }
 
@@ -79,6 +79,7 @@ async function handleCheckoutSessionCompleted(session: any, supabase: any) {
       is_premium: true,
       subscription_status: 'active',
       stripe_customer_id: session.customer as string,
+      stripe_session_id: session.id,
       updated_at: new Date().toISOString()
     })
     .eq('id', userId);
@@ -88,7 +89,7 @@ async function handleCheckoutSessionCompleted(session: any, supabase: any) {
     throw error;
   }
 
-  console.log(`✅ User ${userId} upgraded to premium`);
+  console.log(`✅ User ${userId} upgraded to premium via session ${session.id}`);
 }
 
 async function handleSubscriptionCreated(subscription: any, supabase: any) {
