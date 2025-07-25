@@ -1,5 +1,6 @@
-// Payment utility functions for handling Stripe checkout
 import toast from 'react-hot-toast';
+
+import { createClient } from '@/lib/supabase/client';
 
 export interface CheckoutSessionData {
   priceId: string;
@@ -13,6 +14,30 @@ export interface CheckoutResponse {
 }
 
 /**
+ * Checks if user is authenticated
+ * @returns Promise<boolean> - true if authenticated, false otherwise
+ */
+export const checkAuthStatus = async () => {
+  try {
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    return { isAuthenticated: !!session };
+  } catch (error) {
+    console.error('Error checking auth status:', error);
+    return { isAuthenticated: false };
+  }
+};
+
+/**
+ * Redirects to sign in page with callback URL
+ * @param callbackUrl - URL to return to after sign in
+ */
+export const redirectToSignIn = (callbackUrl: string): void => {
+  const encodedCallback = encodeURIComponent(callbackUrl);
+  window.location.href = `/auth/signin?callbackUrl=${encodedCallback}`;
+};
+
+/**
  * Creates a Stripe checkout session and redirects to checkout
  * @param data - Checkout session configuration
  * @returns Promise that resolves when checkout is initiated
@@ -24,6 +49,14 @@ export const createCheckoutSession = async (data: CheckoutSessionData): Promise<
     // Validate required data
     if (!data.priceId) {
       throw new Error('Price ID is required');
+    }
+
+    // Check authentication before making API call
+    const isAuthenticated = await checkAuthStatus();
+    if (!isAuthenticated) {
+      toast.error('Please sign in to continue with your purchase');
+      redirectToSignIn('/pricing');
+      return;
     }
 
     // Create checkout session
@@ -43,6 +76,14 @@ export const createCheckoutSession = async (data: CheckoutSessionData): Promise<
 
     if (!response.ok) {
       console.error('Checkout session error:', responseData.error);
+
+      // Handle authentication errors specifically
+      if (response.status === 401) {
+        toast.error('Please sign in to continue with your purchase');
+        redirectToSignIn('/pricing');
+        return;
+      }
+
       throw new Error(responseData.error || 'Failed to create checkout session');
     }
 
@@ -78,6 +119,16 @@ export const handleProPlanCheckout = async (
   setSelectedPlan(planName);
 
   try {
+    // Check authentication first
+    const isAuthenticated = await checkAuthStatus();
+    if (!isAuthenticated) {
+      toast.error('Please sign in to upgrade to Pro');
+      redirectToSignIn('/pricing');
+      setLoading(false);
+      setSelectedPlan('');
+      return;
+    }
+
     // Log the price ID for debugging
     const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_1234567890';
     console.log('Using price ID:', priceId);
@@ -107,7 +158,15 @@ export const handleEnterprisePlan = (setShowContactModal: (show: boolean) => voi
  * Handles free plan selection
  * @param router - Next.js router instance
  */
-export const handleFreePlan = (router: any): void => {
+export const handleFreePlan = async (router: any): Promise<void> => {
+  // Check if user is authenticated for free plan
+  const isAuthenticated = await checkAuthStatus();
+  if (!isAuthenticated) {
+    toast('Please sign in to get started with the free plan');
+    redirectToSignIn('/builder');
+    return;
+  }
+
   toast.success('Free plan selected!');
   router.push('/builder');
 };
@@ -132,7 +191,7 @@ export const handlePlanSelection = async (
       handleEnterprisePlan(setShowContactModal);
       break;
     case 'Free':
-      handleFreePlan(router);
+      await handleFreePlan(router);
       break;
     case 'Pro':
       await handleProPlanCheckout(planName, setLoading, setSelectedPlan);
@@ -148,7 +207,7 @@ export const handlePlanSelection = async (
  */
 export const validateStripeConfig = (): boolean => {
   const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
-  
+
   if (!priceId) {
     console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
     toast.error('Payment configuration error. Please contact support.');

@@ -1,19 +1,39 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  ArrowRight,
+  Building,
+  Check,
+  Crown,
+  FileText,
+  Shield,
+  X,
+} from 'lucide-react';
+import {
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
+import toast from 'react-hot-toast';
+
 import UnifiedNavigation from '@/components/UnifiedNavigation';
 import {
-  Check, X, ArrowRight, Crown,
-  FileText, Building
-} from 'lucide-react';
-import toast from 'react-hot-toast';
-import { handlePlanSelection, validateStripeConfig } from '@/lib/payment-utils';
+  handlePlanSelection,
+  validateStripeConfig,
+} from '@/lib/payment-utils';
+import { createClient } from '@/lib/supabase/client';
 
 const PricingPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [contactData, setContactData] = useState({
     companyName: '',
     fullName: '',
@@ -22,6 +42,47 @@ const PricingPage = () => {
     employees: '',
     message: ''
   });
+
+  // Check for error messages from URL params
+  useEffect(() => {
+    const error = searchParams.get('error');
+    const canceled = searchParams.get('canceled');
+    
+    if (error) {
+      const errorMessages: { [key: string]: string } = {
+        'no_session': 'Session not found. Please try again.',
+        'session_not_found': 'Checkout session not found.',
+        'payment_failed': 'Payment was not completed.',
+        'no_user': 'User information not found.',
+        'update_failed': 'Failed to update subscription.',
+        'server_error': 'Server error occurred. Please try again.',
+      };
+      
+      toast.error(errorMessages[error] || 'An error occurred. Please try again.');
+    }
+    
+    if (canceled === 'true') {
+      toast('Checkout was canceled. You can try again anytime.');
+    }
+  }, [searchParams]);
+
+  // Check authentication status on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        setCheckingAuth(true);
+        const authStatus = await checkAuthStatus();
+        setIsAuthenticated(authStatus.isAuthenticated);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        setIsAuthenticated(false);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const pricingTiers = [
     {
@@ -44,7 +105,7 @@ const PricingPage = () => {
         'Priority support'
       ],
       highlighted: false,
-      buttonText: 'Get Started Free'
+      buttonText: isAuthenticated ? 'Get Started Free' : 'Sign In to Start'
     },
     {
       name: 'Pro',
@@ -64,7 +125,7 @@ const PricingPage = () => {
       ],
       notIncluded: [],
       highlighted: true,
-      buttonText: 'Start Pro Trial'
+      buttonText: isAuthenticated ? 'Start Pro Trial' : 'Sign In to Upgrade'
     },
     {
       name: 'Enterprise',
@@ -90,22 +151,20 @@ const PricingPage = () => {
     }
   ];
 
-const handlePlanSelect = async (planName: string) => {
-  // Validate Stripe configuration before proceeding
-  if (planName === 'Pro' && !validateStripeConfig()) {
-    return;
-  }
+  const handlePlanSelect = async (planName: string) => {
+    // Validate Stripe configuration before proceeding
+    if (planName === 'Pro' && !validateStripeConfig()) {
+      return;
+    }
 
-  await handlePlanSelection(
-    planName,
-    router,
-    setLoading,
-    setSelectedPlan,
-    setShowContactModal
-  );
-};
-
-
+    await handlePlanSelection(
+      planName,
+      router,
+      setLoading,
+      setSelectedPlan,
+      setShowContactModal
+    );
+  };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,295 +200,208 @@ const handlePlanSelect = async (planName: string) => {
     }
   };
 
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-<div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-  <UnifiedNavigation />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <UnifiedNavigation />
 
-  <div className="container mx-auto px-4 py-16">
-    {/* Hero Section */}
-    <div className="text-center mb-16">
-      <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
-        Choose Your Plan
-      </h1>
-      <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-        Get the perfect plan for your career goals. Start free and upgrade when you're ready.
-      </p>
-    </div>
-    {/* End Hero Section */}
-
-    {/* Pricing Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-      {pricingTiers.map((tier) => {
-        const Icon = tier.icon;
-        const isHighlighted = tier.highlighted;
-        return (
-          <div
-            key={tier.name}
-            className={`relative rounded-2xl p-8 ${
-              isHighlighted
-                ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500'
-                : tier.name === 'Enterprise'
-                ? 'bg-gradient-to-br from-amber-900/20 to-orange-900/20 border-2 border-amber-600'
-                : 'bg-gray-900 border border-gray-800'
-            }`}
-          >
-            {isHighlighted && (
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold">
-                  Most Popular
-                </div>
-              </div>
-            )}
-
-            <div className="text-center mb-8">
-              <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl mb-4 ${
-                tier.name === 'Enterprise'
-                  ? 'bg-gradient-to-br from-amber-600 to-orange-600'
-                  : 'bg-gradient-to-br from-blue-600 to-purple-600'
-              }`}>
-                <Icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
-              <p className="text-gray-400 mb-6">{tier.description}</p>
-              
-              <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
-                  ${tier.price}
-                </span>
-                <span className="text-gray-400">/{tier.period}</span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                if (tier.name === 'Enterprise') {
-                  // Open the contact modal for Enterprise plan
-                  setShowContactModal(true);
-                } else {
-                  handlePlanSelect(tier.name);
-                }
-              }}
-              disabled={loading && selectedPlan === tier.name}
-              className={`w-full flex text-orange-400 items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
-                isHighlighted
-                  ? 'bg-gradient-to-r from-blue-400 to-purple-200 text-white hover:shadow-lg'
-                  : tier.name === 'Enterprise'
-                  ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:shadow-lg'
-                  : tier.price === 0
-                  ? 'bg-gray-800 hover:bg-gray-700 text-white'
-                  : 'bg-purple-600 hover:bg-purple-700 text-white'
-              } ${loading && selectedPlan === tier.name ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <span>
-                {tier.name === 'Enterprise'
-                  ? 'Contact Sales'
-                  : loading && selectedPlan === tier.name
-                  ? 'Processing...'
-                  : tier.buttonText}
+      <div className="container mx-auto px-4 py-16">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
+            Choose Your Plan
+          </h1>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Get the perfect plan for your career goals. Start free and upgrade when you're ready.
+          </p>
+          
+          {/* Authentication Status Banner */}
+          {!isAuthenticated && (
+            <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-blue-900/30 border border-blue-700/50 rounded-lg">
+              <Shield className="w-5 h-5 text-blue-400" />
+              <span className="text-blue-300 text-sm">
+                Sign in to unlock all features and start your journey
               </span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            </div>
+          )}
+        </div>
 
-            <div className="space-y-3">
-              {tier.features.map((feature, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-100 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-gray-300">{feature}</span>
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {pricingTiers.map((tier) => {
+            const Icon = tier.icon;
+            const isHighlighted = tier.highlighted;
+            return (
+              <div
+                key={tier.name}
+                className={`relative rounded-2xl p-8 ${
+                  isHighlighted
+                    ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500'
+                    : tier.name === 'Enterprise'
+                    ? 'bg-gradient-to-br from-amber-400/10 to-orange-400/10 border border-amber-500/30'
+                    : 'bg-gray-800/50 border border-gray-700'
+                } transition-all duration-300 hover:scale-105`}
+              >
+                {isHighlighted && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                      MOST POPULAR
+                    </span>
+                  </div>
+                )}
+
+                <div className="text-center mb-6">
+                  <Icon className={`w-12 h-12 mx-auto mb-4 ${
+                    isHighlighted ? 'text-blue-400' : 'text-gray-400'
+                  }`} />
+                  <h3 className="text-2xl font-bold text-white mb-2">{tier.name}</h3>
+                  <p className="text-gray-400">{tier.description}</p>
                 </div>
-              ))}
-              
-              {tier.notIncluded?.map((feature, index) => (
-                <div key={`not-${index}`} className="flex items-start space-x-3 opacity-50">
-                  <X className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-gray-500 line-through">{feature}</span>
+
+                <div className="text-center mb-6">
+                  <span className="text-4xl font-bold text-white">${tier.price}</span>
+                  <span className="text-gray-400">/{tier.period}</span>
                 </div>
-              ))}
+
+                {/* Features */}
+                <div className="space-y-3 mb-8">
+                  {tier.features.map((feature, idx) => (
+                    <div key={idx} className="flex items-start">
+                      <Check className="w-5 h-5 text-green-400 mt-0.5 mr-3 flex-shrink-0" />
+                      <span className="text-gray-300 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                  {tier.notIncluded.map((feature, idx) => (
+                    <div key={idx} className="flex items-start opacity-50">
+                      <X className="w-5 h-5 text-gray-500 mt-0.5 mr-3 flex-shrink-0" />
+                      <span className="text-gray-500 text-sm line-through">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => handlePlanSelect(tier.name)}
+                  disabled={loading && selectedPlan === tier.name}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center group ${
+                    isHighlighted
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white'
+                      : tier.name === 'Enterprise'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white'
+                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {loading && selectedPlan === tier.name ? (
+                    <span>Processing...</span>
+                  ) : (
+                    <>
+                      <span>{tier.buttonText}</span>
+                      <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Enterprise Contact Modal */}
+        {showContactModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-2xl p-8 max-w-md w-full">
+              <h3 className="text-2xl font-bold text-white mb-6">Enterprise Inquiry</h3>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  value={contactData.companyName}
+                  onChange={(e) => setContactData({ ...contactData, companyName: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={contactData.fullName}
+                  onChange={(e) => setContactData({ ...contactData, fullName: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={contactData.email}
+                  onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
+                  value={contactData.phone}
+                  onChange={(e) => setContactData({ ...contactData, phone: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                />
+                <select
+                  value={contactData.employees}
+                  onChange={(e) => setContactData({ ...contactData, employees: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  required
+                >
+                  <option value="">Number of Employees</option>
+                  <option value="1-10">1-10</option>
+                  <option value="11-50">11-50</option>
+                  <option value="51-200">51-200</option>
+                  <option value="201-500">201-500</option>
+                  <option value="500+">500+</option>
+                </select>
+                <textarea
+                  placeholder="Tell us about your needs..."
+                  value={contactData.message}
+                  onChange={(e) => setContactData({ ...contactData, message: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 h-32 resize-none"
+                  required
+                />
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50"
+                  >
+                    {loading ? 'Submitting...' : 'Submit Inquiry'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowContactModal(false)}
+                    className="flex-1 py-3 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        );
-      })}
-    </div>
-
-    {/* Enterprise CTA */}
-    <div className="bg-gradient-to-br from-amber-900/20 to-orange-900/20 border border-amber-700/30 rounded-2xl p-8 text-center">
-      <h3 className="text-2xl text-white font-bold mb-4">Need a Custom Solution?</h3>
-      <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-        Our Enterprise plan includes volume discounts, custom integrations, and dedicated support for teams of 10+
-      </p>
-      <button
-       type="button"
-       onClick={() => {
-         const subject = encodeURIComponent('SmartATS Enterprise Plan Inquiry');
-         window.location.href = `mailto:enterprise@smartats.com?subject=${subject}`;
-       }}
-       className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
-        Learn More About Enterprise
-        <ArrowRight className="w-5 h-5" />
-      </button>
-    </div>
-
-    {/* FAQ Section */}
-    <div className="max-w-3xl mx-auto mt-16">
-      <h2 className="text-3xl font-bold text-white text-center mb-8">Frequently Asked Questions</h2>
-      
-      <div className="space-y-6">
-        <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg text-orange-400 font-semibold mb-2">Can I cancel anytime?</h3>
-          <p className="text-gray-400">Yes! You can cancel your subscription at any time. You'll continue to have access until the end of your billing period.</p>
-        </div>
-        
-        <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg text-orange-400 font-semibold mb-2">Do I need a credit card for the free plan?</h3>
-          <p className="text-gray-400">No! The free plan is completely free forever, no credit card required.</p>
-        </div>
-        
-        <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg text-orange-400 font-semibold mb-2">Can I switch plans later?</h3>
-          <p className="text-gray-400">Absolutely! You can upgrade or downgrade your plan at any time from your account settings.</p>
-        </div>
-        
-        <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg text-orange-400 font-semibold mb-2">What's included in Enterprise?</h3>
-          <p className="text-gray-400">Enterprise includes everything in Pro plus team collaboration, custom branding, API access, dedicated support, and more. Contact sales for details.</p>
-        </div>
-
-        <div className="bg-gray-900 rounded-lg p-6">
-          <h3 className="text-lg text-orange-400 font-semibold mb-2">How does team billing work?</h3>
-          <p className="text-gray-400">Enterprise plans are billed per user with volume discounts. You can add or remove team members anytime and we'll prorate the charges.</p>
-        </div>
+        )}
       </div>
     </div>
-  </div>
-  {/* End container div */}
-
-  {/* Contact Modal */}
-  {showContactModal && (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full border border-gray-800">
-        <div className="flex items-center justify-between p-6 border-b border-gray-800">
-          <h3 className="text-2xl font-bold text-white">Contact Enterprise Sales</h3>
-          <button
-            type="button"
-            onClick={() => setShowContactModal(false)}
-            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-400" />
-          </button>
-        </div>
-
-        <form onSubmit={handleContactSubmit} className="p-6 space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Company Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={contactData.companyName}
-                onChange={(e) => setContactData({ ...contactData, companyName: e.target.value })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
-                placeholder="Acme Corp"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={contactData.fullName}
-                onChange={(e) => setContactData({ ...contactData, fullName: e.target.value })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
-                placeholder="John Doe"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Work Email *
-              </label>
-              <input
-                type="email"
-                required
-                value={contactData.email}
-                onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
-                placeholder="john@company.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={contactData.phone}
-                onChange={(e) => setContactData({ ...contactData, phone: e.target.value })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors"
-                placeholder="+1 (555) 123-4567"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Number of Employees *
-            </label>
-            <select
-              required
-              value={contactData.employees}
-              onChange={(e) => setContactData({ ...contactData, employees: e.target.value })}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
-              aria-label="Number of Employees"
-            >
-              <option value="">Select team size</option>
-              <option value="10-49">10-49</option>
-              <option value="50-99">50-99</option>
-              <option value="100-499">100-499</option>
-              <option value="500-999">500-999</option>
-              <option value="1000+">1000+</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Tell us about your needs
-            </label>
-            <textarea
-              rows={4}
-              value={contactData.message}
-              onChange={(e) => setContactData({ ...contactData, message: e.target.value })}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors resize-none"
-              placeholder="What are your hiring challenges? What features are most important to your team?"
-            />
-          </div>
-
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={() => setShowContactModal(false)}
-              className="flex-1 px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-medium rounded-lg hover:shadow-lg transition-all"
-            >
-              Submit Request
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )}
-</div>
   );
+};
+
+const checkAuthStatus = async () => {
+  try {
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    return { isAuthenticated: !!session };
+  } catch (error) {
+    console.error('Error checking auth status:', error);
+    return { isAuthenticated: false };
+  }
 };
 
 export default PricingPage;
