@@ -1,39 +1,23 @@
+// src/app/pricing/page.tsx
 'use client';
-import React, {
-  useEffect,
-  useState,
-} from 'react';
-
-import {
-  ArrowRight,
-  Building,
-  Check,
-  Crown,
-  FileText,
-  Shield,
-  X,
-} from 'lucide-react';
-import {
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
-import toast from 'react-hot-toast';
-
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import UnifiedNavigation from '@/components/UnifiedNavigation';
 import {
-  handlePlanSelection,
-  validateStripeConfig,
-} from '@/lib/payment-utils';
-import { createClient } from '@/lib/supabase/client';
+  Check, X, ArrowRight, Crown,
+  FileText, Building, Loader2
+} from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const PricingPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [userData, setUserData] = useState<any>(null);
+  const [userLoading, setUserLoading] = useState(true);
   const [contactData, setContactData] = useState({
     companyName: '',
     fullName: '',
@@ -43,45 +27,61 @@ const PricingPage = () => {
     message: ''
   });
 
-  // Check for error messages from URL params
+  // Check user authentication and get user data
   useEffect(() => {
-    const error = searchParams.get('error');
-    const canceled = searchParams.get('canceled');
-    
-    if (error) {
-      const errorMessages: { [key: string]: string } = {
-        'no_session': 'Session not found. Please try again.',
-        'session_not_found': 'Checkout session not found.',
-        'payment_failed': 'Payment was not completed.',
-        'no_user': 'User information not found.',
-        'update_failed': 'Failed to update subscription.',
-        'server_error': 'Server error occurred. Please try again.',
-      };
-      
-      toast.error(errorMessages[error] || 'An error occurred. Please try again.');
-    }
-    
-    if (canceled === 'true') {
-      toast('Checkout was canceled. You can try again anytime.');
-    }
-  }, [searchParams]);
-
-  // Check authentication status on mount
-  useEffect(() => {
-    const checkAuth = async () => {
+    const checkUserData = async () => {
       try {
-        setCheckingAuth(true);
-        const authStatus = await checkAuthStatus();
-        setIsAuthenticated(authStatus.isAuthenticated);
+        setUserLoading(true);
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError) {
+          console.error('Auth error:', authError);
+          // Don't redirect, allow viewing pricing page
+          setUserData(null);
+          setUserLoading(false);
+          return;
+        }
+
+        if (!user) {
+          console.log("No authenticated user found");
+          setUserData(null);
+          setUserLoading(false);
+          return;
+        }
+
+        // Get user profile data
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error fetching user profile:", profileError);
+          // Fallback to basic user data
+          setUserData({
+            email: user.email || "",
+            name: user.user_metadata?.full_name || "User",
+            isPremium: false
+          });
+        } else {
+          // Set complete user data
+          setUserData({
+            email: profile?.email || user.email || "",
+            name: profile?.full_name || user.user_metadata?.full_name || "User",
+            isPremium: profile?.is_premium || false,
+            user: user // Include full user object for UserDropdown
+          });
+        }
+        setUserLoading(false);
       } catch (error) {
-        console.error('Auth check failed:', error);
-        setIsAuthenticated(false);
-      } finally {
-        setCheckingAuth(false);
+        console.error("Error checking user status:", error);
+        setUserData(null);
+        setUserLoading(false);
       }
     };
 
-    checkAuth();
+    checkUserData();
   }, []);
 
   const pricingTiers = [
@@ -105,7 +105,7 @@ const PricingPage = () => {
         'Priority support'
       ],
       highlighted: false,
-      buttonText: isAuthenticated ? 'Get Started Free' : 'Sign In to Start'
+      buttonText: 'Get Started Free'
     },
     {
       name: 'Pro',
@@ -125,7 +125,7 @@ const PricingPage = () => {
       ],
       notIncluded: [],
       highlighted: true,
-      buttonText: isAuthenticated ? 'Start Pro Trial' : 'Sign In to Upgrade'
+      buttonText: 'Start Pro Trial'
     },
     {
       name: 'Enterprise',
@@ -151,19 +151,113 @@ const PricingPage = () => {
     }
   ];
 
+  const validateStripeConfig = (): boolean => {
+    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    
+    if (!priceId) {
+      console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+      toast.error('Payment configuration error. Please contact support.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const createCheckoutSession = async (priceId: string): Promise<void> => {
+    try {
+      console.log('Creating checkout session with priceId:', priceId);
+
+      // Check if user is authenticated first
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        toast.error('Please sign in to continue with your purchase.');
+        router.push('/login?redirectTo=/pricing');
+        return;
+      }
+
+      // Create checkout session
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: priceId,
+          successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/pricing?canceled=true`,
+        }),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error('Checkout session error:', responseData.error);
+        
+        if (response.status === 401) {
+          toast.error('Please sign in to continue with your purchase.');
+          router.push('/login?redirectTo=/pricing');
+          return;
+        }
+        
+        throw new Error(responseData.error || 'Failed to create checkout session');
+      }
+
+      if (!responseData.url) {
+        throw new Error('No checkout URL received');
+      }
+
+      console.log('Checkout session created successfully');
+      console.log('Redirecting to:', responseData.url);
+
+      // Redirect to Stripe Checkout
+      window.location.href = responseData.url;
+
+    } catch (error: any) {
+      console.error('Error creating checkout session:', error);
+      toast.error(error.message || 'Failed to start checkout process');
+      throw error;
+    }
+  };
+
   const handlePlanSelect = async (planName: string) => {
-    // Validate Stripe configuration before proceeding
+    // Check if user is authenticated for paid plans
+    if (planName === 'Pro' && !userData) {
+      toast.error('Please sign in to subscribe to Pro plan.');
+      router.push('/login?redirectTo=/pricing');
+      return;
+    }
+
     if (planName === 'Pro' && !validateStripeConfig()) {
       return;
     }
 
-    await handlePlanSelection(
-      planName,
-      router,
-      setLoading,
-      setSelectedPlan,
-      setShowContactModal
-    );
+    setLoading(true);
+    setSelectedPlan(planName);
+
+    try {
+      switch (planName) {
+        case 'Enterprise':
+          setShowContactModal(true);
+          break;
+        case 'Free':
+          toast.success('Free plan selected!');
+          router.push('/builder');
+          break;
+        case 'Pro':
+          const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_1234567890';
+          await createCheckoutSession(priceId);
+          break;
+        default:
+          console.warn(`Unknown plan: ${planName}`);
+          toast.error('Unknown plan selected');
+      }
+    } catch (error) {
+      // Error handling is done in createCheckoutSession
+    } finally {
+      setLoading(false);
+      setSelectedPlan('');
+    }
   };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
@@ -171,7 +265,6 @@ const PricingPage = () => {
     setLoading(true);
 
     try {
-      // Send to your API endpoint
       const response = await fetch('/api/enterprise-inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -181,7 +274,6 @@ const PricingPage = () => {
       if (response.ok) {
         toast.success('Thank you! Our enterprise team will contact you within 24 hours.');
         setShowContactModal(false);
-        // Reset form
         setContactData({
           companyName: '',
           fullName: '',
@@ -200,17 +292,9 @@ const PricingPage = () => {
     }
   };
 
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <UnifiedNavigation />
+      <UnifiedNavigation userData={userData} />
 
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
@@ -221,16 +305,6 @@ const PricingPage = () => {
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Get the perfect plan for your career goals. Start free and upgrade when you're ready.
           </p>
-          
-          {/* Authentication Status Banner */}
-          {!isAuthenticated && (
-            <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-blue-900/30 border border-blue-700/50 rounded-lg">
-              <Shield className="w-5 h-5 text-blue-400" />
-              <span className="text-blue-300 text-sm">
-                Sign in to unlock all features and start your journey
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Pricing Cards */}
@@ -245,143 +319,155 @@ const PricingPage = () => {
                   isHighlighted
                     ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500'
                     : tier.name === 'Enterprise'
-                    ? 'bg-gradient-to-br from-amber-400/10 to-orange-400/10 border border-amber-500/30'
-                    : 'bg-gray-800/50 border border-gray-700'
-                } transition-all duration-300 hover:scale-105`}
+                    ? 'bg-gradient-to-br from-amber-900/20 to-orange-900/20 border-2 border-amber-600'
+                    : 'bg-gray-900 border border-gray-800'
+                }`}
               >
                 {isHighlighted && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                      MOST POPULAR
-                    </span>
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                      Most Popular
+                    </div>
                   </div>
                 )}
 
-                <div className="text-center mb-6">
-                  <Icon className={`w-12 h-12 mx-auto mb-4 ${
-                    isHighlighted ? 'text-blue-400' : 'text-gray-400'
-                  }`} />
-                  <h3 className="text-2xl font-bold text-white mb-2">{tier.name}</h3>
-                  <p className="text-gray-400">{tier.description}</p>
-                </div>
-
-                <div className="text-center mb-6">
-                  <span className="text-4xl font-bold text-white">${tier.price}</span>
-                  <span className="text-gray-400">/{tier.period}</span>
-                </div>
-
-                {/* Features */}
-                <div className="space-y-3 mb-8">
-                  {tier.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start">
-                      <Check className="w-5 h-5 text-green-400 mt-0.5 mr-3 flex-shrink-0" />
-                      <span className="text-gray-300 text-sm">{feature}</span>
-                    </div>
-                  ))}
-                  {tier.notIncluded.map((feature, idx) => (
-                    <div key={idx} className="flex items-start opacity-50">
-                      <X className="w-5 h-5 text-gray-500 mt-0.5 mr-3 flex-shrink-0" />
-                      <span className="text-gray-500 text-sm line-through">{feature}</span>
-                    </div>
-                  ))}
+                <div className="text-center mb-8">
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl mb-4 ${
+                    tier.name === 'Enterprise'
+                      ? 'bg-gradient-to-br from-amber-600 to-orange-600'
+                      : 'bg-gradient-to-br from-blue-600 to-purple-600'
+                  }`}>
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
+                  <p className="text-gray-400 mb-6">{tier.description}</p>
+                  
+                  <div className="flex items-baseline justify-center gap-2">
+                    <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                      ${tier.price}
+                    </span>
+                    <span className="text-gray-400">/{tier.period}</span>
+                  </div>
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => handlePlanSelect(tier.name)}
                   disabled={loading && selectedPlan === tier.name}
-                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center group ${
+                  className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
                     isHighlighted
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:scale-105'
                       : tier.name === 'Enterprise'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white'
-                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                      ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:shadow-lg hover:scale-105'
+                      : tier.price === 0
+                      ? 'bg-white text-gray-900 hover:bg-gray-100'
+                      : 'bg-gray-700 text-white hover:bg-gray-600'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {loading && selectedPlan === tier.name ? (
-                    <span>Processing...</span>
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Processing...</span>
+                    </>
                   ) : (
                     <>
                       <span>{tier.buttonText}</span>
-                      <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4" />
                     </>
                   )}
                 </button>
+
+                {/* Features List */}
+                <div className="space-y-4">
+                  {tier.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-300 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                  {tier.notIncluded.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <X className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                      <span className="text-gray-500 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Enterprise Contact Modal */}
+        {/* Contact Modal for Enterprise */}
         {showContactModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-gray-800 rounded-2xl p-8 max-w-md w-full">
-              <h3 className="text-2xl font-bold text-white mb-6">Enterprise Inquiry</h3>
+            <div className="bg-gray-800 rounded-xl p-8 max-w-md w-full">
+              <h3 className="text-2xl font-bold text-white mb-6">Contact Enterprise Sales</h3>
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <input
                   type="text"
                   placeholder="Company Name"
                   value={contactData.companyName}
-                  onChange={(e) => setContactData({ ...contactData, companyName: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  onChange={(e) => setContactData({...contactData, companyName: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
                   required
                 />
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={contactData.fullName}
-                  onChange={(e) => setContactData({ ...contactData, fullName: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  onChange={(e) => setContactData({...contactData, fullName: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
                   required
                 />
                 <input
                   type="email"
                   placeholder="Email"
                   value={contactData.email}
-                  onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  onChange={(e) => setContactData({...contactData, email: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
                   required
                 />
                 <input
                   type="tel"
-                  placeholder="Phone Number"
+                  placeholder="Phone"
                   value={contactData.phone}
-                  onChange={(e) => setContactData({ ...contactData, phone: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  onChange={(e) => setContactData({...contactData, phone: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
                 />
                 <select
                   value={contactData.employees}
-                  onChange={(e) => setContactData({ ...contactData, employees: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                  onChange={(e) => setContactData({...contactData, employees: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
                   required
                 >
                   <option value="">Number of Employees</option>
                   <option value="1-10">1-10</option>
                   <option value="11-50">11-50</option>
                   <option value="51-200">51-200</option>
-                  <option value="201-500">201-500</option>
-                  <option value="500+">500+</option>
+                  <option value="201-1000">201-1000</option>
+                  <option value="1000+">1000+</option>
                 </select>
                 <textarea
-                  placeholder="Tell us about your needs..."
+                  placeholder="Message"
                   value={contactData.message}
-                  onChange={(e) => setContactData({ ...contactData, message: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 h-32 resize-none"
-                  required
+                  onChange={(e) => setContactData({...contactData, message: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white h-24"
+                  rows={3}
                 />
                 <div className="flex gap-4">
                   <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50"
-                  >
-                    {loading ? 'Submitting...' : 'Submit Inquiry'}
-                  </button>
-                  <button
                     type="button"
                     onClick={() => setShowContactModal(false)}
-                    className="flex-1 py-3 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-200"
+                    className="flex-1 px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
                   >
                     Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 px-4 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50"
+                  >
+                    {loading ? 'Submitting...' : 'Submit'}
                   </button>
                 </div>
               </form>
@@ -391,17 +477,6 @@ const PricingPage = () => {
       </div>
     </div>
   );
-};
-
-const checkAuthStatus = async () => {
-  try {
-    const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    return { isAuthenticated: !!session };
-  } catch (error) {
-    console.error('Error checking auth status:', error);
-    return { isAuthenticated: false };
-  }
 };
 
 export default PricingPage;
