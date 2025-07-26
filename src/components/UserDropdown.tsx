@@ -1,18 +1,21 @@
-// components/UserDropdown.tsx
-'use client'
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import {
   ChevronDown,
-  User,
-  Settings,
-  LogOut,
   Crown,
-  Mail
-} from 'lucide-react'
-import toast from 'react-hot-toast'
+  LogOut,
+  Mail,
+  Settings,
+  User,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+
+import { createClient } from '@/lib/supabase/client';
 
 interface UserDropdownProps {
   userData?: {
