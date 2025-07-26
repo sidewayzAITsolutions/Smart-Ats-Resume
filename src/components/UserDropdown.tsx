@@ -1,4 +1,4 @@
-import React; {
+import React, {
   useEffect,
   useRef,
   useState,
@@ -22,7 +22,13 @@ interface UserDropdownProps {
     email?: string
     name?: string
     isPremium?: boolean
-  } | any
+    user?: {
+      email?: string
+      user_metadata?: {
+        full_name?: string
+      }
+    }
+  }
   className?: string
 }
 
