@@ -1,0 +1,294 @@
+'use client'
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { 
+  Menu, 
+  X, 
+  Download, 
+  Eye, 
+  Save, 
+  Check,
+  Home,
+  FileText,
+  CreditCard,
+  Settings,
+  User,
+  Building,
+  BookOpen,
+  Phone
+} from 'lucide-react';
+import UserDropdown from './UserDropdown';
+
+interface GlobalNavigationProps {
+  // Builder-specific props
+  resumeName?: string;
+  saveStatus?: 'saved' | 'saving' | 'unsaved';
+  onPreview?: () => void;
+  onExportPDF?: () => void;
+  userData?: any;
+  
+  // Page-specific props
+  showBuilderActions?: boolean;
+  showMainNav?: boolean;
+  showAuthButtons?: boolean;
+}
+
+const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
+  resumeName,
+  saveStatus = 'saved',
+  onPreview,
+  onExportPDF,
+  userData,
+  showBuilderActions = false,
+  showMainNav = true,
+  showAuthButtons = true
+}) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  const navigateTo = (path: string) => {
+    router.push(path);
+  };
+
+  // Main navigation items for public pages
+  const mainNavItems = [
+    { href: '/templates', label: 'Templates', icon: FileText },
+    { href: '/pricing', label: 'Pricing', icon: CreditCard },
+    { href: '/enterprise', label: 'Enterprise', icon: Building },
+    { href: '/ats-guide', label: 'ATS Guide', icon: BookOpen },
+    { href: '/contact-sales', label: 'Contact', icon: Phone }
+  ];
+
+  // Authenticated user navigation items
+  const userNavItems = [
+    { href: '/builder', label: 'Builder', icon: FileText },
+    { href: '/templates', label: 'Templates', icon: FileText },
+    { href: '/profiles', label: 'My Resumes', icon: User },
+    { href: '/settings', label: 'Settings', icon: Settings }
+  ];
+
+  const isAuthenticated = !!userData;
+  const navItems = isAuthenticated ? userNavItems : mainNavItems;
+
+  return (
+    <nav className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 py-4 sticky top-0 z-50 shadow-lg">
+      <div className="flex items-center justify-between max-w-7xl mx-auto">
+        {/* Logo - Always on far left */}
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="relative w-10 h-10 flex-shrink-0">
+              <img 
+                src="/horse-logo.png" 
+                alt="SmartATS Logo" 
+                className="w-full h-full object-contain" 
+              />
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+                SmartATS
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Center Content - Builder-specific or empty */}
+        <div className="flex-1 flex items-center justify-center">
+          {showBuilderActions && resumeName && (
+            <div className="flex items-center gap-3">
+              <span className="text-gray-300 font-medium text-sm sm:text-base truncate max-w-[200px]">
+                {resumeName}
+              </span>
+              {saveStatus === 'saved' && (
+                <div className="flex items-center gap-1 text-green-400 text-sm">
+                  <Check className="w-4 h-4" />
+                  <span className="hidden sm:inline">Saved</span>
+                </div>
+              )}
+              {saveStatus === 'saving' && (
+                <div className="flex items-center gap-1 text-yellow-400 text-sm">
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-yellow-400"></div>
+                  <span className="hidden sm:inline">Saving...</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Right Side Navigation */}
+        <div className="flex items-center gap-4">
+          {/* Builder Action Buttons */}
+          {showBuilderActions && (
+            <>
+              {onPreview && (
+                <button
+                  type="button"
+                  onClick={onPreview}
+                  className="hidden sm:flex px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium text-gray-300 transition-all duration-200 items-center gap-2 hover:scale-105 shadow-sm hover:shadow-md"
+                  title="Preview Resume"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span className="hidden md:inline">Preview</span>
+                </button>
+              )}
+              {onExportPDF && (
+                <button
+                  type="button"
+                  onClick={onExportPDF}
+                  className="hidden sm:flex px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white transition-all duration-200 items-center gap-2 hover:scale-105 shadow-sm hover:shadow-md"
+                  title="Export as PDF"
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="hidden md:inline">Export</span>
+                </button>
+              )}
+              <div className="w-px h-6 bg-gray-700"></div>
+            </>
+          )}
+
+          {/* Desktop Navigation */}
+          {showMainNav && (
+            <div className="hidden md:flex items-center gap-6">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 ${
+                      isActive ? 'text-teal-400' : 'text-gray-300'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Auth Buttons or User Dropdown */}
+          {showAuthButtons && (
+            <>
+              {isAuthenticated ? (
+                <UserDropdown userData={userData} />
+              ) : (
+                <div className="hidden md:flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('/login')}
+                    className="text-gray-300 hover:text-white font-medium transition-colors"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('/signup')}
+                    className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    Start Free
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
+            aria-label="Toggle mobile menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-gray-900 shadow-lg border-t border-gray-800 p-6 space-y-4">
+          {/* Mobile Builder Actions */}
+          {showBuilderActions && (
+            <div className="space-y-3 pb-4 border-b border-gray-800">
+              {onPreview && (
+                <button
+                  type="button"
+                  onClick={onPreview}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 transition-colors"
+                >
+                  <Eye className="w-5 h-5" />
+                  Preview Resume
+                </button>
+              )}
+              {onExportPDF && (
+                <button
+                  type="button"
+                  onClick={onExportPDF}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  Export PDF
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Mobile Navigation Items */}
+          {showMainNav && (
+            <div className="space-y-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
+                      isActive 
+                        ? 'bg-teal-600/20 text-teal-400' 
+                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Mobile Auth Buttons */}
+          {showAuthButtons && !isAuthenticated && (
+            <div className="space-y-3 pt-4 border-t border-gray-800">
+              <button
+                type="button"
+                onClick={() => navigateTo('/login')}
+                className="w-full px-4 py-3 text-gray-300 hover:text-white font-medium transition-colors text-left"
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('/signup')}
+                className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-3 rounded-xl font-medium"
+              >
+                Start Free
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default GlobalNavigation;

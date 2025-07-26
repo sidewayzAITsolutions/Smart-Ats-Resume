@@ -1,8 +1,28 @@
 'use client';
-import React, { useState, useEffect, JSX } from 'react';
-import { ArrowRight, CheckCircle, Zap, Shield, Star, Target, TrendingUp, BarChart2, X, Menu, Sparkles, Award, FileText, Clock, User } from 'lucide-react';
-import LogoSplashScreen from '@/components/LogoSplashScreen';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
+import {
+  ArrowRight,
+  Award,
+  BarChart2,
+  CheckCircle,
+  Clock,
+  FileText,
+  Menu,
+  Shield,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  User,
+  X,
+  Zap,
+} from 'lucide-react';
+
+import LogoSplashScreen from '@/components/LogoSplashScreen';
 
 type ATSDemoModalProps = {
   open: boolean;
@@ -14,6 +34,13 @@ const Page: React.FC = () => {
 
   const [scrollY, setScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Navigation configuration
+  const navConfig = {
+    showBuilderActions: false,
+    showMainNav: true,
+    showAuthButtons: true
+  };
 
   const navigateTo = (path: string) => {
     window.location.href = path;
@@ -157,7 +184,7 @@ const Page: React.FC = () => {
             <img src="/horse-logo.png" alt="" className="w-full h-full object-contain" />
           </div>
         </div>
-     
+
         {/* Animated Background Elements */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-teal-600/10 rounded-full blur-3xl animate-float"></div>
@@ -165,65 +192,124 @@ const Page: React.FC = () => {
           <div className="absolute bottom-20 left-1/2 w-80 h-80 bg-green-600/10 rounded-full blur-3xl animate-float"></div>
         </div>
 
-        {/* Header */}
-        <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${scrollY > 20 ? 'bg-gray-900/90 backdrop-blur-md shadow-lg border-b border-gray-800' : 'bg-transparent'}`}>
-          <nav className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {/* Logo Container */}
-                <div className="relative w-40 h-40">
-                  <img src="/horse-logo.png" alt="SmartATS Logo" className="w-full h-full object-contain" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
-                    SmartATS
+        {/* Global Navigation */}
+        <div className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${scrollY > 20 ? 'bg-gray-900/90 backdrop-blur-md' : 'bg-transparent'}`}>
+          {/* Placeholder for GlobalNavigation - will be imported later */}
+          <nav className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 py-4 shadow-lg">
+            <div className="flex items-center justify-between max-w-7xl mx-auto">
+              {/* Logo - Always on far left */}
+              <div className="flex items-center gap-4">
+                <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                  <div className="relative w-10 h-10 flex-shrink-0">
+                    <img
+                      src="/horse-logo.png"
+                      alt="SmartATS Logo"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
-                  <div className="text-xs text-gray-500">Beat the Bots</div>
-                </div>
+                  <div className="hidden sm:block">
+                    <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+                      SmartATS
+                    </div>
+                  </div>
+                </a>
               </div>
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center gap-8">
-                <a href="/templates" className="text-gray-300 hover:text-teal-400 font-medium transition-colors">Templates</a>
-                <a href="/enterprise" className="text-gray-300 hover:text-teal-400 font-medium transition-colors">Enterprise</a>
-                <a href="/pricing" className="text-gray-300 hover:text-teal-400 font-medium transition-colors">Pricing</a>
+              {/* Right Side Navigation */}
+              <div className="flex items-center gap-4">
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex items-center gap-6">
+                  <a href="/templates" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                    Templates
+                  </a>
+                  <a href="/pricing" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                    Pricing
+                  </a>
+                  <a href="/enterprise" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                    Enterprise
+                  </a>
+                  <a href="/ats-guide" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                    ATS Guide
+                  </a>
+                  <a href="/contact-sales" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                    Contact
+                  </a>
+                </div>
+
+                {/* Auth Buttons */}
+                <div className="hidden md:flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('/login')}
+                    className="text-gray-300 hover:text-white font-medium transition-colors"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('/signup')}
+                    className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    Start Free
+                  </button>
+                </div>
+
+                {/* Mobile Menu Button */}
                 <button
                   type="button"
-                  onClick={() => navigateTo('/login')}
-                  className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-6 py-2.5 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
+                  aria-label="Toggle mobile menu"
                 >
-                  Start Free
+                  {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
               </div>
-
-              {/* Mobile Menu Button */}
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-800 text-gray-300"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
             </div>
 
             {/* Mobile Menu */}
             {mobileMenuOpen && (
               <div className="md:hidden absolute top-full left-0 right-0 bg-gray-900 shadow-lg border-t border-gray-800 p-6 space-y-4">
-                <a href="/templates" className="block text-gray-300 hover:text-teal-400 font-medium">Templates</a>
-                <a href="/enterprise" className="block text-gray-300 hover:text-teal-400 font-medium">Enterprise</a>
-                <a href="/pricing" className="block text-gray-300 hover:text-teal-400 font-medium">Pricing</a>
-                <button
-                  type="button"
-                  onClick={() => navigateTo('/login')}
-                  className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white px-6 py-3 rounded-xl font-medium"
-                >
-                  Start Free
-                </button>
+                {/* Mobile Navigation Items */}
+                <div className="space-y-2">
+                  <a href="/templates" className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white">
+                    Templates
+                  </a>
+                  <a href="/pricing" className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white">
+                    Pricing
+                  </a>
+                  <a href="/enterprise" className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white">
+                    Enterprise
+                  </a>
+                  <a href="/ats-guide" className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white">
+                    ATS Guide
+                  </a>
+                  <a href="/contact-sales" className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors text-gray-300 hover:bg-gray-800 hover:text-white">
+                    Contact
+                  </a>
+                </div>
+
+                {/* Mobile Auth Buttons */}
+                <div className="space-y-3 pt-4 border-t border-gray-800">
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('/login')}
+                    className="w-full px-4 py-3 text-gray-300 hover:text-white font-medium transition-colors text-left"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('/signup')}
+                    className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-3 rounded-xl font-medium"
+                  >
+                    Start Free
+                  </button>
+                </div>
               </div>
             )}
           </nav>
-        </header>
-      
+        </div>
+
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 px-6">
           <div className="max-w-6xl mx-auto text-center">
@@ -277,7 +363,7 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-      
+
         {/* Problem/Solution Section */}
         <section className="py-20 px-6 relative">
           <div className="max-w-6xl mx-auto">
@@ -850,7 +936,7 @@ const Page: React.FC = () => {
 
       </div>
     </>
- 
+
   );
 }
 

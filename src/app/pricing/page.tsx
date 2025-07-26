@@ -1,14 +1,24 @@
 // src/app/pricing/page.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import UnifiedNavigation from '@/components/UnifiedNavigation';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
 import {
-  Check, X, ArrowRight, Crown,
-  FileText, Building, Loader2
+  ArrowRight,
+  Building,
+  Check,
+  Crown,
+  FileText,
+  Loader2,
+  X,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+
+import GlobalNavigation from '@/components/GlobalNavigation';
+import { createClient } from '@/lib/supabase/client';
 
 const PricingPage = () => {
   const router = useRouter();
@@ -294,7 +304,12 @@ const PricingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <UnifiedNavigation userData={userData} />
+      <GlobalNavigation
+        userData={userData}
+        showBuilderActions={false}
+        showMainNav={true}
+        showAuthButtons={true}
+      />
 
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}

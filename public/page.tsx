@@ -1,79 +1,60 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import React, { useState, useEffect, useCallback, useRef, JSX, Suspense } from 'react'
-// Import for PDF generation
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import  UnifiedNavigation  from '@/components/UnifiedNavigation'
-import { createClient } from '@/lib/supabase/client';
-import  UserDropdown  from '@/components/UserDropdown';
+import React, {
+  JSX,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import toast from 'react-hot-toast'
+import html2canvas from 'html2canvas';
+// Import for PDF generation
+import jsPDF from 'jspdf';
 import {
-  FileText,
-  Star,
-  Shield,
-  Zap,
-  Filter,
-  CheckCircle,
-  Lock,
-  TrendingUp,
   Award,
-  Users,
-  Clock,
-  ArrowRight,
-  X,
-  Sparkles,
-  BarChart,
-  Target,
-  Eye,
-  Briefcase,
-  Code,
-  Heart,
-  GraduationCap,
-  Building,
-  Palette,
-  DollarSign,
-  Globe,
-  Microscope,
   Brain,
-  Search,
-  RefreshCw,
-  Download,
-  Save,
-  Lightbulb,
-  Loader,
-  Plus,
-  Crown,
-  MapPin,
+  Briefcase,
+  CheckCircle,
   ChevronRight,
-  Rocket,
-  AlertCircle,
-  User,
-  Menu,
-  ChevronDown,
-  Copy,
-  Trash2,
-  Move,
-  Info,
-  MessageSquare,
-  BookOpen,
-  Settings,
-  BarChart3,
+  Clock,
+  Code,
+  Crown,
+  Download,
+  Eye,
+  FileText,
+  Github,
+  Globe,
+  GraduationCap,
   Home,
-  Upload,
-  LogOut,
-  Mail,
-  Phone,
+  Lightbulb,
   Linkedin,
-  Github
-} from 'lucide-react'
-import FloatingATSGuide from '@/components/FloatingATSGuide'
-import { ClientRequest } from 'http'
-import { getUser } from '@/lib/supabase/server'
+  Loader,
+  Lock,
+  Mail,
+  MapPin,
+  Phone,
+  Plus,
+  Save,
+  Search,
+  Settings,
+  Sparkles,
+  Target,
+  Trash2,
+  Upload,
+  User,
+  X,
+  Zap,
+} from 'lucide-react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
+
+import FloatingATSGuide from '@/components/FloatingATSGuide';
+import UserDropdown from '@/components/UserDropdown';
+import { createClient } from '@/lib/supabase/client';
 
 // DRY: Lock icon for non-premium sections
 const NonPremiumLockIcon = () => <Lock className='w-4 h-4 text-pink-400' />
@@ -3737,8 +3718,8 @@ function EnhancedATSResumeBuilderContent() {
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white relative'>
-      {/* Unified Navigation */}
-      <UnifiedNavigation
+      {/* Global Navigation */}
+      <GlobalNavigation
         resumeName={
           resumeName || resumeData.personal.fullName || 'Untitled Resume'
         }
@@ -3746,6 +3727,9 @@ function EnhancedATSResumeBuilderContent() {
         onPreview={() => setShowPreview(true)}
         onExportPDF={handlePDFDownload}
         userData={rawUser ? { user: rawUser, profile: rawProfile } : null}
+        showBuilderActions={true}
+        showMainNav={false}
+        showAuthButtons={true}
       />
       <div className="fixed top-4 right-4 z-50">
         <UserDropdown userData={userData} />

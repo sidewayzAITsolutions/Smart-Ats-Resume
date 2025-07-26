@@ -1,15 +1,27 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { } from '@supabase/ssr';
-import toast from 'react-hot-toast';
-import UnifiedNavigation from '@/components/UnifiedNavigation';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
 import {
-  User, FileText, Calendar, Download, Trash2, Edit3, Plus,
-  Eye, Star, Clock, BarChart3, Target, Briefcase, Crown,
-  ArrowRight, Settings, Upload, Save
+  BarChart3,
+  Briefcase,
+  Calendar,
+  Crown,
+  Download,
+  Edit3,
+  FileText,
+  Plus,
+  Settings,
+  Target,
+  Trash2,
+  User,
 } from 'lucide-react';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+
 import { createClient } from '@/lib/supabase/client';
 
 interface SavedResume {
@@ -141,7 +153,12 @@ const ProfilesPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
-        <UnifiedNavigation />
+        <GlobalNavigation
+          userData={userProfile}
+          showBuilderActions={false}
+          showMainNav={true}
+          showAuthButtons={true}
+        />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -154,7 +171,12 @@ const ProfilesPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
-      <UnifiedNavigation />
+      <GlobalNavigation
+        userData={userProfile}
+        showBuilderActions={false}
+        showMainNav={true}
+        showAuthButtons={true}
+      />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

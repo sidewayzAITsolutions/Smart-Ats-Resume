@@ -1,13 +1,23 @@
 // app/enterprise/page.tsx
 'use client';
 import React from 'react';
-import { useRouter } from 'next/navigation';
+
 import {
-  Zap, Award, BarChart3, Building2, Palette,
-  FileText, HeadphonesIcon, CheckCircle2, ArrowRight,
-  TrendingUp, Star, ChevronRight, Target
+  ArrowRight,
+  Award,
+  BarChart3,
+  Building2,
+  CheckCircle2,
+  ChevronRight,
+  FileText,
+  HeadphonesIcon,
+  Palette,
+  Star,
+  Target,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
-import UnifiedNavigation from '@/components/UnifiedNavigation';
+import { useRouter } from 'next/navigation';
 
 const EnterprisePage = () => {
   const router = useRouter();
@@ -67,7 +77,11 @@ const EnterprisePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black">
-      <UnifiedNavigation />
+      <GlobalNavigation
+        showBuilderActions={false}
+        showMainNav={true}
+        showAuthButtons={true}
+      />
 
       {/* Hero Section */}
       <section className="relative pt-24 pb-20 px-6 overflow-hidden">

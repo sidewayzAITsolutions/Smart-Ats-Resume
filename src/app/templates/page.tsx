@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import GlobalNavigation from '@/components/GlobalNavigation';
 import {
   FileText,
   Star,
@@ -39,7 +40,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
-import UnifiedNavigation from "@/components/UnifiedNavigation";
+
 import UserDropdown from "@/components/UserDropdown";
 
 // Premium Upgrade Banner Component
@@ -1168,80 +1169,17 @@ const EnhancedTemplatesPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black relative">
-      {/* UnifiedNavigation with Build button */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[73px]">
-            <div className="flex items-center">
-              <Link href="/" className="flex items-start">
-                <img
-                  src="/horse-logo.png"
-                  alt="SmartATS"
-                  className="w-14 h-14 mr-3"
-                />
-                <span className="text-xl font-bold text-white">SmartATS</span>
-                <span className="ml-2 px-2 py-1 bg-teal-900/50 border border-teal-700/50 rounded-full text-xs font-medium text-teal-300">
-                  Resume
-                </span>
-              </Link>
-            </div>
-
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/templates"
-                className="text-gray-300 hover:text-white font-medium transition-colors"
-              >
-                Templates
-              </Link>
-              <Link
-                href="/enterprise"
-                className="text-gray-300 hover:text-white font-medium transition-colors"
-              >
-                Enterprise
-              </Link>
-              <Link
-                href="/ats-guide"
-                className="text-gray-300 hover:text-white font-medium transition-colors"
-              >
-                ATS Guide
-              </Link>
-            </nav>
-
-            <div className="flex items-center space-x-4">
-              <Link href="/builder">
-                <button className="px-4 py-2 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
-                  <Hammer className="w-4 h-4" />
-                  Build
-                </button>
-              </Link>
-              {userLoading ? (
-                <div className="px-4 py-2 border border-gray-700 text-gray-300 font-medium rounded-lg flex items-center gap-2">
-                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-600 border-t-gray-300"></div>
-                  Loading...
-                </div>
-              ) : userData ? (
-                <UserDropdown
-                  userData={{
-                    email: userData.email,
-                    name: userData.name,
-                    isPremium: isPremium,
-                  }}
-                />
-              ) : (
-                <Link href="/login">
-                  <button className="px-4 py-2 border border-gray-700 text-gray-300 font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
-                    <Users className="w-4 h-4" />
-                    Sign In
-                  </button>
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Spacer for fixed navigation */}
-      <div className="h-[73px]"></div>
+      {/* Global Navigation */}
+      <GlobalNavigation
+        userData={userData ? {
+          email: userData.email,
+          name: userData.name,
+          isPremium: isPremium,
+        } : null}
+        showBuilderActions={false}
+        showMainNav={true}
+        showAuthButtons={true}
+      />
 
       {/* Premium Banner for Non-Premium Users - Top of Page */}
       {!isPremium && (

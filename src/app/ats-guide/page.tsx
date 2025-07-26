@@ -1,39 +1,68 @@
 'use client';
 
 import React from 'react';
+
+import {
+  AlertTriangle,
+  ArrowLeft,
+  CheckCircle,
+  FileText,
+  Target,
+} from 'lucide-react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, AlertTriangle, Target, Zap, FileText, Award } from 'lucide-react';
 
 const ATSGuidePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
-      {/* Header */}
-      <header className="bg-gray-900/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="relative w-12 h-12">
-                <img src="/horse-logo.png" alt="SmartATS Logo" className="w-full h-full object-contain" />
+      {/* Global Navigation */}
+      {/* GlobalNavigation component will be added here */}
+      <nav className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 py-4 sticky top-0 z-50 shadow-lg">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="relative w-10 h-10 flex-shrink-0">
+                <img
+                  src="/horse-logo.png"
+                  alt="SmartATS Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
-                SmartATS
-              </span>
+              <div className="hidden sm:block">
+                <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+                  SmartATS
+                </div>
+              </div>
             </Link>
-            
-            <div className="flex items-center gap-4">
-              <Link href="/templates" className="text-gray-300 hover:text-teal-400 transition-colors">
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/templates" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
                 Templates
               </Link>
-              <Link href="/pricing" className="text-gray-300 hover:text-teal-400 transition-colors">
+              <Link href="/pricing" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
                 Pricing
               </Link>
-              <Link href="/builder" className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-all">
-                Start Building
+              <Link href="/enterprise" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                Enterprise
+              </Link>
+              <Link href="/ats-guide" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-teal-400">
+                ATS Guide
+              </Link>
+              <Link href="/contact-sales" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
+                Contact
+              </Link>
+            </div>
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/login" className="text-gray-300 hover:text-white font-medium transition-colors">
+                Sign In
+              </Link>
+              <Link href="/signup" className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                Start Free
               </Link>
             </div>
           </div>
         </div>
-      </header>
+      </nav>
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-12">

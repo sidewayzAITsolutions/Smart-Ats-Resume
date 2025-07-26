@@ -2,13 +2,23 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+
+import {
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  Lock,
+  Mail,
+  Target,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
-import { Mail, Lock, User, Loader2, AlertCircle, Target, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
-export default function SignupPage() {
+import { createClient } from '@/lib/supabase/client';
+
+export default function SignupPage(): React.JSX.Element {
   const router = useRouter();
   const supabase = createClient();
   const [fullName, setFullName] = useState('');
@@ -39,7 +49,7 @@ export default function SignupPage() {
     }
 
     setLoading(true);
-
+  
     try {
       // Sign up the user
       const { data, error } = await supabase.auth.signUp({
@@ -116,7 +126,26 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gray-950">
+      {/* Navigation - minimal for auth pages */}
+      <nav className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 py-4 shadow-lg">
+        <div className="flex items-center justify-center max-w-7xl mx-auto">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="relative w-10 h-10 flex-shrink-0">
+              <img
+                src="/horse-logo.png"
+                alt="SmartATS Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+              SmartATS
+            </div>
+          </Link>
+        </div>
+      </nav>
+
+      <div className="flex items-center justify-center px-4 py-8 min-h-[calc(100vh-80px)]">
       <div className="max-w-md w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center space-x-2 mb-8"><div><Target className="w-8 h-8 text-blue-500" /><span className="text-2xl font-bold text-white">SmartATS</span></div></Link>
@@ -300,6 +329,7 @@ export default function SignupPage() {
           </p>
         </div>
       </div>
+    </div>
     </div>
   );
 }

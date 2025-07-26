@@ -1,19 +1,29 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
-import UnifiedNavigation from '@/components/UnifiedNavigation';
-import { 
-  Building, Users, Target, Shield, Zap, BarChart3, Award, 
-  FileText, Clock, Phone, Code, CheckCircle, TrendingUp,
-  Star, Sparkles, ArrowRight, Globe, Lock, Palette,
-  BarChart2, Settings, Brain, RefreshCw, Database,
-  MessageSquare, Calendar, CreditCard, Plus, Edit,
-  Trash2, Download, Upload, Search, Filter, Eye,
-  X
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  Clock,
+  Download,
+  Edit,
+  Eye,
+  FileText,
+  Filter,
+  Plus,
+  RefreshCw,
+  Search,
+  Target,
+  Trash2,
+  TrendingUp,
+  Users,
+  X,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import {} from '@supabase/ssr';
+
+import { createClient } from '@/lib/supabase/client';
 
 interface TeamMember {
   id: string;
@@ -155,7 +165,11 @@ const EnterpriseDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black">
-      <UnifiedNavigation />
+      <GlobalNavigation
+        showBuilderActions={false}
+        showMainNav={true}
+        showAuthButtons={true}
+      />
 
       {/* Dashboard Header */}
       <div className="pt-24 pb-8 px-6 bg-gradient-to-br from-amber-900/20 to-orange-900/20 border-b border-amber-700/30">
