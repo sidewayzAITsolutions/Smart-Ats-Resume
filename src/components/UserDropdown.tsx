@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from ‘react’
-import { useRouter } from ‘next/navigation’
-import { createClient } from ‘@/lib/supabase/client’
+import React, { useState, useRef, useEffect } from ‘react’;
+import { useRouter } from ‘next/navigation’;
+import { createClient } from ‘@/lib/supabase/client’;
 import {
 ChevronDown,
 User,
@@ -8,7 +8,7 @@ Settings,
 LogOut,
 Crown,
 Mail
-} from ‘lucide-react’
+} from ‘lucide-react’;
 import toast from ‘react-hot-toast’
 
 interface UserDropdownProps {
