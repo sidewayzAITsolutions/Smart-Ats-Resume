@@ -1,24 +1,30 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { 
-  Menu, 
-  X, 
-  Download, 
-  Eye, 
-  Save, 
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  BookOpen,
+  Building,
   Check,
-  Home,
-  FileText,
   CreditCard,
+  Download,
+  Eye,
+  FileText,
+  Menu,
+  Phone,
   Settings,
   User,
-  Building,
-  BookOpen,
-  Phone
+  X,
 } from 'lucide-react';
+import Link from 'next/link';
+import {
+  usePathname,
+  useRouter,
+} from 'next/navigation';
+
 import UserDropdown from './UserDropdown';
 
 interface GlobalNavigationProps {
@@ -283,6 +289,26 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
               >
                 Start Free
               </button>
+            </div>
+          )}
+
+          {/* Mobile User Menu */}
+          {showAuthButtons && isAuthenticated && (
+            <div className="space-y-2 pt-4 border-t border-gray-800">
+              <Link
+                href="/profiles"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+              >
+                <User className="w-5 h-5" />
+                Profile
+              </Link>
+              <Link
+                href="/settings"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                Settings
+              </Link>
             </div>
           )}
         </div>
