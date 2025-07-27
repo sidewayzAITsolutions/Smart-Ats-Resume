@@ -1,23 +1,22 @@
-// components/FeatureCard.jsx
 import React from 'react';
+import { LucideIcon } from 'lucide-react'; // Assuming lucide-react for icons
 
 interface FeatureCardProps {
-  icon: React.ReactNode;
+  icon: LucideIcon; // Icon component from lucide-react
   title: string;
   description: string;
 }
 
-export const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description }) => {
   return (
-    <div className="bg-[#F0F0F0] rounded-xl p-6 border border-[#D4A136]/30 hover:shadow-lg transition-all duration-300">
-      <div className="w-12 h-12 bg-[#1A504B]/50 rounded-xl flex items-center justify-center mb-4">
-        {icon}
+    <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 dark:bg-gray-800 dark:shadow-gray-700">
+      <div className="text-blue-600 mb-4">
+        <Icon size={48} strokeWidth={1.5} />
       </div>
-      <h3 className="text-xl font-bold text-[#1A504B] mb-2">{title}</h3>
-      <p className="text-[#1A504B]/70 text-sm">{description}</p>
-      <button className="mt-4 px-4 py-2 bg-gradient-to-r from-[#1A504B] to-[#D4A136] text-[#F5E7CB] rounded-lg text-sm font-medium hover:shadow-md transition-all">
-        Learn More
-      </button>
+      <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-400">{description}</p>
     </div>
   );
 };
+
+export default FeatureCard;

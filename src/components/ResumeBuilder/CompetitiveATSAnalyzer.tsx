@@ -1,172 +1,140 @@
-// src/components/ResumeBuilder/CompetitiveATSCard.tsx - Create this file
-'use client';
-import { useState, useEffect } from 'react';
-import { ATSAnalysisResult, CompetitiveATSAnalyzer } from '@/utils/competitive-ats-analyzer';
-import { TrendingUp, Target, Award, Zap, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Sparkles, BarChart2, CheckCircle, XCircle } from 'lucide-react'; // Assuming lucide-react for icons
 
-interface CompetitiveATSCardProps {
-  resume: any;
-  jobDescription?: string;
-  targetIndustry?: string;
+interface CompetitiveATSAnalyzerProps {
+  resumeText: string;
+  jobDescription: string;
+  onAnalyze: (score: number, feedback: string) => void;
+  onLoadingChange: (isLoading: boolean) => void;
 }
 
-export default function CompetitiveATSCard({ resume, jobDescription, targetIndustry }: CompetitiveATSCardProps) {
-  const [analysis, setAnalysis] = useState<ATSAnalysisResult | null>(null);
-  const [loading, setLoading] = useState(false);
+const CompetitiveATSAnalyzer: React.FC<CompetitiveATSAnalyzerProps> = ({
+  resumeText,
+  jobDescription,
+  onAnalyze,
+  onLoadingChange,
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<{ score: number; feedback: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (resume && resume.personalInfo?.fullName) {
-      analyzeResume();
+  const performATSAnalysis = async () => {
+    setIsLoading(true);
+    onLoadingChange(true);
+    setAnalysisResult(null);
+    setError(null);
+
+    try {
+      const prompt = `Analyze the following resume against the job description. Provide an ATS compatibility score (0-100) and detailed feedback on how to improve the resume for better ATS matching. Focus on keywords, formatting, and sections.
+      Resume: "${resumeText}"
+      Job Description: "${jobDescription}"
+      
+      Provide the response in JSON format with two fields: "score" (number) and "feedback" (string).`;
+
+      const apiKey = ""; // Canvas will provide this at runtime
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              "score": { "type": "NUMBER" },
+              "feedback": { "type": "STRING" }
+            },
+            "propertyOrdering": ["score", "feedback"]
+          }
+        }
+      };
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`API error: ${errorData.error.message || response.statusText}`);
+      }
+
+      const result = await response.json();
+      if (result.candidates && result.candidates.length > 0 &&
+          result.candidates[0].content && result.candidates[0].content.parts &&
+          result.candidates[0].content.parts.length > 0) {
+        const jsonString = result.candidates[0].content.parts[0].text;
+        const parsedResult = JSON.parse(jsonString);
+
+        if (typeof parsedResult.score === 'number' && typeof parsedResult.feedback === 'string') {
+          setAnalysisResult(parsedResult);
+          onAnalyze(parsedResult.score, parsedResult.feedback);
+        } else {
+          setError("Invalid AI response format.");
+        }
+      } else {
+        setError("No analysis found from AI.");
+      }
+    } catch (err: any) {
+      console.error('Error performing ATS analysis:', err);
+      setError(`Failed to perform ATS analysis: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+      onLoadingChange(false);
     }
-  }, [resume, jobDescription, targetIndustry]);
-
-  const analyzeResume = async () => {
-    setLoading(true);
-    
-    // Simulate API call (replace with actual analysis)
-    setTimeout(() => {
-      const analyzer = new CompetitiveATSAnalyzer();
-      const result = analyzer.analyzeCompetitively(resume, jobDescription, targetIndustry);
-      setAnalysis(result);
-      setLoading(false);
-    }, 1500);
   };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600 bg-green-100';
-    if (score >= 60) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
-  };
-
-  const getScoreIcon = (score: number) => {
-    if (score >= 80) return <CheckCircle className="w-5 h-5 text-green-600" />;
-    if (score >= 60) return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
-    return <XCircle className="w-5 h-5 text-red-600" />;
-  };
-
-  if (loading) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Analyzing Your Resume</h3>
-          <p className="text-gray-600">Running competitive ATS analysis...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!analysis) return null;
 
   return (
-    <div className="space-y-6">
-      {/* Overall Score Card */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900">Your ATS Score</h3>
-            <p className="text-gray-600">Competitive analysis vs industry leaders</p>
-          </div>
-          <div className={`px-6 py-3 rounded-full ${getScoreColor(analysis.overallScore)}`}>
-            <span className="text-3xl font-bold">{analysis.overallScore}%</span>
-          </div>
-        </div>
+    <div className="p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700">
+      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Competitive ATS Analyzer</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        Get an ATS compatibility score and detailed feedback by analyzing your resume against a job description.
+      </p>
 
-        {/* Competitive Comparison */}
-        <div className="grid md:grid-cols-3 gap-4 mb-6">
-          {Object.values(analysis.competitiveAnalysis).map((competitor, index) => (
-            <div key={index} className="bg-gray-50 rounded-lg p-4 text-center">
-              <h4 className="font-semibold text-gray-900 mb-2">vs {competitor.competitorName}</h4>
-              <div className="flex justify-center items-center gap-4 mb-2">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">{competitor.ourScore}%</div>
-                  <div className="text-xs text-gray-600">ResuMate</div>
-                </div>
-                <div className="text-gray-400">vs</div>
-                <div className="text-center">
-                  <div className="text-lg font-bold text-gray-400">{competitor.theirEstimatedScore}%</div>
-                  <div className="text-xs text-gray-600">{competitor.competitorName}</div>
-                </div>
-              </div>
-              <div className="text-xs text-green-600 font-medium">
-                ✓ {competitor.advantage}
-              </div>
-            </div>
-          ))}
-        </div>
+      <Button
+        onClick={performATSAnalysis}
+        disabled={isLoading || !resumeText || !jobDescription}
+        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out flex items-center justify-center"
+      >
+        {isLoading ? (
+          <>
+            <Sparkles className="animate-spin mr-2" size={18} /> Analyzing...
+          </>
+        ) : (
+          <>
+            <BarChart2 className="mr-2" size={18} /> Analyze Resume
+          </>
+        )}
+      </Button>
 
-        {/* Score Breakdown */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Object.entries(analysis.detailedBreakdown).map(([key, section]) => (
-            <div key={key} className="text-center">
-              <div className="flex items-center justify-center mb-2">
-                {getScoreIcon(section.score)}
-              </div>
-              <div className="font-semibold text-gray-900 capitalize">
-                {key.replace(/([A-Z])/g, ' $1').trim()}
-              </div>
-              <div className={`text-lg font-bold ${section.score >= 80 ? 'text-green-600' : section.score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                {section.score}%
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Actionable Insights */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <Target className="w-5 h-5 mr-2 text-blue-600" />
-          Actionable Insights
-        </h4>
-        
-        <div className="space-y-4">
-          {analysis.actionableInsights.map((insight, index) => (
-            <div key={index} className={`border-l-4 pl-4 py-3 ${
-              insight.priority === 'high' ? 'border-red-500 bg-red-50' :
-              insight.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
-              'border-green-500 bg-green-50'
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <h5 className="font-medium text-gray-900">{insight.title}</h5>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  insight.priority === 'high' ? 'bg-red-100 text-red-800' :
-                  insight.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-green-100 text-green-800'
-                }`}>
-                  {insight.priority} priority
-                </span>
-              </div>
-              <p className="text-gray-700 text-sm mb-2">{insight.description}</p>
-              <div className="text-sm">
-                <div className="font-medium text-gray-900">Action: {insight.action}</div>
-                <div className="text-blue-600">Impact: {insight.impact}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Competitive Advantages */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <Award className="w-5 h-5 mr-2 text-blue-600" />
-          Your Competitive Advantages
-        </h4>
-        
-        <div className="grid md:grid-cols-2 gap-3">
-          {analysis.competitiveAdvantages.map((advantage, index) => (
-            <div key={index} className="flex items-start gap-2">
-              <Zap className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700 text-sm">{advantage}</span>
-            </div>
-          ))}
-        </div>
-        
-        <div className="mt-4 p-4 bg-white rounded-lg">
-          <div className="text-sm text-center text-gray-600">
-            🎯 <strong>Bottom Line:</strong> Your resume performs {analysis.overallScore >= 80 ? 'excellently' : analysis.overallScore >= 60 ? 'well' : 'adequately'} compared to users of expensive competitors like Jobscan ($49.95/mo), Resume.io ($16/mo), and Rezi ($29/mo) - all for just $9.99/month!
+      {error && (
+        <p className="text-red-500 text-sm mt-2">{error}</p>
+      )}
+
+      {analysisResult && (
+        <div className="mt-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+          <h4 className="text-md font-medium mb-2 text-gray-800 dark:text-gray-200">Analysis Result:</h4>
+          <div className="flex items-center mb-2">
+            <span className="text-lg font-bold mr-2 text-gray-900 dark:text-white">ATS Score:</span>
+            <span className={`text-2xl font-extrabold ${analysisResult.score >= 70 ? 'text-green-600' : analysisResult.score >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+              {analysisResult.score}/100
+            </span>
+            {analysisResult.score >= 70 ? (
+              <CheckCircle className="ml-2 text-green-600" size={20} />
+            ) : (
+              <XCircle className="ml-2 text-red-600" size={20} />
+            )}
           </div>
+          <h5 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-1">Feedback:</h5>
+          <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300 whitespace-pre-wrap">
+            {analysisResult.feedback}
+          </p>
         </div>
-      </div>
+      )}
     </div>
   );
-}
+};
+
+export default CompetitiveATSAnalyzer;
