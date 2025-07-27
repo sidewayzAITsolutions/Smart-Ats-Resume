@@ -1,6 +1,8 @@
+// src/app/api/parse-resume/route.ts
 import { NextResponse } from 'next/server';
-import { Buffer } from 'buffer';// Enhanced parsing with multiple libraries
+import { Buffer } from 'buffer'; // Critical: Import Buffer
 
+// Enhanced parsing with multiple libraries
 let pdfParse: any = null;
 let mammoth: any = null;
 let natural: any = null;
@@ -151,7 +153,7 @@ async function parseEnhancedPDF(buffer: Buffer): Promise<{text: string, method: 
   console.log('Attempting enhanced PDF parsing, size:', buffer.length, 'bytes');
 
   // Method 1: Try pdf-parse library
-  if (pdfParse) {
+  if (pdfParse) { // Added check for pdfParse
     try {
       const data = await pdfParse(buffer);
       if (data.text && data.text.length > 50) {
@@ -192,7 +194,7 @@ async function parseEnhancedDocument(buffer: Buffer): Promise<{text: string, met
   console.log('Attempting enhanced document parsing, size:', buffer.length, 'bytes');
 
   // Method 1: Try mammoth.js for DOCX files
-  if (mammoth) {
+  if (mammoth) { // Added check for mammoth
     try {
       const result = await mammoth.extractRawText({ buffer: buffer });
       if (result.value && result.value.length > 50) {
