@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
+import { Buffer } from 'buffer';// Enhanced parsing with multiple libraries
 
-// Enhanced parsing with multiple libraries
 let pdfParse: any = null;
 let mammoth: any = null;
 let natural: any = null;
