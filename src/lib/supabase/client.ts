@@ -1,22 +1,14 @@
-// lib/analytics.ts
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+// src/lib/supabase/client.ts
+import { createBrowserClient } from '@supabase/ssr';
 
-export function trackEvent(eventName: string, properties: Record<string, any> = {}) {
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', eventName, {
-      custom_parameter_1: properties.value,
-      ...properties,
-    });
+export function createClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+    throw new Error('Supabase environment variables are not set. Please check your .env.local file.');
   }
-  
-  // Also send to your database for internal analytics
-  fetch('/api/analytics/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ eventName, properties }),
-  });
+
+  return createBrowserClient(supabaseUrl, supabaseAnonKey);
 }

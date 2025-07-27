@@ -96,28 +96,28 @@ function LoginContent() {
       </nav>
 
       <div className="flex items-center justify-center px-4 py-8 min-h-[calc(100vh-80px)]">
-      <div className="max-w-md w-full">
-        {/* Logo */}
-        <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
-          <Target className="w-8 h-8 text-blue-500" />
-          <span className="text-2xl font-bold text-white">SmartATS</span>
-        </Link>
+        <div className="max-w-md w-full">
+          {/* Logo */}
+          <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
+            <Target className="w-8 h-8 text-blue-500" />
+            <span className="text-2xl font-bold text-white">SmartATS</span>
+          </Link>
 
-        {/* Login Form */}
-        <div className="bg-gray-900 p-8 rounded-xl shadow-lg border border-gray-800">
-          <h2 className="text-2xl font-bold text-white mb-6 text-center">Welcome Back</h2>
-          
-          {error && (
-            <div className="mb-4 p-3 bg-red-900/20 border border-red-700 rounded-lg flex items-center space-x-2">
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              <span className="text-red-400 text-sm">{error}</span>
-            </div>
-          )}
+          {/* Login Form */}
+          <div className="bg-gray-900 p-8 rounded-xl shadow-lg border border-gray-800">
+            <h2 className="text-2xl font-bold text-white mb-6 text-center">Welcome Back</h2>
 
-          <form onSubmit={async (e: React.FormEvent) => {
-            e.preventDefault();
-            setError('');
-            setLoading(true);
+            {error && (
+              <div className="mb-4 p-3 bg-red-900/20 border border-red-700 rounded-lg flex items-center space-x-2">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+                <span className="text-red-400 text-sm">{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={async (e: React.FormEvent) => {
+              e.preventDefault();
+              setError('');
+              setLoading(true);
 
             try {
               const { data, error } = await supabase.auth.signInWithPassword({
@@ -209,6 +209,7 @@ function LoginContent() {
             </div>
 
             <button
+              type="button"
               onClick={handleGoogleLogin}
               className="mt-4 w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center space-x-3 border border-gray-700"
             >
@@ -240,6 +241,7 @@ function LoginContent() {
               Sign up for free
             </Link>
           </p>
+          </div>
         </div>
       </div>
     </div>
