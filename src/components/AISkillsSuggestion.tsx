@@ -1,142 +1,147 @@
-import React, { useState } from 'react';
-import { Sparkles, Loader2 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Sparkles } from 'lucide-react'; // Assuming lucide-react for icons
 
 interface AISkillsSuggestionProps {
-  targetRole: string;
-  currentSkills: string[];
-  onAddSkills: (skills: string[]) => void;
-  isPremium: boolean;
+    currentSkills: string[];https://gemini.google.com/u/2/app/509c8652e835a4ed
+    jobDescription: string;
+    onAddSkills: (skills: string[]) => void;
+    onLoadingChange: (isLoading: boolean) => void;
 }
 
-export default function AISkillsSuggestion({ 
-  targetRole, 
-  currentSkills, 
-  onAddSkills,
-  isPremium 
-}: AISkillsSuggestionProps) {
-  const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+const AISkillsSuggestion: React.FC<AISkillsSuggestionProps> = ({
+    currentSkills,
+    jobDescription,
+    onAddSkills,
+    onLoadingChange,
+}) => {
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const generateSkillSuggestions = async () => {
-    if (!isPremium) {
-      toast.error('AI Skills is a premium feature. Please upgrade to access.');
-      return;
-    }
+    const fetchAISuggestions = async () => {
+        setIsLoading(true);
+        onLoadingChange(true);
+        setError(null);
+        try {
+            const prompt = `Given the following current skills: "${currentSkills.join(', ')}" and job description: "${jobDescription}", suggest 5-10 relevant skills that are missing from the current skills but present in the job description or highly relevant to it. Provide the skills as a comma-separated list.`;
 
-    if (!targetRole) {
-      toast.error('Please enter a target job role first');
-      return;
-    }
+            const apiKey = ""; // Canvas will provide this at runtime
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    setLoading(true);
-    try {
-      // For now, use predefined suggestions based on role
-      // In production, this would call your AI API
-      const roleSuggestions: Record<string, string[]> = {
-        'general manager of restaurant': [
-          'Staff Management', 'Budget Planning', 'Customer Service Excellence', 
-          'Inventory Control', 'Food Safety Compliance', 'POS Systems',
-          'Team Leadership', 'Conflict Resolution', 'Sales Analysis',
-          'Menu Development', 'Vendor Relations', 'Health Regulations'
-        ],
-        'software engineer': [
-          'JavaScript', 'React', 'Node.js', 'Python', 'Git', 'AWS',
-          'Docker', 'Kubernetes', 'CI/CD', 'Agile', 'REST APIs', 'SQL'
-        ],
-        'default': [
-          'Communication', 'Problem Solving', 'Time Management',
-          'Teamwork', 'Leadership', 'Adaptability', 'Critical Thinking'
-        ]
-      };
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "suggestedSkills": {
+                                type: "ARRAY",
+                                items: { "type": "STRING" }
+                            }
+                        },
+                        "propertyOrdering": ["suggestedSkills"]
+                    }
+                }
+            };
 
-      const roleKey = targetRole.toLowerCase();
-      const availableSuggestions = roleSuggestions[roleKey] || roleSuggestions['default'];
-      
-      // Filter out skills already added
-      const newSuggestions = availableSuggestions.filter(
-        skill => !currentSkills.some(
-          current => current.toLowerCase() === skill.toLowerCase()
-        )
-      );
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-      setSuggestions(newSuggestions);
-      setShowSuggestions(true);
-      
-      if (newSuggestions.length === 0) {
-        toast('No new skill suggestions available for this role');
-      }
-    } catch (error) {
-      console.error('Error generating suggestions:', error);
-      toast.error('Failed to generate skill suggestions');
-    } finally {
-      setLoading(false);
-    }
-  };
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`API error: ${errorData.error.message || response.statusText}`);
+            }
 
-  const addSuggestedSkill = (skill: string) => {
-    onAddSkills([skill]);
-    setSuggestions(prev => prev.filter(s => s !== skill));
-    toast.success(`Added "${skill}" to your skills`);
-  };
+            const result = await response.json();
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                const jsonString = result.candidates[0].content.parts[0].text;
+                const parsedResult = JSON.parse(jsonString);
+                const newSuggestions = parsedResult.suggestedSkills.filter(
+                    (skill: string) => !currentSkills.includes(skill.trim())
+                );
+                setSuggestions(newSuggestions);
+            } else {
+                setError("No suggestions found from AI.");
+            }
+        } catch (err: any) {
+            console.error('Error fetching AI suggestions:', err);
+            setError(`Failed to fetch AI suggestions: ${err.message}`);
+        } finally {
+            setIsLoading(false);
+            onLoadingChange(false);
+        }
+    };
 
-  const addAllSuggestions = () => {
-    onAddSkills(suggestions);
-    toast.success(`Added ${suggestions.length} skills`);
-    setSuggestions([]);
-    setShowSuggestions(false);
-  };
+    const handleAddAll = () => {
+        onAddSkills(suggestions);
+        setSuggestions([]); // Clear suggestions after adding
+    };
 
-  return (
-    <div className="mt-4">
-      <button
-        onClick={generateSkillSuggestions}
-        disabled={loading || !isPremium}
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
-          isPremium
-            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700'
-            : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-        }`}
-      >
-        {loading ? (
+    return (
+        <div className= "p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700" >
+        <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white" > AI Skill Suggestions < /h3>
+            < p className = "text-sm text-gray-600 dark:text-gray-400 mb-4" >
+                Click the button below to get AI - powered skill suggestions based on your current skills and the job description.
+      < /p>
+
+                    < Button
+    onClick = { fetchAISuggestions }
+    disabled = { isLoading || !jobDescription
+}
+className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out flex items-center justify-center"
+    >
+{
+    isLoading?(
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Generating...</span>
-          </>
+    <Sparkles className="animate-spin mr-2" size = { 18} /> Generating...
+</>
         ) : (
-          <>
-            <Sparkles className="w-4 h-4" />
-            <span>AI Suggest Skills</span>
-            {!isPremium && <span className="text-xs">(Premium)</span>}
-          </>
+    <>
+    <Sparkles className= "mr-2" size = { 18} /> Get AI Skill Suggestions
+        < />
         )}
-      </button>
+</Button>
 
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm text-gray-300">AI-Suggested Skills for {targetRole}:</p>
-            <button
-              onClick={addAllSuggestions}
-              className="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Add All
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((skill, index) => (
-              <button
-                key={index}
-                onClick={() => addSuggestedSkill(skill)}
-                className="px-3 py-1 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 hover:text-white transition-colors text-sm"
-              >
-                + {skill}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+{
+    error && (
+        <p className="text-red-500 text-sm mt-2" > { error } < /p>
+      )
 }
+
+{
+    suggestions.length > 0 && (
+        <div className="mt-4" >
+            <h4 className="text-md font-medium mb-2 text-gray-800 dark:text-gray-200" > Suggested Skills: </h4>
+                < div className = "flex flex-wrap gap-2 mb-4" >
+                {
+                    suggestions.map((skill, index) => (
+                        <span
+                key= { index }
+                className = "bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-200"
+                        >
+                        { skill }
+                        < /span>
+                    ))
+                }
+                    < /div>
+                    < Button
+    onClick = { handleAddAll }
+    className = "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+        >
+        Add All Suggested Skills
+            < /Button>
+            < /div>
+      )
+}
+</div>
+  );
+};
+
+export default AISkillsSuggestion;
