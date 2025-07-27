@@ -1,288 +1,99 @@
-// lib/export-resume.ts
-import { useState } from 'react';
+// src/lib/export-resume.ts
 
-// Simple Resume interface for type safety
-export interface Resume {
-  personalInfo: {
-    fullName: string;
-    email: string;
-    phone: string;
-    location: string;
-    linkedin?: string;
-    portfolio?: string;
-  };
-  summary: string;
-  experience: Array<{
-    id: string;
-    company: string;
-    position: string;
-    startDate: string;
-    endDate?: string;
-    current: boolean;
-    description: string;
-    achievements: string[];
-  }>;
-  education: Array<{
-    id: string;
-    institution: string;
-    degree: string;
-    field: string;
-    graduationDate: string;
-    gpa?: string;
-  }>;
-  skills: Array<{
-    id: string;
-    name: string;
-    category: string;
-  }>;
-}
+import { ResumeData } from '@/types/resume'; // Ensure this path is correct
+// import jsPDF from 'jspdf'; // If you plan to use jspdf for client-side PDF generation
+// import html2canvas from 'html2canvas'; // If you plan to use html2canvas for client-side image generation
 
-export class ResumeExporter {
-  // Export to PDF using basic HTML conversion
-  async exportToPDF(resume: Resume): Promise<Blob> {
-    try {
-      // Create HTML content for the resume
-      const htmlContent = this.generateResumeHTML(resume);
-      
-      // For now, return a text blob as placeholder
-      // In production, you would use jsPDF or similar library
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      return blob;
-    } catch (error) {
-      console.error('PDF export error:', error);
-      throw new Error('Failed to export PDF');
+/**
+ * Placeholder for resume export functionality.
+ * In a real application, this would handle generating PDF, DOCX, or JSON files.
+ *
+ * Options for implementation:
+ * 1.  **Client-side (less robust for complex layouts):**
+ * -   For PDF: Use libraries like `jspdf` or `html2canvas` to convert rendered HTML to PDF.
+ * -   For DOCX: More complex, often requires server-side processing.
+ * -   For JSON: Simple `JSON.stringify(resumeData)`.
+ * 2.  **Server-side (recommended for robust PDF/DOCX generation):**
+ * -   Send `resumeData` to a backend API.
+ * -   Backend uses libraries (e.g., Puppeteer for PDF, DocxTemplater for DOCX) to generate the file.
+ * -   Backend sends the generated file back as a download.
+ * 3.  **Third-party API (simplest, but external dependency):**
+ * -   Use a service like DocRaptor, Aspose, or similar to convert HTML/JSON to desired formats.
+ */
+
+/**
+ * Exports resume data to a specified format.
+ * This is a client-side placeholder. For production, consider server-side generation for fidelity.
+ * @param resumeData The complete resume data object.
+ * @param format The desired export format ('pdf', 'docx', 'json').
+ * @param fileName The desired file name (without extension).
+ */
+export async function exportResume(resumeData: ResumeData, format: 'pdf' | 'docx' | 'json', fileName: string = 'resume') {
+  try {
+    switch (format) {
+      case 'json':
+        // Client-side JSON export
+        const jsonBlob = new Blob([JSON.stringify(resumeData, null, 2)], { type: 'application/json' });
+        const jsonUrl = URL.createObjectURL(jsonBlob);
+        const jsonLink = document.createElement('a');
+        jsonLink.href = jsonUrl;
+        jsonLink.download = `${fileName}.json`;
+        document.body.appendChild(jsonLink);
+        jsonLink.click();
+        document.body.removeChild(jsonLink);
+        URL.revokeObjectURL(jsonUrl);
+        console.log('Resume exported as JSON.');
+        break;
+
+      case 'pdf':
+        // Client-side PDF generation (placeholder - typically requires a more robust library)
+        // For a basic HTML to PDF, you might render the resume in a hidden div
+        // and then use html2canvas + jspdf.
+        // For better results, a server-side approach is highly recommended.
+        alert('PDF export is a premium feature and requires server-side processing for best quality. This is a placeholder.');
+        console.warn('PDF export initiated (client-side placeholder). For production, consider server-side PDF generation.');
+        // Example (requires jspdf and html2canvas):
+        /*
+        const input = document.getElementById('resume-preview-area'); // Assuming your resume is rendered here
+        if (input) {
+          const canvas = await html2canvas(input);
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const imgWidth = 210; // A4 width in mm
+          const pageHeight = 297; // A4 height in mm
+          const imgHeight = canvas.height * imgWidth / canvas.width;
+          let heightLeft = imgHeight;
+          let position = 0;
+
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+          pdf.save(`${fileName}.pdf`);
+        } else {
+          console.error('Resume preview area not found for PDF export.');
+        }
+        */
+        break;https://gemini.google.com/u/2/app
+
+      case 'docx':
+        // DOCX generation (placeholder - almost always requires server-side processing)
+        alert('DOCX export is a premium feature and typically requires server-side processing. This is a placeholder.');
+        console.warn('DOCX export initiated (client-side placeholder). For production, server-side generation is required.');
+        break;
+
+      default:
+        console.error('Unsupported export format:', format);
+        alert('Unsupported export format.');
+        break;
     }
-  }
-
-  // Export to DOCX (placeholder implementation)
-  async exportToDOCX(resume: Resume): Promise<Blob> {
-    try {
-      // Create a simple text version for now
-      const textContent = this.generateResumeText(resume);
-      const blob = new Blob([textContent], { type: 'text/plain' });
-      return blob;
-    } catch (error) {
-      console.error('DOCX export error:', error);
-      throw new Error('Failed to export DOCX');
-    }
-  }
-
-  // Generate HTML content for the resume
-  private generateResumeHTML(resume: Resume): string {
-    return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>${resume.personalInfo.fullName} - Resume</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; color: #333; }
-          .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
-          .name { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-          .contact { font-size: 14px; margin-bottom: 5px; }
-          .section { margin-bottom: 25px; }
-          .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-          .experience-item, .education-item { margin-bottom: 15px; }
-          .job-title { font-weight: bold; font-size: 16px; }
-          .company { font-style: italic; margin-bottom: 5px; }
-          .dates { font-size: 14px; color: #666; margin-bottom: 10px; }
-          .achievement { margin-left: 20px; margin-bottom: 5px; }
-          .skills-list { display: flex; flex-wrap: wrap; gap: 15px; }
-          .skill { background: #f0f0f0; padding: 5px 10px; border-radius: 3px; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="name">${resume.personalInfo.fullName}</div>
-          <div class="contact">${resume.personalInfo.email}</div>
-          <div class="contact">${resume.personalInfo.phone}</div>
-          <div class="contact">${resume.personalInfo.location}</div>
-          ${resume.personalInfo.linkedin ? `<div class="contact">${resume.personalInfo.linkedin}</div>` : ''}
-          ${resume.personalInfo.portfolio ? `<div class="contact">${resume.personalInfo.portfolio}</div>` : ''}
-        </div>
-
-        ${resume.summary ? `
-        <div class="section">
-          <div class="section-title">Professional Summary</div>
-          <p>${resume.summary}</p>
-        </div>
-        ` : ''}
-
-        ${resume.experience.length > 0 ? `
-        <div class="section">
-          <div class="section-title">Experience</div>
-          ${resume.experience.map(exp => `
-            <div class="experience-item">
-              <div class="job-title">${exp.position}</div>
-              <div class="company">${exp.company}</div>
-              <div class="dates">${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}</div>
-              ${exp.description ? `<p>${exp.description}</p>` : ''}
-              ${exp.achievements.length > 0 ? `
-                <ul>
-                  ${exp.achievements.map(achievement => `<li class="achievement">${achievement}</li>`).join('')}
-                </ul>
-              ` : ''}
-            </div>
-          `).join('')}
-        </div>
-        ` : ''}
-
-        ${resume.education.length > 0 ? `
-        <div class="section">
-          <div class="section-title">Education</div>
-          ${resume.education.map(edu => `
-            <div class="education-item">
-              <div class="job-title">${edu.degree} in ${edu.field}</div>
-              <div class="company">${edu.institution}</div>
-              <div class="dates">${edu.graduationDate}</div>
-              ${edu.gpa ? `<div>GPA: ${edu.gpa}</div>` : ''}
-            </div>
-          `).join('')}
-        </div>
-        ` : ''}
-
-        ${resume.skills.length > 0 ? `
-        <div class="section">
-          <div class="section-title">Skills</div>
-          <div class="skills-list">
-            ${resume.skills.map(skill => `<span class="skill">${skill.name}</span>`).join('')}
-          </div>
-        </div>
-        ` : ''}
-      </body>
-      </html>
-    `;
-  }
-
-  // Generate plain text version
-  private generateResumeText(resume: Resume): string {
-    let text = '';
-    
-    // Header
-    text += `${resume.personalInfo.fullName}\n`;
-    text += `${resume.personalInfo.email} | ${resume.personalInfo.phone}\n`;
-    text += `${resume.personalInfo.location}\n`;
-    if (resume.personalInfo.linkedin) text += `${resume.personalInfo.linkedin}\n`;
-    if (resume.personalInfo.portfolio) text += `${resume.personalInfo.portfolio}\n`;
-    text += '\n';
-
-    // Summary
-    if (resume.summary) {
-      text += 'PROFESSIONAL SUMMARY\n';
-      text += '===================\n';
-      text += `${resume.summary}\n\n`;
-    }
-
-    // Experience
-    if (resume.experience.length > 0) {
-      text += 'EXPERIENCE\n';
-      text += '==========\n';
-      resume.experience.forEach(exp => {
-        text += `${exp.position}\n`;
-        text += `${exp.company}\n`;
-        text += `${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}\n`;
-        if (exp.description) text += `${exp.description}\n`;
-        exp.achievements.forEach(achievement => {
-          text += `• ${achievement}\n`;
-        });
-        text += '\n';
-      });
-    }
-
-    // Education
-    if (resume.education.length > 0) {
-      text += 'EDUCATION\n';
-      text += '=========\n';
-      resume.education.forEach(edu => {
-        text += `${edu.degree} in ${edu.field}\n`;
-        text += `${edu.institution}\n`;
-        text += `${edu.graduationDate}\n`;
-        if (edu.gpa) text += `GPA: ${edu.gpa}\n`;
-        text += '\n';
-      });
-    }
-
-    // Skills
-    if (resume.skills.length > 0) {
-      text += 'SKILLS\n';
-      text += '======\n';
-      text += resume.skills.map(skill => skill.name).join(', ') + '\n';
-    }
-
-    return text;
+  } catch (error) {
+    console.error('Error during resume export:', error);
+    alert('Failed to export resume. Please try again.');
   }
 }
-
-// React hook for easy usage
-export function useResumeExport() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const exporter = new ResumeExporter();
-
-  const exportResume = async (
-    resume: Resume, 
-    format: 'pdf' | 'docx' | 'html' | 'txt', 
-    templateId: string = 'basic'
-  ): Promise<void> => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      let blob: Blob;
-      let filename: string;
-      let mimeType: string;
-
-      const baseName = resume.personalInfo.fullName || 'resume';
-
-      switch (format) {
-        case 'pdf':
-          blob = await exporter.exportToPDF(resume);
-          filename = `${baseName}.pdf`;
-          mimeType = 'application/pdf';
-          break;
-        case 'docx':
-          blob = await exporter.exportToDOCX(resume);
-          filename = `${baseName}.docx`;
-          mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-          break;
-        case 'html':
-          blob = new Blob([exporter['generateResumeHTML'](resume)], { type: 'text/html' });
-          filename = `${baseName}.html`;
-          mimeType = 'text/html';
-          break;
-        case 'txt':
-          blob = new Blob([exporter['generateResumeText'](resume)], { type: 'text/plain' });
-          filename = `${baseName}.txt`;
-          mimeType = 'text/plain';
-          break;
-        default:
-          throw new Error('Unsupported format');
-      }
-
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Export failed';
-      setError(errorMessage);
-      console.error('Export error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    exportResume,
-    loading,
-    error
-  };
-}
-
-// Default export
-export default ResumeExporter;
