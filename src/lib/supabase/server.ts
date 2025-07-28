@@ -1,6 +1,11 @@
-// src/lib/supabase/server.ts
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
+
+// src/lib/supabase/server.ts
+import {
+  type CookieOptions,
+  createServerClient,
+} from '@supabase/ssr';
 
 export function createClient(cookieStore: ReturnType<typeof cookies>) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -42,4 +47,38 @@ export function createClient(cookieStore: ReturnType<typeof cookies>) {
       },
     }
   );
+}
+
+export function createClientFromRequest(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+    throw new Error('Supabase environment variables are not set. Please check your .env.local file.');
+  }
+
+  const supabase = createServerClient(
+    supabaseUrl,
+    supabaseAnonKey,
+    {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value;
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          // For API routes, we can't set cookies in the response here
+          // This would need to be handled in the response
+          console.warn('Cannot set cookies in API route context');
+        },
+        remove(name: string, options: CookieOptions) {
+          // For API routes, we can't remove cookies in the response here
+          // This would need to be handled in the response
+          console.warn('Cannot remove cookies in API route context');
+        },
+      },
+    }
+  );
+
+  return { supabase };
 }

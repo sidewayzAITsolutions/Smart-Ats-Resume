@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { Buffer } from 'buffer'; // CRITICAL FIX: Import Buffer
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
 
 // Dynamically import libraries for parsing different file types
 // This helps in reducing the initial bundle size for serverless functions
@@ -58,7 +60,7 @@ const parseRTF = (buffer: Buffer) => {
 };
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
+  const { supabase } = createClientFromRequest(req);
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
