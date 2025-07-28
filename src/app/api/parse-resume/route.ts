@@ -7,13 +7,11 @@ import {
 // Dynamically import libraries for parsing different file types
 // This helps in reducing the initial bundle size for serverless functions
 const loadLibraries = async () => {
-  const [pdfParse, mammoth, natural, compromise] = await Promise.all([
+  const [pdfParse, mammoth] = await Promise.all([
     import('pdf-parse').catch(() => null), // Catch import errors gracefully
     import('mammoth').catch(() => null),
-    import('natural').catch(() => null),
-    import('compromise').catch(() => null),
   ]);
-  return { pdfParse, mammoth, natural, compromise };
+  return { pdfParse, mammoth };
 };
 
 // Helper to parse PDF content
