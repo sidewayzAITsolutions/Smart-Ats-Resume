@@ -284,7 +284,7 @@ export default function SignupPage(): React.JSX.Element {
                 </p>
               )}
               <p className="text-xs text-gray-500 mt-1">
-                Must include: uppercase, lowercase, numbers, and special characters (!@#$%^&*()_+-=[]{}|;':",./<>?)
+                Must include: uppercase, lowercase, numbers, and special characters
               </p>
             </div>
 
