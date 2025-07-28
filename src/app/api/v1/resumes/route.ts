@@ -1,5 +1,21 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+
+import { createServerClient } from '@supabase/ssr';
+
+// Helper to create Supabase client for API operations
+function createSupabaseClient() {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: () => undefined,
+        set: () => {},
+        remove: () => {},
+      },
+    }
+  );
+}
 
 // Types
 interface ResumeData {
@@ -88,7 +104,7 @@ async function verifyApiKey(apiKey: string | null): Promise<{ isValid: boolean; 
 
 async function getUserResumes(userId: string): Promise<SavedResume[]> {
   try {
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
 
     // Get user's resumes from database
     const { data: resumes, error } = await supabase
@@ -111,7 +127,7 @@ async function getUserResumes(userId: string): Promise<SavedResume[]> {
 
 async function createResume(resumeData: Partial<SavedResume>, userId: string): Promise<SavedResume | null> {
   try {
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
 
     const newResume: Omit<SavedResume, 'id'> = {
       name: resumeData.name || 'Untitled Resume',
@@ -274,7 +290,7 @@ export async function PUT(req: Request) {
     const resumeData = await req.json();
 
     // Update resume in database
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
     const { data: resume, error } = await supabase
       .from('resumes')
       .update({
@@ -354,7 +370,7 @@ export async function DELETE(req: Request) {
     }
 
     // Delete resume from database
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
     const { error } = await supabase
       .from('resumes')
       .delete()
