@@ -9,7 +9,7 @@ export const personalInfoSchema = z.object({
   phone: z.string().optional().refine((val) => !val || /^\+?[0-9\s-()]{7,20}$/.test(val), 'Invalid phone number format'),
   linkedin: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')), // Allow empty string
   portfolio: z.string().url('Invalid Portfolio URL').optional().or(z.literal('')), // Allow empty string
-  address: z.string().optional().max(200, 'Address is too long'),
+  address: z.string().max(200, 'Address is too long').optional(),
 });
 
 // Schema for education entries
@@ -18,8 +18,8 @@ export const educationSchema = z.object({
   degree: z.string().min(1, 'Degree is required'),
   fieldOfStudy: z.string().optional(),
   startDate: z.string().min(1, 'Start date is required').regex(/^\d{4}-\d{2}$/, 'Date format should be YYYY-MM'),
-  endDate: z.string().optional().regex(/^\d{4}-\d{2}$/, 'Date format should be YYYY-MM').or(z.literal('')), // Allow empty string
-  description: z.string().optional().max(500, 'Description is too long'),
+  endDate: z.string().regex(/^\d{4}-\d{2}$/, 'Date format should be YYYY-MM').optional().or(z.literal('')), // Allow empty string
+  description: z.string().max(500, 'Description is too long').optional(),
 });
 
 // Schema for experience entries
@@ -28,7 +28,7 @@ export const experienceSchema = z.object({
   company: z.string().min(1, 'Company name is required'),
   location: z.string().optional(),
   startDate: z.string().min(1, 'Start date is required').regex(/^\d{4}-\d{2}$/, 'Date format should be YYYY-MM'),
-  endDate: z.string().optional().regex(/^\d{4}-\d{2}$/, 'Date format should be YYYY-MM').or(z.literal('')), // Allow empty string
+  endDate: z.string().regex(/^\d{4}-\d{2}$/, 'Date format should be YYYY-MM').optional().or(z.literal('')), // Allow empty string
   isCurrent: z.boolean().optional(), // Indicates if it's a current job
   description: z.string().min(1, 'Job description/achievements are required').max(1000, 'Description is too long'),
 });

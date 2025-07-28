@@ -1,6 +1,6 @@
 // src/lib/export-resume.ts
 
-import { ResumeData } from '@/types/resume'; // Ensure this path is correct
+import { Resume } from '@/types/resume';
 
 // import jsPDF from 'jspdf'; // If you plan to use jspdf for client-side PDF generation
 // import html2canvas from 'html2canvas'; // If you plan to use html2canvas for client-side image generation
@@ -29,7 +29,7 @@ import { ResumeData } from '@/types/resume'; // Ensure this path is correct
  * @param format The desired export format ('pdf', 'docx', 'json').
  * @param fileName The desired file name (without extension).
  */
-export async function exportResume(resumeData: ResumeData, format: 'pdf' | 'docx' | 'json', fileName: string = 'resume') {
+export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 'json', fileName: string = 'resume') {
   try {
     switch (format) {
       case 'json':
