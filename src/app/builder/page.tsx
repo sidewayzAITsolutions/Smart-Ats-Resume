@@ -53,6 +53,7 @@ import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 import FloatingATSGuide from '@/components/FloatingATSGuide';
+import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
 
 // DRY: Lock icon for non-premium sections
