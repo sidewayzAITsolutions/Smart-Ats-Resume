@@ -15,54 +15,11 @@ const ATSGuidePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Global Navigation */}
-      {/* GlobalNavigation component will be added here */}
-      <nav className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 py-4 sticky top-0 z-50 shadow-lg">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="relative w-10 h-10 flex-shrink-0">
-                <img
-                  src="/horse-logo.png"
-                  alt="SmartATS Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
-                  SmartATS
-                </div>
-              </div>
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-6">
-              <Link href="/templates" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
-                Templates
-              </Link>
-              <Link href="/pricing" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
-                Pricing
-              </Link>
-              <Link href="/enterprise" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
-                Enterprise
-              </Link>
-              <Link href="/ats-guide" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-teal-400">
-                ATS Guide
-              </Link>
-              <Link href="/contact-sales" className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 text-gray-300">
-                Contact
-              </Link>
-            </div>
-            <div className="hidden md:flex items-center gap-3">
-              <Link href="/login" className="text-gray-300 hover:text-white font-medium transition-colors">
-                Sign In
-              </Link>
-              <Link href="/signup" className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
-                Start Free
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <GlobalNavigation
+        showBuilderActions={false}
+        showMainNav={true}
+        showAuthButtons={true}
+      />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-12">
