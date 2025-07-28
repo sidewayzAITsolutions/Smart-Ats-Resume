@@ -23,6 +23,7 @@ import {
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
+import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
 
 interface UserProfile {

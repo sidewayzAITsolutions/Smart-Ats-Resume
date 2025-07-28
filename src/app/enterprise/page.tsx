@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import GlobalNavigation from '@/components/GlobalNavigation';
+
 const EnterprisePage = () => {
   const router = useRouter();
 
