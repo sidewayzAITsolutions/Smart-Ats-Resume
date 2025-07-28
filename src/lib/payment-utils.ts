@@ -130,7 +130,14 @@ export const handleProPlanCheckout = async (
     }
 
     // Log the price ID for debugging
-    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_1234567890';
+    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    if (!priceId) {
+      toast.error('Payment configuration error. Please contact support.');
+      console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+      setLoading(false);
+      setSelectedPlan('');
+      return;
+    }
     console.log('Using price ID:', priceId);
 
     await createCheckoutSession({

@@ -59,7 +59,7 @@ export default function SignupPage(): React.JSX.Element {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/pricing')}`
         }
       });
 
@@ -78,7 +78,7 @@ export default function SignupPage(): React.JSX.Element {
           });
           
           toast.success('Account created successfully!');
-          router.push('/templates');
+          router.push('/pricing');
         } else {
           // Show confirmation message
           toast.success('Please check your email to confirm your account');
@@ -99,11 +99,16 @@ export default function SignupPage(): React.JSX.Element {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/pricing')}`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         }
       });
 
       if (error) {
+        console.error('Google signup error:', error);
         toast.error(error.message);
       }
     } catch (error) {
@@ -274,6 +279,7 @@ export default function SignupPage(): React.JSX.Element {
             </div>
 
             <button
+              type="button"
               onClick={handleGoogleSignup}
               className="mt-4 w-full py-3 px-4 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium border border-gray-700 flex items-center justify-center space-x-2"
             >

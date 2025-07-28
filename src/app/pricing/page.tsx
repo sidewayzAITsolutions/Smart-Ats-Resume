@@ -255,7 +255,12 @@ const PricingPage = () => {
           router.push('/builder');
           break;
         case 'Pro':
-          const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_1234567890';
+          const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+          if (!priceId) {
+            toast.error('Payment configuration error. Please contact support.');
+            console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+            return;
+          }
           await createCheckoutSession(priceId);
           break;
         default:
