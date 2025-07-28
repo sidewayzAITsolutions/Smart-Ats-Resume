@@ -56,6 +56,20 @@ function LoginContent() {
     checkUser();
   }, [router, next, supabase]);
 
+  // Listen for auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Login page - Auth state change:', event, session?.user?.email);
+
+      if (event === 'SIGNED_IN' && session?.user) {
+        console.log('User signed in, redirecting to:', next);
+        toast.success('Welcome back!');
+        router.push(next);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router, next, supabase.auth]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -120,20 +134,30 @@ function LoginContent() {
               setLoading(true);
 
             try {
+              console.log('Attempting to sign in with email:', email);
+
               const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
               });
 
+              console.log('Sign in response:', { user: data.user?.email, error });
+
               if (error) {
+                console.error('Sign in error:', error);
                 setError(error.message);
                 toast.error(error.message);
               } else if (data.user) {
-                toast.success('Welcome back!');
-                router.push(next);
+                console.log('Sign in successful, user:', data.user.email);
+                // Don't redirect here, let the auth state listener handle it
+                toast.success('Signing you in...');
+              } else {
+                console.error('No user data returned from sign in');
+                setError('Sign in failed - no user data returned');
+                toast.error('Sign in failed');
               }
             } catch (error) {
-              console.error('Login error:', error);
+              console.error('Unexpected login error:', error);
               setError('An unexpected error occurred');
               toast.error('Failed to sign in');
             } finally {

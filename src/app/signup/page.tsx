@@ -1,7 +1,7 @@
 // app/signup/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   AlertCircle,
@@ -28,6 +28,21 @@ export default function SignupPage(): React.JSX.Element {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Listen for auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, session?.user?.email);
+
+      if (event === 'SIGNED_IN' && session?.user) {
+        console.log('User signed in, redirecting to templates');
+        toast.success('Welcome! Redirecting to templates...');
+        router.push('/templates');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router, supabase.auth]);
+
   const validatePassword = () => {
     if (password.length < 6) {
       setError('Password must be at least 6 characters long');
@@ -49,8 +64,10 @@ export default function SignupPage(): React.JSX.Element {
     }
 
     setLoading(true);
-  
+
     try {
+      console.log('Starting signup process...');
+
       // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -59,34 +76,63 @@ export default function SignupPage(): React.JSX.Element {
           data: {
             full_name: fullName,
           },
+<<<<<<< HEAD
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/pricing')}`
+=======
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`
+>>>>>>> 2416d4a9bc019e50273a777dc89390dc2b027092
         }
       });
 
+      console.log('Signup response:', { data, error });
+
       if (error) {
+        console.error('Signup error:', error);
         setError(error.message);
         toast.error(error.message);
-      } else if (data.user) {
-        // Create profile immediately if email confirmation is disabled
+        return;
+      }
+
+      if (data.user) {
+        console.log('User created:', data.user);
+
+        // Check if email confirmation is required
         if (data.user.email_confirmed_at) {
-          await supabase.from('profiles').insert({
-            id: data.user.id,
-            email: data.user.email,
-            full_name: fullName,
-            is_premium: false,
-            subscription_status: 'free'
-          });
-          
+          // Email confirmation is disabled - user is immediately confirmed
+          console.log('Email confirmation disabled, user is confirmed');
+
+          try {
+            await supabase.from('profiles').insert({
+              id: data.user.id,
+              email: data.user.email,
+              full_name: fullName,
+              is_premium: false,
+              subscription_status: 'free'
+            });
+            console.log('Profile created successfully');
+          } catch (profileError) {
+            console.error('Profile creation error:', profileError);
+            // Don't fail the signup for profile creation errors
+          }
+
           toast.success('Account created successfully!');
           router.push('/pricing');
         } else {
-          // Show confirmation message
-          toast.success('Please check your email to confirm your account');
-          router.push('/login?message=Please check your email to confirm your account');
+          // Email confirmation is enabled - user needs to check email
+          console.log('Email confirmation required');
+          toast.success('Account created! Please check your email to confirm your account, then return to sign in.');
+          // Don't redirect immediately, let the user see the success message
+          setTimeout(() => {
+            router.push('/login?message=' + encodeURIComponent('Please check your email to confirm your account, then sign in here.'));
+          }, 2000);
         }
+      } else {
+        console.error('No user data returned from signup');
+        setError('Failed to create account - no user data returned');
+        toast.error('Failed to create account');
       }
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error('Unexpected signup error:', error);
       setError('An unexpected error occurred');
       toast.error('Failed to create account');
     } finally {
@@ -99,11 +145,15 @@ export default function SignupPage(): React.JSX.Element {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+<<<<<<< HEAD
           redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/pricing')}`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
           },
+=======
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`
+>>>>>>> 2416d4a9bc019e50273a777dc89390dc2b027092
         }
       });
 
