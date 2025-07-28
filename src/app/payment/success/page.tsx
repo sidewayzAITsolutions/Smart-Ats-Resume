@@ -1,12 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react'; // Assuming lucide-react for icons
-import { Button } from '@/components/ui/Button';
+import {
+  Suspense,
+  useEffect,
+  useState,
+} from 'react';
 
-export default function PaymentSuccessPage() {
+import {
+  CheckCircle,
+  Loader2,
+  XCircle,
+} from 'lucide-react'; // Assuming lucide-react for icons
+import {
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
+
+import { Button } from '@/components/ui/Button';
+import { createClient } from '@/lib/supabase/client';
+
+function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const session_id = searchParams.get('session_id');
@@ -112,5 +125,20 @@ export default function PaymentSuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
+          <p className="text-gray-600 dark:text-gray-400">Loading payment status...</p>
+        </div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
