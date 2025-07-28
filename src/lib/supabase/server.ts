@@ -67,14 +67,20 @@ export function createClientFromRequest(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          // For API routes, we can't set cookies in the response here
-          // This would need to be handled in the response
-          console.warn('Cannot set cookies in API route context');
+          // For API routes, we'll try to set cookies but it may not work
+          try {
+            request.cookies.set(name, value);
+          } catch (error) {
+            console.warn('Cannot set cookies in API route context:', error);
+          }
         },
         remove(name: string, options: CookieOptions) {
-          // For API routes, we can't remove cookies in the response here
-          // This would need to be handled in the response
-          console.warn('Cannot remove cookies in API route context');
+          // For API routes, we'll try to remove cookies but it may not work
+          try {
+            request.cookies.delete(name);
+          } catch (error) {
+            console.warn('Cannot remove cookies in API route context:', error);
+          }
         },
       },
     }
