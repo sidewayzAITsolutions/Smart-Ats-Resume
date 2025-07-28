@@ -3733,7 +3733,9 @@ function EnhancedATSResumeBuilderContent() {
         showAuthButtons={true}
       />
       <div className="fixed top-4 right-4 z-50">
-        <UserDropdown userData={userData} />
+        {rawUser && (
+          <UserDropdown userData={rawUser} />
+        )}
       </div>
 
       {/* Background Logo - Large and Faded */}
