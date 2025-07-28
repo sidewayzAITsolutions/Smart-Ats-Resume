@@ -4,6 +4,8 @@ import {
   NextResponse,
 } from 'next/server';
 
+import { createClientFromRequest } from '@/lib/supabase/server';
+
 // Dynamically import libraries for parsing different file types
 // This helps in reducing the initial bundle size for serverless functions
 const loadLibraries = async () => {
