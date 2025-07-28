@@ -76,11 +76,7 @@ export default function SignupPage(): React.JSX.Element {
           data: {
             full_name: fullName,
           },
-<<<<<<< HEAD
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/pricing')}`
-=======
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`
->>>>>>> 2416d4a9bc019e50273a777dc89390dc2b027092
         }
       });
 
@@ -116,7 +112,7 @@ export default function SignupPage(): React.JSX.Element {
           }
 
           toast.success('Account created successfully!');
-          router.push('/pricing');
+          router.push('/templates');
         } else {
           // Email confirmation is enabled - user needs to check email
           console.log('Email confirmation required');
@@ -145,15 +141,11 @@ export default function SignupPage(): React.JSX.Element {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-<<<<<<< HEAD
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/pricing')}`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
           },
-=======
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`
->>>>>>> 2416d4a9bc019e50273a777dc89390dc2b027092
         }
       });
 
