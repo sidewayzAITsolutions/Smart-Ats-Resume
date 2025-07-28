@@ -1,6 +1,7 @@
 // src/lib/export-resume.ts
 
 import { ResumeData } from '@/types/resume'; // Ensure this path is correct
+
 // import jsPDF from 'jspdf'; // If you plan to use jspdf for client-side PDF generation
 // import html2canvas from 'html2canvas'; // If you plan to use html2canvas for client-side image generation
 
@@ -79,7 +80,7 @@ export async function exportResume(resumeData: ResumeData, format: 'pdf' | 'docx
           console.error('Resume preview area not found for PDF export.');
         }
         */
-        break;https://gemini.google.com/u/2/app
+        break;
 
       case 'docx':
         // DOCX generation (placeholder - almost always requires server-side processing)

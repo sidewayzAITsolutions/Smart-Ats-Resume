@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 import BusinessCard from '@/components/BusinessCard';
+import GlobalNavigation from '@/components/GlobalNavigation';
 
 export default function ContactSalesPage() {
   return (

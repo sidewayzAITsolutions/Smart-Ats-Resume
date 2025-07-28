@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+
 import { X } from 'lucide-react'; // Assuming lucide-react for icons
 
-interface UpgradeModalProps {https://gemini.google.com
+import { Button } from '@/components/ui/Button';
+
+interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
