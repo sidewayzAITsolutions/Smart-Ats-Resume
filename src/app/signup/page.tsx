@@ -44,10 +44,22 @@ export default function SignupPage(): React.JSX.Element {
   }, [router, supabase.auth]);
 
   const validatePassword = () => {
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
       return false;
     }
+
+    // Check for required character types based on Supabase requirements
+    const hasLowercase = /[a-z]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSpecialChars = /[!@#$%^&*()_+\-=\[\]{}|;':",./<>?]/.test(password);
+
+    if (!hasLowercase || !hasUppercase || !hasNumbers || !hasSpecialChars) {
+      setError('Password must contain at least one lowercase letter, uppercase letter, number, and special character (!@#$%^&*()_+-=[]{}|;\':",./<>?)');
+      return false;
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return false;
@@ -271,6 +283,9 @@ export default function SignupPage(): React.JSX.Element {
                   Password strength: {passwordStrength()}
                 </p>
               )}
+              <p className="text-xs text-gray-500 mt-1">
+                Must include: uppercase, lowercase, numbers, and special characters (!@#$%^&*()_+-=[]{}|;':",./<>?)
+              </p>
             </div>
 
             <div>

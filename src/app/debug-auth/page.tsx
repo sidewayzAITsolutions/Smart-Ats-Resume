@@ -55,7 +55,7 @@ export default function DebugAuthPage() {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: 'test@example.com',
-        password: 'testpassword123',
+        password: 'TestPassword123!',
         options: {
           data: {
             full_name: 'Test User',
@@ -73,7 +73,7 @@ export default function DebugAuthPage() {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: 'test@example.com',
-        password: 'testpassword123',
+        password: 'TestPassword123!',
       });
       addLog(`Sign in result - User: ${data.user?.email || 'none'}, Error: ${error?.message || 'none'}`);
     } catch (error) {
