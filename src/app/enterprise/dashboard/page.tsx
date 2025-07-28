@@ -23,6 +23,7 @@ import {
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
+import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
 
 interface TeamMember {
