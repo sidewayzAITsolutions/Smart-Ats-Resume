@@ -61,6 +61,9 @@ export async function middleware(request: NextRequest) {
     error,
   } = await supabase.auth.getUser()
 
+  // Debug logging
+  console.log('Middleware - Path:', request.nextUrl.pathname, 'User:', user?.email, 'Error:', error?.message)
+
   // Protected routes that require authentication
   const protectedRoutes = ['/builder', '/templates', '/settings', '/pricing']
   const isProtectedRoute = protectedRoutes.some(route => 
@@ -75,6 +78,7 @@ export async function middleware(request: NextRequest) {
 
   // If accessing protected route without auth, redirect to login
   if (isProtectedRoute && (!user || error)) {
+    console.log('Middleware - Redirecting to login from protected route:', request.nextUrl.pathname)
     const redirectUrl = new URL('/login', request.url)
     redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
@@ -88,9 +92,10 @@ export async function middleware(request: NextRequest) {
     )
   }
 
-  // If authenticated user tries to access login/signup, redirect to builder
+  // If authenticated user tries to access login/signup, redirect to templates
   if (user && ['/login', '/signup'].includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/builder', request.url))
+    console.log('Middleware - Redirecting authenticated user to templates from:', request.nextUrl.pathname)
+    return NextResponse.redirect(new URL('/templates', request.url))
   }
 
   return response

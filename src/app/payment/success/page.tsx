@@ -84,7 +84,7 @@ function PaymentSuccessContent() {
   }, [session_id, router, supabase]);
 
   const handleGoToDashboard = () => {
-    router.push('/dashboard'); // Or wherever your main user area is
+    router.push('/templates'); // Redirect to templates page after successful payment
   };
 
   return (
@@ -106,7 +106,7 @@ function PaymentSuccessContent() {
               onClick={handleGoToDashboard}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
             >
-              Go to Dashboard
+              Continue to Templates
             </Button>
           </>
         )}

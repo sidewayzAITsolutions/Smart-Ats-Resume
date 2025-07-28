@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import {
   ArrowRight,
   Award,
