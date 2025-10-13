@@ -21,14 +21,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if app URL is configured
-    if (!process.env.NEXT_PUBLIC_APP_URL) {
-      console.error('NEXT_PUBLIC_APP_URL is not configured');
-      return NextResponse.json(
-        { error: 'App URL is not configured. Please contact support.' },
-        { status: 500 }
-      );
-    }
+    // Determine app origin for redirect URLs
+    const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
 
     // Parse request body
     const body = await req.json();
@@ -87,45 +81,35 @@ export async function POST(req: NextRequest) {
       console.error('Profile error:', profileError);
     }
 
-    // Handle Pro plan - use custom URLs if provided, otherwise use defaults
-    let successUrl = customSuccessUrl || `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
-    let cancelUrl = customCancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/pricing`;
+    // Handle Pro plan - use custom URLs if provided, otherwise use computed origin
+    let successUrl = customSuccessUrl || `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
+    let cancelUrl = customCancelUrl || `${origin}/pricing`;
 
-    // Check if this is a subscription or one-time payment
-    const isSubscription = priceId.startsWith('price_'); // Stripe price IDs start with price_
+    // Determine mode based on the Price object (recurring => subscription)
+    // We fetch the Price from Stripe below to decide.
 
     try {
       // Log the price ID for debugging
       console.log('Using price ID:', priceId);
       console.log('Creating checkout session for user:', user.email);
 
-      // Create checkout session
-      const sessionConfig = {
-        payment_method_types: ['card'],
+      // Determine mode by inspecting the Price on Stripe and create checkout session
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+      const price = await stripe.prices.retrieve(priceId);
+      const isSubscription = !!price?.recurring;
+      const sessionConfig: any = {
         mode: isSubscription ? 'subscription' : 'payment',
-        line_items: [
-          {
-            price: priceId,
-            quantity: 1,
-          },
-        ],
+        line_items: [{ price: priceId, quantity: 1 }],
         success_url: successUrl,
         cancel_url: cancelUrl,
         customer_email: user.email,
         client_reference_id: user.id,
-        metadata: {
-          userId: user.id,
-          userEmail: user.email || '',
-        },
-        // For subscriptions, you might want to enable the customer portal
-        ...(isSubscription && {
-          subscription_data: {
-            metadata: {
-              userId: user.id,
-            },
-          },
-        }),
+        metadata: { userId: user.id, userEmail: user.email || '' },
+        automatic_payment_methods: { enabled: true },
       };
+      if (isSubscription) {
+        sessionConfig.subscription_data = { metadata: { userId: user.id } };
+      }
 
       console.log('Creating Stripe session with config:', {
         ...sessionConfig,
@@ -134,7 +118,6 @@ export async function POST(req: NextRequest) {
         cancel_url: sessionConfig.cancel_url
       });
 
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
       const session = await stripe.checkout.sessions.create(sessionConfig);
 
       console.log('Checkout session created:', session.id);
