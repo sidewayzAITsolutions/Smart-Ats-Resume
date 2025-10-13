@@ -1,17 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClientFromRequest } from '@/lib/supabase/server';
-const Stripe = require('stripe');
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-  typescript: true,
-});
+import { createClientFromRequest } from '@/lib/supabase/server';
+
+const Stripe = require('stripe');
+let stripe: any;
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: NextRequest) {
   // Create Supabase client within request context
   const { supabase } = createClientFromRequest(req);
+
+  // Ensure Stripe is configured and initialize lazily
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.error('STRIPE_SECRET_KEY is not configured');
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
+  }
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  }
+
   const body = await req.text();
   const sig = req.headers.get('stripe-signature')!;
 

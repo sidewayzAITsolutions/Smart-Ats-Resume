@@ -1,10 +1,19 @@
 // src/components/Builder/ResumePreview.tsx
 'use client';
 
-import React, { useState } from 'react';
-import { ResumeData } from '@/types/resume';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  Maximize2,
+  Minimize2,
+  Palette,
+} from 'lucide-react';
+
 import { cn } from '@/lib/utils';
-import { Maximize2, Minimize2, Palette } from 'lucide-react';
+import { ResumeData } from '@/types/resume';
 
 interface ResumePreviewProps {
   resumeData: ResumeData;
@@ -18,13 +27,19 @@ const templates = {
   creative: 'Creative',
 };
 
-export default function ResumePreview({ 
-  resumeData, 
-  template = 'modern' 
+export default function ResumePreview({
+  resumeData,
+  template = 'modern'
 }: ResumePreviewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(template);
+  const [selectedTemplate, setSelectedTemplate] = useState(resumeData?.templateId || template);
   const [showTemplateMenu, setShowTemplateMenu] = useState(false);
+
+  useEffect(() => {
+    if (resumeData?.templateId) {
+      setSelectedTemplate(resumeData.templateId);
+    }
+  }, [resumeData?.templateId]);
 
   const renderPreviewContent = () => {
     // This is a simplified preview - in production, you'd use the actual template components
@@ -91,7 +106,7 @@ export default function ResumePreview({
                 </div>
                 {exp.description && (
                   <ul className="mt-2 space-y-1">
-                    {exp.description.split('\n').filter(line => line.trim()).map((line, i) => (
+                    {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
                       <li key={i} className="text-gray-700 text-sm pl-5 relative">
                         <span className="absolute left-0">•</span>
                         {line}
@@ -166,7 +181,7 @@ export default function ResumePreview({
                 </p>
                 {project.technologies && (
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {project.technologies.map((tech, i) => (
+                    {project.technologies.map((tech: string, i: number) => (
                       <span key={i} className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded">
                         {tech}
                       </span>

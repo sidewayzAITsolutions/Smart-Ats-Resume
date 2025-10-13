@@ -20,6 +20,8 @@ import toast from 'react-hot-toast';
 import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
 
+export const dynamic = 'force-dynamic';
+
 const PricingPage = () => {
   const router = useRouter();
   const supabase = createClient();
@@ -163,7 +165,7 @@ const PricingPage = () => {
 
   const validateStripeConfig = (): boolean => {
     const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
-    
+
     if (!priceId) {
       console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
       toast.error('Payment configuration error. Please contact support.');
@@ -179,7 +181,7 @@ const PricingPage = () => {
 
       // Check if user is authenticated first
       const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
+
       if (authError || !user) {
         toast.error('Please sign in to continue with your purchase.');
         router.push('/login?redirectTo=/pricing');
@@ -203,13 +205,13 @@ const PricingPage = () => {
 
       if (!response.ok) {
         console.error('Checkout session error:', responseData.error);
-        
+
         if (response.status === 401) {
           toast.error('Please sign in to continue with your purchase.');
           router.push('/login?redirectTo=/pricing');
           return;
         }
-        
+
         throw new Error(responseData.error || 'Failed to create checkout session');
       }
 
@@ -361,7 +363,7 @@ const PricingPage = () => {
                   </div>
                   <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
                   <p className="text-gray-400 mb-6">{tier.description}</p>
-                  
+
                   <div className="flex items-baseline justify-center gap-2">
                     <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
                       ${tier.price}

@@ -1,6 +1,8 @@
 // src/hooks/useAutoSave.ts
-import { useEffect, useRef } from 'react';
-import { debounce } from '@/lib/utils';
+import {
+  useEffect,
+  useRef,
+} from 'react';
 
 interface UseAutoSaveProps<T> {
   data: T;
@@ -40,35 +42,6 @@ export function useAutoSave<T>({
   }, [data, onSave, delay, enabled]);
 }
 
-// src/hooks/useKeyboardShortcuts.ts
-import { useEffect } from 'react';
-
-type ShortcutMap = {
-  [key: string]: () => void;
-};
-
-export function useKeyboardShortcuts(shortcuts: ShortcutMap) {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Build the shortcut string
-      let shortcut = '';
-      if (event.metaKey || event.ctrlKey) shortcut += 'cmd+';
-      if (event.altKey) shortcut += 'alt+';
-      if (event.shiftKey) shortcut += 'shift+';
-      shortcut += event.key.toLowerCase();
-      
-      // Check if we have a handler for this shortcut
-      const handler = shortcuts[shortcut];
-      if (handler) {
-        event.preventDefault();
-        handler();
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [shortcuts]);
-}
 
 // src/lib/utils.ts (add these utility functions)
 export function debounce<T extends (...args: any[]) => any>(

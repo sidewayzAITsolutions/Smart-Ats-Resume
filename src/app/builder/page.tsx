@@ -1,34 +1,53 @@
-/ src/app/builder/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import {
+  Suspense,
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  useParams,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
+
 import BuilderLayout from '@/components/Builder/BuilderLayout';
-import LoadingSpinner from '@/components/LoadingStates';
+import { ATSLoadingState } from '@/components/LoadingStates';
 import { useSupabase } from '@/hooks/useSupabase';
+import { useResumeStore } from '@/store/resumeStore';
 import { ResumeData } from '@/types/resume';
 
-export default function BuilderPage() {
+export const dynamic = 'force-dynamic';
+
+function BuilderPageInner() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const supabase = useSupabase();
+  const { updateResumeData } = useResumeStore();
+
   const [loading, setLoading] = useState(true);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
-  const resumeId = params?.id as string;
+
+  const resumeId = params?.id as string | undefined;
 
   useEffect(() => {
     checkAuthAndLoadResume();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resumeId]);
 
   const checkAuthAndLoadResume = async () => {
     try {
       // Check if user is authenticated
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
-        router.push('/login?redirect=/builder');
+        // Preserve selected template in redirect if present
+        const tpl = searchParams.get('template');
+        const next = tpl ? `/builder?template=${encodeURIComponent(tpl)}` : '/builder';
+        router.push(`/login?next=${encodeURIComponent(next)}`);
         return;
       }
 
@@ -48,6 +67,12 @@ export default function BuilderPage() {
         }
 
         setResumeData(data.content);
+      } else {
+        // New resume flow: apply template selection if provided
+        const tpl = searchParams.get('template');
+        if (tpl) {
+          updateResumeData({ templateId: tpl });
+        }
       }
     } catch (err) {
       console.error('Error loading resume:', err);
@@ -60,7 +85,7 @@ export default function BuilderPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner />
+        <ATSLoadingState />
       </div>
     );
   }
@@ -81,8 +106,15 @@ export default function BuilderPage() {
     );
   }
 
-  return <BuilderLayout initialData={resumeData} resumeId={resumeId} />;
+  return <BuilderLayout initialData={resumeData || undefined} resumeId={resumeId} />;
 }
 
-// src/app/builder/[id]/page.tsx
-export { default } from '../page';
+export default function BuilderPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><ATSLoadingState /></div>}>
+      <BuilderPageInner />
+    </Suspense>
+  );
+}
+
+

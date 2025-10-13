@@ -1,7 +1,10 @@
 // app/signup/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   AlertCircle,
@@ -30,7 +33,7 @@ export default function SignupPage(): React.JSX.Element {
 
   // Listen for auth state changes
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       console.log('Auth state change:', event, session?.user?.email);
 
       if (event === 'SIGNED_IN' && session?.user) {

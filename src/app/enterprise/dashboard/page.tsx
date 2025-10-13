@@ -26,6 +26,8 @@ import toast from 'react-hot-toast';
 import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
 
+export const dynamic = 'force-dynamic';
+
 interface TeamMember {
   id: string;
   name: string;
@@ -52,7 +54,7 @@ const EnterpriseDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Mock data - replace with actual API calls
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     {
@@ -106,7 +108,7 @@ const EnterpriseDashboard = () => {
   const checkAccess = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         router.push('/login');
         return;
@@ -147,7 +149,7 @@ const EnterpriseDashboard = () => {
     }
   };
 
-  const filteredMembers = teamMembers.filter(member => 
+  const filteredMembers = teamMembers.filter(member =>
     member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     member.role.toLowerCase().includes(searchTerm.toLowerCase())
@@ -206,8 +208,8 @@ const EnterpriseDashboard = () => {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`py-4 px-2 font-medium transition-colors relative ${
-                  activeTab === tab 
-                    ? 'text-amber-400' 
+                  activeTab === tab
+                    ? 'text-amber-400'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
@@ -275,7 +277,7 @@ const EnterpriseDashboard = () => {
               <div className="h-64 flex items-end justify-between gap-2">
                 {[65, 80, 45, 90, 70, 85, 95, 75, 88, 92, 78, 86].map((height, idx) => (
                   <div key={idx} className="flex-1">
-                    <div 
+                    <div
                       className="bg-gradient-to-t from-amber-600 to-orange-600 rounded-t"
                       style={{ height: `${height}%` }}
                     />
@@ -366,7 +368,7 @@ const EnterpriseDashboard = () => {
                       <td className="p-6 text-gray-300">{member.role}</td>
                       <td className="p-6">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                          member.status === 'active' 
+                          member.status === 'active'
                             ? 'bg-green-900/50 text-green-400'
                             : member.status === 'pending'
                             ? 'bg-yellow-900/50 text-yellow-400'
@@ -385,7 +387,7 @@ const EnterpriseDashboard = () => {
                           <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
                             <Edit className="w-4 h-4 text-gray-400" />
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleDeleteMember(member.id)}
                             className="p-2 hover:bg-red-900/20 rounded-lg transition-colors"
                           >

@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
+
 import { createClientFromRequest } from '@/lib/supabase/server';
 
 const Stripe = require('stripe');
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
 
 export async function GET(req: NextRequest) {
   console.log('Stripe success API route called');
@@ -21,9 +22,14 @@ export async function GET(req: NextRequest) {
 
     console.log('Processing session:', sessionId);
 
-    // Retrieve the checkout session from Stripe
+    // Ensure Stripe is configured and retrieve the checkout session
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is not configured');
+      return NextResponse.redirect(new URL('/pricing?error=stripe_not_configured', req.url));
+    }
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    
+
     if (!session) {
       console.error('Session not found:', sessionId);
       return NextResponse.redirect(new URL('/pricing?error=session_not_found', req.url));

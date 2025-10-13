@@ -1,4 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
+
 import { createClientFromRequest } from '@/lib/supabase/server';
 
 export async function GET(req: NextRequest) {
@@ -20,7 +24,7 @@ export async function GET(req: NextRequest) {
     console.log('📋 Environment check:', envCheck);
     
     // Test Supabase connection
-    let connectionTest = { success: false, error: null };
+    let connectionTest: { success: boolean; error: string | null } = { success: false, error: null };
     try {
       const { supabase } = createClientFromRequest(req);
       const { data, error } = await supabase.auth.getSession();
@@ -40,7 +44,7 @@ export async function GET(req: NextRequest) {
     }
     
     // Test basic auth functionality
-    let authTest = { success: false, error: null };
+    let authTest: { success: boolean; error: string | null } = { success: false, error: null };
     try {
       const { supabase } = createClientFromRequest(req);
       

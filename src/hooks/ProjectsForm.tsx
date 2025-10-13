@@ -1,6 +1,14 @@
 // src/components/Builder/sections/ProjectsForm.tsx
-import React from 'react';
-import { Plus, Trash2, GripVertical } from 'lucide-react';
+import React, { useState } from 'react';
+
+import {
+  AlertCircle,
+  Award,
+  GripVertical,
+  Plus,
+  Sparkles,
+  Trash2,
+} from 'lucide-react';
 
 interface Project {
   id: string;
@@ -17,7 +25,7 @@ interface ProjectsFormProps {
   onChange: (projects: Project[]) => void;
 }
 
-export default function ProjectsForm({ projects, onChange }: ProjectsFormProps) {
+export function ProjectsForm({ projects, onChange }: ProjectsFormProps) {
   const addProject = () => {
     const newProject: Project = {
       id: Date.now().toString(),
@@ -133,8 +141,6 @@ export default function ProjectsForm({ projects, onChange }: ProjectsFormProps) 
 }
 
 // src/components/Builder/sections/CertificationsForm.tsx
-import React from 'react';
-import { Plus, Trash2, Award } from 'lucide-react';
 
 interface Certification {
   id: string;
@@ -151,7 +157,7 @@ interface CertificationsFormProps {
   onChange: (certifications: Certification[]) => void;
 }
 
-export default function CertificationsForm({
+export function CertificationsForm({
   certifications,
   onChange,
 }: CertificationsFormProps) {
@@ -287,8 +293,6 @@ export default function CertificationsForm({
 }
 
 // src/components/Builder/sections/SummaryForm.tsx
-import React, { useState } from 'react';
-import { Sparkles, AlertCircle } from 'lucide-react';
 
 interface SummaryFormProps {
   data: string;
@@ -296,7 +300,7 @@ interface SummaryFormProps {
   jobTitle?: string;
 }
 
-export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
+export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [charCount, setCharCount] = useState(data.length);
 

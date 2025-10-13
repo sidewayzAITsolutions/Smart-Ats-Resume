@@ -1,13 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
 import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, model = 'gpt-3.5-turbo', temperature = 0.7, maxTokens = 500 } = await req.json();
+    const { prompt, model = 'gpt-4o-mini', temperature = 0.7, maxTokens = 500 } = await req.json();
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: 'AI not configured (missing OPENAI_API_KEY)' },
+        { status: 503 }
+      );
+    }
+
+    const openai = new OpenAI({ apiKey });
 
     const completion = await openai.chat.completions.create({
       model,
@@ -16,8 +25,8 @@ export async function POST(req: NextRequest) {
       max_tokens: maxTokens,
     });
 
-    return NextResponse.json({ 
-      completion: completion.choices[0].message.content 
+    return NextResponse.json({
+      completion: completion.choices[0].message.content
     });
   } catch (error) {
     console.error('AI completion error:', error);

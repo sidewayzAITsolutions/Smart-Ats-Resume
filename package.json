@@ -10,6 +10,7 @@
           "test:keploy": "jest --coverage --config='{\"testEnvironment\":\"jsdom\",\"transform\":{\"^.+\\\\.(js|jsx|ts|tsx)$\":[\"@swc/jest\",{\"jsc\":{\"parser\":{\"syntax\":\"typescript\",\"tsx\":true,\"dynamicImport\":true},\"transform\":{\"react\":{\"runtime\":\"automatic\"}}},\"module\":{\"type\":\"commonjs\"}}]},\"moduleFileExtensions\":[\"js\",\"jsx\",\"ts\",\"tsx\"],\"coveragePathIgnorePatterns\":[\"/monaco-editor/\"],\"collectCoverageFrom\":[\"./**/*.{js,jsx,ts,tsx}\"],\"coverageDirectory\":\".\",\"coverageReporters\":[\"text\",\"cobertura\"]}'"
      },
      "dependencies": {
+          "@genkit-ai/mcp": "^1.21.0",
           "@playwright/test": "^1.54.1",
           "@sentry/nextjs": "^10.0.0",
           "@stripe/stripe-js": "^7.4.0",
@@ -37,7 +38,8 @@
           "stripe": "^18.4.0",
           "tailwindcss": "^3.4.17",
           "typescript": "^5.8.3",
-          "zod": "^3.25.76"
+          "zod": "^3.25.76",
+          "zustand": "^5.0.8"
      },
      "devDependencies": {
           "@types/node": "^24.0.12",

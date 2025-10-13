@@ -2,14 +2,18 @@
 'use client';
 
 import React from 'react';
-import PersonalInfoForm from '../ResumeBuilder/PersonalInfoForm';
-import ExperienceForm from '../ResumeBuilder/ExperienceForm';
-import EducationForm from '../ResumeBuilder/EducationForm';
-import SkillsForm from '../ResumeBuilder/SkillsForm';
-import ProjectsForm from './sections/ProjectsForm';
-import CertificationsForm from './sections/CertificationsForm';
-import SummaryForm from './sections/SummaryForm';
+
+import {
+  CertificationsForm,
+  ProjectsForm,
+  SummaryForm,
+} from '@/hooks/ProjectsForm';
 import { ResumeData } from '@/types/resume';
+
+import EducationForm from '../ResumeBuilder/EducationForm';
+import ExperienceForm from '../ResumeBuilder/ExperienceForm';
+import PersonalInfoForm from '../ResumeBuilder/PersonalInfoForm';
+import SkillsForm from '../ResumeBuilder/SkillsForm';
 
 interface ResumeEditorProps {
   activeSection: string;
@@ -31,8 +35,8 @@ export default function ResumeEditor({
               Personal Information
             </h2>
             <PersonalInfoForm
-              data={resumeData.personalInfo || {}}
-              onChange={(personalInfo) => onUpdate({ personalInfo })}
+              initialData={(resumeData.personalInfo as any) || { fullName: '', email: '' }}
+              onUpdate={(personalInfo) => onUpdate({ personalInfo })}
             />
           </div>
         );
@@ -58,8 +62,11 @@ export default function ResumeEditor({
               Work Experience
             </h2>
             <ExperienceForm
-              experiences={resumeData.experience || []}
-              onChange={(experience) => onUpdate({ experience })}
+              initialData={resumeData.experience || []}
+              onUpdate={(experience) => onUpdate({ experience })}
+              jobDescription={(resumeData as any).jobDescription || ''}
+              isProUser={false}
+              onUpgradeClick={() => {}}
             />
           </div>
         );
@@ -71,8 +78,8 @@ export default function ResumeEditor({
               Education
             </h2>
             <EducationForm
-              education={resumeData.education || []}
-              onChange={(education) => onUpdate({ education })}
+              initialData={resumeData.education || []}
+              onUpdate={(education) => onUpdate({ education })}
             />
           </div>
         );
@@ -84,8 +91,8 @@ export default function ResumeEditor({
               Skills
             </h2>
             <SkillsForm
-              skills={resumeData.skills || []}
-              onChange={(skills) => onUpdate({ skills })}
+              initialData={resumeData.skills || []}
+              onUpdate={(skills) => onUpdate({ skills })}
             />
           </div>
         );

@@ -1,6 +1,10 @@
 // src/store/resumeStore.ts
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import {
+  createJSONStorage,
+  persist,
+} from 'zustand/middleware';
+
 import { ResumeData } from '@/types/resume';
 
 interface ResumeStore {
@@ -20,7 +24,7 @@ const initialResumeData: ResumeData = {
     location: '',
     title: '',
     linkedin: '',
-    website: '',
+    portfolio: '',
   },
   summary: '',
   experience: [],
@@ -29,6 +33,7 @@ const initialResumeData: ResumeData = {
   projects: [],
   certifications: [],
   customSections: [],
+  templateId: '',
 };
 
 export const useResumeStore = create<ResumeStore>()(

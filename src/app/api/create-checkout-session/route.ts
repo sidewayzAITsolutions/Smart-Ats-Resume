@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
+
 import { createClientFromRequest } from '@/lib/supabase/server';
+
 const Stripe = require('stripe');
 
-// Initialize Stripe with the secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
 
 export async function POST(req: NextRequest) {
   console.log('Create checkout session endpoint called');
@@ -133,6 +134,7 @@ export async function POST(req: NextRequest) {
         cancel_url: sessionConfig.cancel_url
       });
 
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
       const session = await stripe.checkout.sessions.create(sessionConfig);
 
       console.log('Checkout session created:', session.id);

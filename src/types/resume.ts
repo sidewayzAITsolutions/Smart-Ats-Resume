@@ -5,6 +5,7 @@ export interface PersonalInfo {
   email: string;
   phone: string;
   location: string;
+  title?: string;
   linkedin?: string;
   portfolio?: string;
 }
@@ -65,4 +66,18 @@ export interface ATSScore {
   skills: number;
   experience: number;
   suggestions: string[];
+}
+
+
+// Lightweight UI state for the builder (persisted locally)
+export interface ResumeData {
+  personalInfo?: Partial<PersonalInfo>;
+  summary?: string;
+  experience?: any[];
+  education?: any[];
+  skills?: any[];
+  projects?: any[];
+  certifications?: any[];
+  customSections?: any[];
+  templateId?: string;
 }

@@ -2,18 +2,20 @@
 'use client';
 
 import React from 'react';
-import { 
-  User, 
-  Briefcase, 
-  GraduationCap, 
-  Code, 
-  FolderOpen, 
+
+import {
   Award,
-  FileText,
+  Briefcase,
   CheckCircle2,
-  Circle
+  Circle,
+  Code,
+  FileText,
+  FolderOpen,
+  GraduationCap,
+  User,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
+const cn = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(' ');
 
 interface BuilderSidebarProps {
   activeSection: string;

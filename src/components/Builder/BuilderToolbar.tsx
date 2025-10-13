@@ -2,23 +2,25 @@
 'use client';
 
 import React, { useState } from 'react';
+
 import {
-  Save,
+  ChevronDown,
   Download,
-  Share2,
   Eye,
   EyeOff,
-  Loader2,
   FileText,
-  ChevronDown,
+  Loader2,
+  Save,
+  Share2,
   Zap,
-  BarChart
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
+const cn = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(' ');
 
 interface BuilderToolbarProps {
   onSave: () => Promise<void>;
   onExport: () => Promise<void>;
+  onImport: () => void;
   isSaving: boolean;
   showPreview: boolean;
   onTogglePreview: () => void;
@@ -27,6 +29,7 @@ interface BuilderToolbarProps {
 export default function BuilderToolbar({
   onSave,
   onExport,
+  onImport,
   isSaving,
   showPreview,
   onTogglePreview,
@@ -58,7 +61,7 @@ export default function BuilderToolbar({
           <h1 className="text-xl font-semibold text-gray-900">
             Resume Builder
           </h1>
-          
+
           {/* Save Status */}
           {isSaving ? (
             <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -76,12 +79,21 @@ export default function BuilderToolbar({
         {/* Right Section */}
         <div className="flex items-center gap-2">
           {/* ATS Score Button */}
-          <button
+          <button type="button"
             onClick={handleATSCheck}
             className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-2"
           >
             <Zap className="h-4 w-4" />
             Check ATS Score
+          </button>
+
+          {/* Import Resume */}
+          <button type="button"
+            onClick={onImport}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" />
+            Import Resume
           </button>
 
           {/* Preview Toggle */}

@@ -1,7 +1,12 @@
 'use client';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
-import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+
+export const dynamic = 'force-dynamic';
 
 export default function DebugAuthPage() {
   const [authState, setAuthState] = useState<any>(null);
@@ -36,7 +41,7 @@ export default function DebugAuthPage() {
     getInitialSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       addLog(`Auth state change: ${event}, User: ${session?.user?.email || 'none'}`);
       setAuthState(event);
       setSession(session);
@@ -95,7 +100,7 @@ export default function DebugAuthPage() {
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Authentication Debug Page</h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Current State */}
           <div className="bg-gray-800 p-6 rounded-lg">
