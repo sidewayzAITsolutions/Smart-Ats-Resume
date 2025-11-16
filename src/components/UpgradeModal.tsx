@@ -1,3 +1,6 @@
+'use client';
+
+
 import React, { useState } from 'react';
 
 import { X } from 'lucide-react'; // Assuming lucide-react for icons
@@ -15,7 +18,14 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleUpgradeClick = async (priceId: string) => {
+  const handleUpgradeClick = async () => {
+    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+
+    if (!priceId) {
+      setError('Payment configuration error. Please contact support.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
@@ -62,7 +72,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
             <p className="text-gray-700 dark:text-gray-300">Access to unlimited AI suggestions, premium templates, and advanced analytics.</p>
             <p className="text-2xl font-bold text-blue-600 mt-2 dark:text-blue-400">$9.99 / month</p>
             <Button
-              onClick={() => handleUpgradeClick('price_12345')} // Replace with your actual Stripe Price ID
+              onClick={handleUpgradeClick}
               disabled={isLoading}
               className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
             >
