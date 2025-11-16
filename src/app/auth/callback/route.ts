@@ -4,10 +4,7 @@ import {
   NextResponse,
 } from 'next/server';
 
-import {
-  type CookieOptions,
-  createServerClient,
-} from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -38,14 +35,13 @@ export async function GET(request: NextRequest) {
 
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
+        getAll() {
+          return request.cookies.getAll();
         },
-        set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: CookieOptions) {
-          response.cookies.set({ name, value: '', ...options });
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, ...options }) => {
+            response.cookies.set({ name, value, ...options });
+          });
         },
       },
     });
