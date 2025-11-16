@@ -65,9 +65,9 @@ export async function GET(request: NextRequest) {
         .from('profiles')
         .select('*')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
 
-      if (!profile && !profileError) {
+      if (!profile) {
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
