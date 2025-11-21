@@ -8,7 +8,7 @@ interface ATSScoreProps {
     keywords: number;
     formatting: number;
     content: number;
-    completeness: number;
+    impact: number;
   };
   issues?: string[];
   suggestions?: string[];

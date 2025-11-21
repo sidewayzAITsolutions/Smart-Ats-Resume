@@ -21,6 +21,8 @@ interface BuilderToolbarProps {
   onSave: () => Promise<void>;
   onExport: () => Promise<void>;
   onImport: () => void;
+  onImportLinkedIn: () => void;
+  onCheckATS: () => void;
   isSaving: boolean;
   showPreview: boolean;
   onTogglePreview: () => void;
@@ -30,6 +32,8 @@ export default function BuilderToolbar({
   onSave,
   onExport,
   onImport,
+  onImportLinkedIn,
+  onCheckATS,
   isSaving,
   showPreview,
   onTogglePreview,
@@ -48,10 +52,6 @@ export default function BuilderToolbar({
     }
   };
 
-  const handleATSCheck = () => {
-    // Open ATS analysis modal
-    // This will be implemented with the ATS scoring engine
-  };
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-3">
@@ -80,14 +80,23 @@ export default function BuilderToolbar({
         <div className="flex items-center gap-2">
           {/* ATS Score Button */}
           <button type="button"
-            onClick={handleATSCheck}
+            onClick={onCheckATS}
             className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-2"
           >
             <Zap className="h-4 w-4" />
             Check ATS Score
           </button>
 
-          {/* Import Resume */}
+          {/* Import from LinkedIn */}
+          <button type="button"
+            onClick={onImportLinkedIn}
+            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" />
+            Import from LinkedIn (PDF)
+          </button>
+
+          {/* Import Resume (file) */}
           <button type="button"
             onClick={onImport}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"

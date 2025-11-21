@@ -12,11 +12,151 @@ import { Loader2 } from 'lucide-react';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useResumeStore } from '@/store/resumeStore';
 import { ResumeData } from '@/types/resume';
+import CollapsibleATSScore from '@/components/CollapsibleATSScore';
 
 import BuilderSidebar from './BuilderSidebar';
 import BuilderToolbar from './BuilderToolbar';
 import ResumeEditor from './ResumeEditor';
 import ResumePreview from './ResumePreview';
+
+function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
+  const headings = [
+    'professional summary',
+    'summary',
+    'experience',
+    'work experience',
+    'education',
+    'skills',
+    'projects',
+    'certifications',
+  ];
+  const lower = text.toLowerCase();
+  const indices: Record<string, number> = {};
+  for (const h of headings) {
+    const idx = lower.indexOf(h);
+    if (idx !== -1) indices[h] = idx;
+  }
+  const order = Object.entries(indices).sort((a, b) => a[1] - b[1]);
+  const slice = (startLabel: string) => {
+    const start = indices[startLabel];
+    if (start == null) return '';
+    const i = order.findIndex(([k]) => k === startLabel);
+    const end = i >= 0 && i < order.length - 1 ? order[i + 1][1] : text.length;
+    return text.slice(start + startLabel.length, end).trim();
+  };
+  const sectionOr = (...names: string[]) => {
+    for (const n of names) {
+      const s = slice(n);
+      if (s) return s;
+    }
+    return '';
+  };
+
+  const summaryRaw = sectionOr('professional summary', 'summary') || text.split(/\n\n/)[0] || '';
+  const skillsRaw = sectionOr('skills');
+  const projectsRaw = sectionOr('projects');
+  const certsRaw = sectionOr('certifications');
+  const expRaw = sectionOr('experience', 'work experience');
+  const eduRaw = sectionOr('education');
+
+  const toLines = (s: string) =>
+    s
+      .split(/\r?\n|•|\u2022|\-/)
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+  const skills = toLines(skillsRaw)
+    .join(',')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((name, i) => ({
+      id: `${Date.now()}-sk-${i}`,
+      name,
+      category: 'technical',
+      proficiency: 'beginner',
+      keywords: [],
+    }));
+
+  const projects = toLines(projectsRaw).map((line, i) => ({
+    id: `${Date.now()}-pr-${i}`,
+    name: line,
+    description: '',
+    technologies: [],
+  }));
+
+  const certifications = toLines(certsRaw).map((line, i) => ({
+    id: `${Date.now()}-ce-${i}`,
+    name: line,
+    issuer: '',
+    date: '',
+  }));
+
+  const experience = expRaw
+    ? expRaw
+        .split(/\n\s*\n/)
+        .map((block, i) => {
+          const lines = toLines(block);
+          const [first, ...rest] = lines;
+          const [position, company] = first ? first.split(' at ') : ['', ''];
+          const achievements = rest.filter(Boolean);
+          return {
+            id: `${Date.now()}-ex-${i}`,
+            company: (company || '').trim(),
+            position: (position || '').trim(),
+            startDate: '',
+            endDate: '',
+            current: false,
+            description: rest.join(' '),
+            achievements,
+            keywords: [],
+          };
+        })
+        .filter((e) => e.company || e.position)
+    : [];
+
+  const education = eduRaw
+    ? eduRaw.split(/\n\s*\n/).map((block, i) => {
+        const lines = toLines(block);
+        const [first] = lines;
+        let degree = '';
+        let field = '';
+        let institution = '';
+        if (first && first.includes(' - ')) {
+          const [left, right] = first.split(' - ');
+          institution = right.trim();
+          if (left.includes(' in ')) {
+            const [d, f] = left.split(' in ');
+            degree = d.trim();
+            field = f.trim();
+          } else {
+            degree = left.trim();
+          }
+        } else {
+          institution = first || '';
+        }
+        return {
+          id: `${Date.now()}-ed-${i}`,
+          institution,
+          degree,
+          field,
+          startDate: '',
+          graduationDate: '',
+          gpa: '',
+          achievements: [],
+        } as any;
+      })
+    : [];
+
+  return {
+    summary: summaryRaw,
+    skills,
+    projects,
+    certifications,
+    experience,
+    education,
+  };
+}
 
 interface BuilderLayoutProps {
   initialData?: ResumeData;
@@ -27,8 +167,14 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   const [isSaving, setIsSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const [activeSection, setActiveSection] = useState('personal');
+  const [atsScore, setAtsScore] = useState<{
+    score: number;
+    breakdown: { keywords: number; formatting: number; content: number; impact: number };
+    suggestions: string[];
+    risks: string[];
+  } | null>(null);
 
-  const { resumeData, updateResumeData, saveResume } = useResumeStore();
+  const { resumeData, updateResumeData, saveResume, setResumeData } = useResumeStore();
 
   // Initialize with existing data if provided
   useEffect(() => {
@@ -78,30 +224,53 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       const res = await fetch('/api/parse-resume', { method: 'POST', body: form });
       const json = await res.json();
       if (json?.parsedText) {
-        const text: string = json.parsedText as string;
-        // Simple heuristic parsing into sections
-        const headings = ['professional summary', 'summary', 'experience', 'work experience', 'education', 'skills', 'projects', 'certifications'];
-        const lower = text.toLowerCase();
-        const indices: Record<string, number> = {};
-        for (const h of headings) {
-          const idx = lower.indexOf(h);
-          if (idx !== -1) indices[h] = idx;
-        }
-        const order = Object.entries(indices).sort((a,b)=>a[1]-b[1]);
-        const slice = (startLabel: string) => {
-          const start = indices[startLabel];
-          if (start == null) return '';
-          const i = order.findIndex(([k]) => k===startLabel);
-          const end = i>=0 && i<order.length-1 ? order[i+1][1] : text.length;
-          return text.slice(start + startLabel.length, end).trim();
-        };
-        const sectionOr = (...names: string[]) => {
-          for (const n of names) { const s = slice(n); if (s) return s; }
-          return '';
-        };
+        const patch = buildResumePatchFromParsedText(json.parsedText as string);
+        const combined = { ...resumeData, ...patch } as any;
 
-        const summaryRaw = sectionOr('professional summary','summary') || text.split(/\n\n/)[0] || '';
-        const skillsRaw = sectionOr('skills');
+        updateResumeData(patch);
+        setActiveSection('summary');
+
+        try {
+          const { ATSAnalyzer } = await import('@/lib/ats-analyzer');
+          const ats = ATSAnalyzer.analyze({
+            personal: {
+              fullName: combined.personalInfo?.fullName || '',
+              email: combined.personalInfo?.email || '',
+              phone: combined.personalInfo?.phone || '',
+              location: combined.personalInfo?.location || '',
+              linkedin: combined.personalInfo?.linkedin,
+              portfolio: combined.personalInfo?.portfolio,
+              github: '',
+            },
+            summary: combined.summary || '',
+            experience: combined.experience || [],
+            education: combined.education || [],
+            skills: (combined.skills || []).map((s: any) => s.name),
+            targetKeywords: [],
+          });
+
+          setAtsScore({
+            score: ats.score,
+            breakdown: ats.breakdown,
+            suggestions: ats.suggestions,
+            risks: ats.risks,
+          });
+        } catch (atsErr) {
+          console.error('Failed to calculate ATS score from imported resume:', atsErr);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to import resume:', err);
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const handleExport = useCallback(async () => {
+    const { exportResume } = await import('@/lib/export-resume');
+    await exportResume(resumeData as any, 'pdf');
+  }, [resumeData]);
+
   // Keyboard shortcuts (Cmd/Ctrl+S/P/E)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -122,76 +291,49 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     return () => window.removeEventListener('keydown', handler);
   }, [handleSave, handleExport]);
 
-        const projectsRaw = sectionOr('projects');
-        const certsRaw = sectionOr('certifications');
-        const expRaw = sectionOr('experience','work experience');
-        const eduRaw = sectionOr('education');
 
-        const toLines = (s: string) => s.split(/\r?\n|•|\u2022|\-/).map(t=>t.trim()).filter(Boolean);
+  // Import LinkedIn profile via PDF (Option B)
+  const handleImportLinkedIn = useCallback(async () => {
+    // Guided instructions, then reuse the same file input as generic import.
+    alert(
+      'To import from LinkedIn:\n\n1. Open your LinkedIn profile.\n2. Click "More" → "Save to PDF".\n3. Upload that PDF in the next dialog.',
+    );
+    fileInputRef.current?.click();
+  }, []);
 
-        const skills = toLines(skillsRaw)
-          .join(',')
-          .split(',')
-          .map(s=>s.trim())
-          .filter(Boolean)
-          .map((name, i)=>({ id: `${Date.now()}-sk-${i}`, name, category: 'technical', proficiency: 'beginner', keywords: [] }));
+  // Manually trigger ATS check for current resume
+  const handleCheckATS = useCallback(async () => {
+    try {
+      const { ATSAnalyzer } = await import('@/lib/ats-analyzer');
+      const ats = ATSAnalyzer.analyze(
+        {
+          personal: {
+            fullName: resumeData.personalInfo?.fullName || '',
+            email: resumeData.personalInfo?.email || '',
+            phone: resumeData.personalInfo?.phone || '',
+            location: resumeData.personalInfo?.location || '',
+            linkedin: resumeData.personalInfo?.linkedin,
+            portfolio: resumeData.personalInfo?.portfolio,
+            github: '',
+          },
+          summary: resumeData.summary || '',
+          experience: resumeData.experience || [],
+          education: resumeData.education || [],
+          skills: (resumeData.skills || []).map((s: any) => s.name),
+          targetKeywords: [],
+        },
+      );
 
-        const projects = toLines(projectsRaw).map((line,i)=>({ id: `${Date.now()}-pr-${i}`, name: line, description: '', technologies: [] }));
-        const certifications = toLines(certsRaw).map((line,i)=>({ id: `${Date.now()}-ce-${i}`, name: line, issuer: '', date: '' }));
-
-        const experiences = expRaw
-          ? expRaw.split(/\n\s*\n/).map((block,i)=>{
-              const lines = toLines(block);
-              const [first,...rest] = lines;
-              const [position, company] = first ? first.split(' at ') : ['',''];
-              // achievements as rest
-              const achievements = rest.filter(Boolean);
-              return { id: `${Date.now()}-ex-${i}`, company: (company||'').trim(), position: (position||'').trim(), startDate: '', endDate: '', current: false, description: rest.join(' '), achievements, keywords: [] };
-            }).filter(e=>e.company || e.position)
-          : [];
-
-        const education = eduRaw
-          ? eduRaw.split(/\n\s*\n/).map((block,i)=>{
-              const lines = toLines(block);
-              const [first] = lines;
-              // Try "Degree in Field - Institution"
-              let degree = '', field = '', institution = '';
-              if (first && first.includes(' - ')) {
-                const [left, right] = first.split(' - ');
-                institution = right.trim();
-                if (left.includes(' in ')) {
-                  const [d, f] = left.split(' in ');
-                  degree = d.trim(); field = f.trim();
-                } else {
-                  degree = left.trim();
-                }
-              } else {
-                institution = first || '';
-              }
-              return { id: `${Date.now()}-ed-${i}`, institution, degree, field, startDate: '', graduationDate: '', gpa: '', achievements: [] } as any;
-            })
-          : [];
-
-        updateResumeData({
-          summary: summaryRaw,
-          skills,
-          projects,
-          certifications,
-          experience: experiences,
-          education,
-        });
-        setActiveSection('summary');
-      }
-    } catch (err) {
-      console.error('Failed to import resume:', err);
-    } finally {
-      e.target.value = '';
+      setAtsScore({
+        score: ats.score,
+        breakdown: ats.breakdown,
+        suggestions: ats.suggestions,
+        risks: ats.risks,
+      });
+    } catch (error) {
+      console.error('Failed to calculate ATS score:', error);
+      alert('Something went wrong while calculating your ATS score.');
     }
-  };
-
-  const handleExport = useCallback(async () => {
-    const { exportResume } = await import('@/lib/export-resume');
-    await exportResume(resumeData as any, 'pdf');
   }, [resumeData]);
 
   return (
@@ -201,6 +343,8 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         onSave={handleSave}
         onExport={handleExport}
         onImport={handleImport}
+        onImportLinkedIn={handleImportLinkedIn}
+        onCheckATS={handleCheckATS}
         isSaving={isSaving}
         showPreview={showPreview}
         onTogglePreview={() => setShowPreview(!showPreview)}
@@ -214,7 +358,6 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         onChange={onFileChange}
         className="hidden"
       />
-
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
@@ -256,6 +399,16 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           <Loader2 className="h-4 w-4 animate-spin" />
           <span className="text-sm text-gray-600">Saving...</span>
         </div>
+      )}
+
+      {/* ATS score widget */}
+      {atsScore && (
+        <CollapsibleATSScore
+          score={atsScore.score}
+          breakdown={atsScore.breakdown}
+          issues={atsScore.risks}
+          suggestions={atsScore.suggestions}
+        />
       )}
     </div>
   );

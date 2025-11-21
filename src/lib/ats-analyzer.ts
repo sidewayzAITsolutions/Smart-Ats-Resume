@@ -61,7 +61,7 @@ export class ATSAnalyzer {
     hasName: { weight: 15, check: (data: any) => data.personal?.fullName?.length > 2 },
     hasSummary: { weight: 20, check: (data: any) => data.summary?.length > 50 },
     hasExperience: { weight: 20, check: (data: any) => data.experience?.[0]?.company },
-    hasEducation: { weight: 15, check: (data: any) => data.education?.[0]?.school }
+    hasEducation: { weight: 15, check: (data: any) => data.education?.[0]?.institution }
   };
 
   static analyze(resumeData: any, targetRole: string = ''): ATSAnalysis {
