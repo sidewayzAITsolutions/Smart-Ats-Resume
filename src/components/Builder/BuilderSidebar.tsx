@@ -57,22 +57,22 @@ export default function BuilderSidebar({
   const completionPercentage = getCompletionPercentage();
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
       {/* Progress Indicator */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-gray-700">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">Completion</span>
-          <span className="text-sm font-semibold text-indigo-600">
+          <span className="text-sm font-medium text-gray-300">Completion</span>
+          <span className="text-sm font-semibold text-teal-400">
             {completionPercentage}%
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-700 rounded-full h-2">
           <div
-            className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+            className="bg-gradient-to-r from-teal-500 to-amber-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${completionPercentage}%` }}
           />
         </div>
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-400">
           Complete all required sections for the best ATS score
         </p>
       </div>
@@ -90,29 +90,29 @@ export default function BuilderSidebar({
               onClick={() => onSectionChange(section.id)}
               className={cn(
                 'w-full px-6 py-3 flex items-center gap-3 text-left transition-colors',
-                'hover:bg-gray-50',
-                isActive && 'bg-indigo-50 border-r-2 border-indigo-600'
+                'hover:bg-gray-700/50',
+                isActive && 'bg-gradient-to-r from-teal-900/50 to-amber-900/50 border-r-2 border-teal-500'
               )}
             >
-              <Icon 
+              <Icon
                 className={cn(
                   'h-5 w-5',
-                  isActive ? 'text-indigo-600' : 'text-gray-400'
+                  isActive ? 'text-teal-400' : 'text-gray-500'
                 )}
               />
               <span
                 className={cn(
                   'flex-1 text-sm font-medium',
-                  isActive ? 'text-indigo-600' : 'text-gray-700'
+                  isActive ? 'text-teal-300' : 'text-gray-300'
                 )}
               >
                 {section.label}
               </span>
               {section.required && (
                 isCompleted ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <CheckCircle2 className="h-4 w-4 text-green-400" />
                 ) : (
-                  <Circle className="h-4 w-4 text-gray-300" />
+                  <Circle className="h-4 w-4 text-gray-600" />
                 )
               )}
             </button>
@@ -121,12 +121,12 @@ export default function BuilderSidebar({
       </nav>
 
       {/* Tips Section */}
-      <div className="p-6 border-t border-gray-200">
-        <div className="bg-blue-50 rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-blue-900 mb-1">
+      <div className="p-6 border-t border-gray-700">
+        <div className="bg-gradient-to-br from-teal-900/30 to-amber-900/30 border border-teal-700/50 rounded-lg p-4">
+          <h4 className="text-sm font-semibold text-teal-300 mb-1">
             Pro Tip
           </h4>
-          <p className="text-xs text-blue-700">
+          <p className="text-xs text-gray-400">
             Use action verbs and quantify your achievements to improve your ATS score.
           </p>
         </div>

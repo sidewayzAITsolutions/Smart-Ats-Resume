@@ -337,18 +337,32 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   }, [resumeData]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-900 relative overflow-hidden">
+      {/* Background gradient effects matching site theme */}
+      <div className="fixed inset-0 bg-gradient-to-br from-teal-900/20 via-amber-900/20 to-pink-900/20 opacity-50 pointer-events-none z-0"></div>
+
+      {/* Smart Ass Donkey - Bottom right corner, subtle and classy */}
+      <div className="fixed bottom-0 right-0 pointer-events-none z-0">
+        <img
+          src="/Donkey.png"
+          alt="Smart ATS Donkey"
+          className="w-64 h-64 object-contain opacity-10 hover:opacity-20 transition-opacity duration-300"
+        />
+      </div>
+
       {/* Toolbar */}
-      <BuilderToolbar
-        onSave={handleSave}
-        onExport={handleExport}
-        onImport={handleImport}
-        onImportLinkedIn={handleImportLinkedIn}
-        onCheckATS={handleCheckATS}
-        isSaving={isSaving}
-        showPreview={showPreview}
-        onTogglePreview={() => setShowPreview(!showPreview)}
-      />
+      <div className="relative z-10">
+        <BuilderToolbar
+          onSave={handleSave}
+          onExport={handleExport}
+          onImport={handleImport}
+          onImportLinkedIn={handleImportLinkedIn}
+          onCheckATS={handleCheckATS}
+          isSaving={isSaving}
+          showPreview={showPreview}
+          onTogglePreview={() => setShowPreview(!showPreview)}
+        />
+      </div>
 
       {/* Hidden file input for import */}
       <input
@@ -360,7 +374,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative z-10">
         {/* Sidebar Navigation */}
         <BuilderSidebar
           activeSection={activeSection}
@@ -375,7 +389,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         />
 
         {/* Editor */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto py-8 px-6">
             <ResumeEditor
               activeSection={activeSection}
@@ -387,7 +401,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
         {/* Preview Panel */}
         {showPreview && (
-          <div className="w-1/2 border-l border-gray-200 bg-white overflow-y-auto">
+          <div className="w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
             <ResumePreview resumeData={resumeData} />
           </div>
         )}
@@ -395,13 +409,13 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
       {/* Auto-save indicator */}
       {isSaving && (
-        <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg px-4 py-2 flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-sm text-gray-600">Saving...</span>
+        <div className="fixed bottom-4 left-4 bg-gray-800 border border-gray-700 rounded-lg shadow-lg px-4 py-2 flex items-center gap-2 z-50">
+          <Loader2 className="h-4 w-4 animate-spin text-teal-400" />
+          <span className="text-sm text-gray-300">Saving...</span>
         </div>
       )}
 
-      {/* ATS score widget */}
+      {/* ATS score widget - Your amazing collapsible ATS score card */}
       {atsScore && (
         <CollapsibleATSScore
           score={atsScore.score}
