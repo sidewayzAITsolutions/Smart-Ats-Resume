@@ -43,7 +43,9 @@ const parseEnhancedDocument = async (buffer: Buffer, mammoth: any) => {
     return null;
   }
   try {
-    const result = await mammoth.extractRawText({ arrayBuffer: buffer.buffer });
+    // Ensure we pass just the used slice of the underlying ArrayBuffer
+    const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    const result = await mammoth.extractRawText({ arrayBuffer });
     return result.value;
   } catch (error) {
     console.error('Error parsing DOCX:', error);
@@ -82,7 +84,17 @@ export async function POST(req: NextRequest) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const fileType = file.type;
+    let fileType = file.type || 'application/octet-stream';
+    const fileName = (file as any).name || '';
+
+    // Fallback type detection by file extension if browser didn't set a useful type
+    if (fileType === 'application/octet-stream' && fileName) {
+      const lower = fileName.toLowerCase();
+      if (lower.endsWith('.pdf')) fileType = 'application/pdf';
+      else if (lower.endsWith('.docx')) fileType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      else if (lower.endsWith('.rtf')) fileType = 'application/rtf';
+      else if (lower.endsWith('.txt')) fileType = 'text/plain';
+    }
 
     let parsedText: string | null = null;
     const { pdfParse, mammoth } = await loadLibraries();

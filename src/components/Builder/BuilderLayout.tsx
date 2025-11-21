@@ -21,6 +21,14 @@ import ResumeEditor from './ResumeEditor';
 import ResumePreview from './ResumePreview';
 
 function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
+  // Normalize whitespace and bullets, preserve hyphenated words
+  const normalize = (s: string) =>
+    s
+      .replace(/\r/g, '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/^\s*[•\u2022]\s+/gm, '• ') // normalize bullet symbols
+      .replace(/^\s*-\s+/gm, '• '); // treat leading hyphen as bullet only when at line start
+
   const headings = [
     'professional summary',
     'summary',
@@ -31,7 +39,8 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     'projects',
     'certifications',
   ];
-  const lower = text.toLowerCase();
+  const normalizedText = normalize(text);
+  const lower = normalizedText.toLowerCase();
   const indices: Record<string, number> = {};
   for (const h of headings) {
     const idx = lower.indexOf(h);
@@ -43,7 +52,7 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     if (start == null) return '';
     const i = order.findIndex(([k]) => k === startLabel);
     const end = i >= 0 && i < order.length - 1 ? order[i + 1][1] : text.length;
-    return text.slice(start + startLabel.length, end).trim();
+    return normalizedText.slice(start + startLabel.length, end).trim();
   };
   const sectionOr = (...names: string[]) => {
     for (const n of names) {
@@ -53,18 +62,30 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     return '';
   };
 
-  const summaryRaw = sectionOr('professional summary', 'summary') || text.split(/\n\n/)[0] || '';
+  const summaryRaw = sectionOr('professional summary', 'summary') || normalizedText.split(/\n\n/)[0] || '';
   const skillsRaw = sectionOr('skills');
   const projectsRaw = sectionOr('projects');
   const certsRaw = sectionOr('certifications');
   const expRaw = sectionOr('experience', 'work experience');
   const eduRaw = sectionOr('education');
 
-  const toLines = (s: string) =>
-    s
-      .split(/\r?\n|•|\u2022|\-/)
-      .map((t) => t.trim())
+  const toLines = (s: string) => {
+    if (!s) return [] as string[];
+    const prepared = normalize(s);
+    // Split on newlines, then break out bullet-start segments only (avoid splitting hyphenated words)
+    return prepared
+      .split(/\n+/)
+      .flatMap((line) =>
+        line.includes('• ')
+          ? line
+              .split('• ')
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [line.trim()],
+      )
+      .map((t) => t.replace(/^[-•\u2022]\s*/, '').trim())
       .filter(Boolean);
+  };
 
   const skills = toLines(skillsRaw)
     .join(',')
@@ -149,7 +170,26 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
       })
     : [];
 
+  // Extract contact info from whole document
+  const emailMatch = normalizedText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  const phoneMatch = normalizedText.match(/\+?\d[\d\s().-]{7,}\d/);
+  const linkedinMatch = normalizedText.match(/https?:\/\/[^\s]*linkedin\.com\/in\/[A-Za-z0-9\-_%]+/i);
+
+  // Guess full name as the first non-empty line before the first heading
+  const topBlockEnd = Object.values(indices).length
+    ? Math.min(...Object.values(indices))
+    : Math.min(200, normalizedText.length);
+  const topBlock = normalizedText.slice(0, topBlockEnd).split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  const fullName = (topBlock.find((l) => !l.includes('@') && !/linkedin/i.test(l) && l.length >= 2 && l.length <= 80) || '').replace(/^name[:\-]\s*/i, '');
+
   return {
+    personalInfo: {
+      fullName: fullName || '',
+      email: emailMatch?.[0] || '',
+      phone: phoneMatch?.[0] || '',
+      location: '',
+      linkedin: linkedinMatch?.[0],
+    },
     summary: summaryRaw,
     skills,
     projects,
@@ -236,6 +276,26 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
         updateResumeData(patch);
         setActiveSection('summary');
+
+        // Inform user of imported sections
+        const counts = {
+          experience: (patch.experience?.length || 0),
+          education: (patch.education?.length || 0),
+          skills: (patch.skills?.length || 0),
+          projects: (patch.projects?.length || 0),
+          certifications: (patch.certifications?.length || 0),
+        };
+        const nonZero = Object.entries(counts).filter(([, v]) => v > 0);
+        if (nonZero.length) {
+          toast.success(
+            `Imported: ` +
+              nonZero
+                .map(([k, v]) => `${k}(${v as number})`)
+                .join(', '),
+          );
+        } else {
+          toast.success('Imported basic details. You can edit in the left panel.');
+        }
 
         try {
           const { ATSAnalyzer } = await import('@/lib/ats-analyzer');
