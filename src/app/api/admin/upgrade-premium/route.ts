@@ -32,7 +32,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid admin/promo code' }, { status: 403 });
     }
 
-    const subscription_status = matchAdmin ? 'admin_override' : 'promo';
+  // Maintain Stripe-style 'active' to satisfy subscription_status constraint
+  const subscription_status = 'active';
+    const { data: profileCheck, error: selectErr } = await supabase
+      .from('profiles')
+      .select('id, is_premium, subscription_status')
+      .eq('id', user.id)
+      .single();
+
+    if (selectErr) {
+      console.error('Profile fetch before update failed:', selectErr);
+      return NextResponse.json({ error: 'Profile not found for user', detail: selectErr.message }, { status: 404 });
+    }
+
     const { error: updateError } = await supabase
       .from('profiles')
       .update({
@@ -44,10 +56,10 @@ export async function POST(req: NextRequest) {
 
     if (updateError) {
       console.error('Error applying premium override:', updateError);
-      return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to update profile', detail: updateError.message, code: updateError.code }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, method: subscription_status });
+  return NextResponse.json({ success: true, method: matchAdmin ? 'admin' : 'promo' });
   } catch (error) {
     console.error('Unexpected error in admin premium override:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

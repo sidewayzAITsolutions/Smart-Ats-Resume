@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     // Mark user premium
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ is_premium: true, subscription_status: 'promo' })
+      .update({ is_premium: true, subscription_status: 'active' })
       .eq('id', user.id);
 
     if (updateError) {
