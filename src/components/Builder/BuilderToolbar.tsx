@@ -2,9 +2,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 import {
   ChevronDown,
+  Home,
   Download,
   Eye,
   EyeOff,
@@ -62,6 +64,24 @@ export default function BuilderToolbar({
             Resume Builder
           </h1>
 
+          {/* Navigation shortcuts */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="px-3 py-2 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Link>
+            <Link
+              href="/templates"
+              className="px-3 py-2 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              <FileText className="h-4 w-4" />
+              Templates
+            </Link>
+          </div>
+
           {/* Save Status */}
           {isSaving ? (
             <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -76,7 +96,7 @@ export default function BuilderToolbar({
           )}
         </div>
 
-        {/* Right Section */}
+  {/* Right Section */}
         <div className="flex items-center gap-2">
           {/* ATS Score Button */}
           <button type="button"
