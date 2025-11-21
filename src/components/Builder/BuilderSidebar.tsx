@@ -120,8 +120,17 @@ export default function BuilderSidebar({
         })}
       </nav>
 
-      {/* Tips Section */}
+      {/* Smart Ass Donkey Section */}
       <div className="p-6 border-t border-gray-700">
+        <div className="flex justify-center mb-4">
+          <img
+            src="/Donkey.png"
+            alt="Smart ATS Donkey"
+            className="w-32 h-32 object-contain opacity-80"
+          />
+        </div>
+
+        {/* Tips Section */}
         <div className="bg-gradient-to-br from-teal-900/30 to-amber-900/30 border border-teal-700/50 rounded-lg p-4">
           <h4 className="text-sm font-semibold text-teal-300 mb-1">
             Pro Tip

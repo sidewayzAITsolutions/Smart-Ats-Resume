@@ -209,6 +209,24 @@ POST /api/parse-resume
 {
   "file": "resume.pdf" // FormData
 }
+// Response (success)
+{
+   "success": true,
+   "fileType": "application/pdf",
+   "parsedText": "Raw extracted text from the uploaded resume..."
+}
+
+// Response (failure)
+{
+   "success": false,
+   "fileType": "application/pdf",
+   "error": "Failed to parse PDF" // or a more specific message
+}
+
+// Notes:
+// - Supported types: .pdf, .docx, .rtf, .txt
+// - PDF parsing now handles both CommonJS and ESM export shapes for pdf-parse.
+// - On the client, check `success` before using `parsedText` and surface `error` to users.
 ```
 
 ## 🔧 Configuration

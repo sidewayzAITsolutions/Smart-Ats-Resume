@@ -10,6 +10,7 @@ import React, {
 import { Loader2 } from 'lucide-react';
 
 import { useAutoSave } from '@/hooks/useAutoSave';
+import toast from 'react-hot-toast';
 import { useResumeStore } from '@/store/resumeStore';
 import { ResumeData } from '@/types/resume';
 import CollapsibleATSScore from '@/components/CollapsibleATSScore';
@@ -223,6 +224,12 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       form.append('resume', file);
       const res = await fetch('/api/parse-resume', { method: 'POST', body: form });
       const json = await res.json();
+      if (!res.ok || !json?.success) {
+        console.error('Resume parse failed:', json?.error || res.statusText);
+        toast.error(`Failed to parse resume: ${json?.error || 'Unknown error'}`);
+        return;
+      }
+
       if (json?.parsedText) {
         const patch = buildResumePatchFromParsedText(json.parsedText as string);
         const combined = { ...resumeData, ...patch } as any;
@@ -261,6 +268,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       }
     } catch (err) {
       console.error('Failed to import resume:', err);
+      toast.error('Import failed. Please try a different file or format.');
     } finally {
       e.target.value = '';
     }
@@ -341,12 +349,12 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       {/* Background gradient effects matching site theme */}
       <div className="fixed inset-0 bg-gradient-to-br from-teal-900/20 via-amber-900/20 to-pink-900/20 opacity-50 pointer-events-none z-0"></div>
 
-      {/* Smart Ass Donkey - Bottom right corner, subtle and classy */}
+      {/* Smart Ass Donkey - Bottom right corner, VISIBLE and proud! */}
       <div className="fixed bottom-0 right-0 pointer-events-none z-0">
         <img
           src="/Donkey.png"
           alt="Smart ATS Donkey"
-          className="w-64 h-64 object-contain opacity-10 hover:opacity-20 transition-opacity duration-300"
+          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300"
         />
       </div>
 

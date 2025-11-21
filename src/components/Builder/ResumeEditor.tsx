@@ -31,7 +31,7 @@ export default function ResumeEditor({
       case 'personal':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">
+            <h2 className="text-3xl font-bold text-pink-400 mb-6">
               Personal Information
             </h2>
             <PersonalInfoForm
@@ -44,7 +44,7 @@ export default function ResumeEditor({
       case 'summary':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">
+            <h2 className="text-3xl font-bold text-pink-400 mb-6">
               Professional Summary
             </h2>
             <SummaryForm
@@ -58,7 +58,7 @@ export default function ResumeEditor({
       case 'experience':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">
+            <h2 className="text-3xl font-bold text-pink-400 mb-6">
               Work Experience
             </h2>
             <ExperienceForm
@@ -74,7 +74,7 @@ export default function ResumeEditor({
       case 'education':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">
+            <h2 className="text-3xl font-bold text-pink-400 mb-6">
               Education
             </h2>
             <EducationForm

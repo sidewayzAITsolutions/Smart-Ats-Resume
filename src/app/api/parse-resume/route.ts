@@ -16,18 +16,23 @@ const loadLibraries = async () => {
   return { pdfParse, mammoth };
 };
 
-// Helper to parse PDF content
-const parseEnhancedPDF = async (buffer: Buffer, pdfParse: any) => {
-  if (!pdfParse) {
-    console.error("PDF parsing library not loaded.");
-    return null;
+// Helper to parse PDF content (handles CommonJS + ESM shapes)
+const parseEnhancedPDF = async (buffer: Buffer, pdfParseModule: any) => {
+  if (!pdfParseModule) {
+    console.error('PDF parsing library not loaded.');
+    return { text: null, error: 'PDF parsing library missing' };
+  }
+  const pdfParseFn = pdfParseModule.default || pdfParseModule; // Support both import styles
+  if (typeof pdfParseFn !== 'function') {
+    console.error('pdf-parse module did not export a function:', pdfParseModule);
+    return { text: null, error: 'Invalid pdf-parse export' };
   }
   try {
-    const data = await pdfParse(buffer);
-    return data.text;
+    const data = await pdfParseFn(buffer);
+    return { text: data?.text || null, error: null };
   } catch (error) {
     console.error('Error parsing PDF:', error);
-    return null;
+    return { text: null, error: 'Failed to parse PDF' };
   }
 };
 
@@ -82,10 +87,15 @@ export async function POST(req: NextRequest) {
     let parsedText: string | null = null;
     const { pdfParse, mammoth } = await loadLibraries();
 
+    let parseError: string | null = null;
+
     switch (fileType) {
-      case 'application/pdf':
-        parsedText = await parseEnhancedPDF(buffer, pdfParse);
+      case 'application/pdf': {
+        const { text, error } = await parseEnhancedPDF(buffer, pdfParse);
+        parsedText = text;
+        parseError = error;
         break;
+      }
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': // .docx
         parsedText = await parseEnhancedDocument(buffer, mammoth);
         break;
@@ -100,12 +110,11 @@ export async function POST(req: NextRequest) {
     }
 
     if (!parsedText) {
-      return NextResponse.json({ error: 'Failed to parse resume content' }, { status: 500 });
+      return NextResponse.json({ success: false, error: parseError || 'Failed to parse resume content', fileType }, { status: 422 });
     }
 
-    // You might want to save the parsed text or further process it here
-    // For now, just return the parsed text
-    return NextResponse.json({ success: true, parsedText });
+    // Return parsed text (future enhancement: structure extraction)
+    return NextResponse.json({ success: true, parsedText, fileType });
 
   } catch (error) {
     console.error('Error in resume parsing API:', error);
