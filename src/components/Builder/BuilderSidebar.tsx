@@ -124,9 +124,9 @@ export default function BuilderSidebar({
       <div className="p-6 border-t border-gray-700">
         <div className="flex justify-center mb-4">
           <img
-            src="/Donkey.png"
+            src="/logo.png"
             alt="Smart ATS Donkey"
-            className="w-32 h-32 object-contain opacity-80"
+            className="w-32 h-64 object-contain opacity-80"
           />
         </div>
 

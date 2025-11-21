@@ -164,8 +164,8 @@ function createEmptyExperience(): Experience {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Work Experience</h2>
-          <p className="text-lg text-gray-600">
+          <h2 className="text-3xl font-bold text-pink-500 mb-2">Work Experience</h2>
+          <p className="text-lg text-white">
             Add your work experience, starting with your most recent position. Focus on achievements and quantifiable results.
           </p>
         </div>
@@ -177,10 +177,10 @@ function createEmptyExperience(): Experience {
 
       <div className="space-y-8">
         {experiences.map((experience, expIndex) => (
-          <div key={experience.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+          <div key={experience.id} className="border border-gray-700 rounded-lg p-6 bg-gray-800 shadow-sm">
             <div className="flex justify-between items-start mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Briefcase className="w-5 h-5 mr-2 text-blue-400" />
                 {experience.position || `Experience ${expIndex + 1}`}
               </h3>
               {experiences.length > 1 && (
@@ -198,21 +198,21 @@ function createEmptyExperience(): Experience {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               {/* Job Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Job Title *
                 </label>
                 <input
                   type="text"
                   value={experience.position}
                   onChange={(e) => updateExperience(expIndex, 'position', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
                   placeholder="e.g., Senior Software Engineer"
                 />
               </div>
 
               {/* Company */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Company *
                 </label>
                 <div className="relative">
@@ -223,7 +223,7 @@ function createEmptyExperience(): Experience {
                     type="text"
                     value={experience.company}
                     onChange={(e) => updateExperience(expIndex, 'company', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
                     placeholder="e.g., Tech Company Inc."
                   />
                 </div>
@@ -231,7 +231,7 @@ function createEmptyExperience(): Experience {
 
               {/* Start Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Start Date *
                 </label>
                 <div className="relative">
@@ -246,7 +246,7 @@ function createEmptyExperience(): Experience {
                         const month = e.target.value;
                         updateExperience(expIndex, 'startDate', month ? `${year}-${month}` : '');
                       }}
-                      className="flex-1 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
                     >
                       <option value="">Month</option>
                       <option value="01">January</option>
@@ -269,7 +269,7 @@ function createEmptyExperience(): Experience {
                         const year = e.target.value;
                         updateExperience(expIndex, 'startDate', year && month ? `${year}-${month}` : '');
                       }}
-                      className="flex-1 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
                     >
                       <option value="">Year</option>
                       {Array.from({ length: 50 }, (_, i) => {
@@ -287,7 +287,7 @@ function createEmptyExperience(): Experience {
 
               {/* End Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   End Date
                 </label>
                 <div className="space-y-3">
@@ -304,7 +304,7 @@ function createEmptyExperience(): Experience {
                           updateExperience(expIndex, 'endDate', month ? `${year}-${month}` : '');
                         }}
                         disabled={experience.current}
-                        className="flex-1 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 sleek-input"
+                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input"
                       >
                         <option value="">Month</option>
                         <option value="01">January</option>
@@ -328,7 +328,7 @@ function createEmptyExperience(): Experience {
                           updateExperience(expIndex, 'endDate', year && month ? `${year}-${month}` : '');
                         }}
                         disabled={experience.current}
-                        className="flex-1 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 sleek-input"
+                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input"
                       >
                         <option value="">Year</option>
                         {Array.from({ length: 50 }, (_, i) => {
@@ -342,7 +342,7 @@ function createEmptyExperience(): Experience {
                       </select>
                     </div>
                   </div>
-                  <label className="flex items-center text-sm text-gray-600">
+                  <label className="flex items-center text-sm text-white">
                     <input
                       type="checkbox"
                       checked={experience.current}
@@ -352,7 +352,7 @@ function createEmptyExperience(): Experience {
                           updateExperience(expIndex, 'endDate', '');
                         }
                       }}
-                      className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded"
                     />
                     I currently work here
                   </label>
@@ -362,17 +362,17 @@ function createEmptyExperience(): Experience {
 
             {/* Job Description */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Job Description
               </label>
               <textarea
                 value={experience.description}
                 onChange={(e) => updateExperience(expIndex, 'description', e.target.value)}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                 placeholder="Brief description of your role and responsibilities..."
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-400">
                 Keep it concise - focus on your key responsibilities and the scope of your role
               </p>
             </div>
@@ -380,7 +380,7 @@ function createEmptyExperience(): Experience {
             {/* Key Achievements */}
             <div>
               <div className="flex justify-between items-center mb-3">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-white">
                   Key Achievements *
                 </label>
                 <div className="flex items-center gap-2">
@@ -420,7 +420,7 @@ function createEmptyExperience(): Experience {
                         value={achievement}
                         onChange={(e) => updateAchievement(expIndex, achIndex, e.target.value)}
                         rows={2}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                        className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                         placeholder="• Increased sales by 25% through strategic client relationship management and cross-selling initiatives"
                       />
                     </div>
@@ -429,7 +429,7 @@ function createEmptyExperience(): Experience {
                         variant="outline"
                         size="sm"
                         onClick={() => removeAchievement(expIndex, achIndex)}
-                        className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
+                        className="text-red-400 hover:text-red-300 border-red-700 hover:bg-red-900/50"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -439,17 +439,17 @@ function createEmptyExperience(): Experience {
               </div>
 
               {/* Achievement Tips */}
-              <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h4 className="text-sm font-semibold text-yellow-900 mb-2 flex items-center">
+              <div className="mt-4 bg-amber-900/30 border border-amber-700/50 rounded-lg p-4">
+                <h4 className="text-sm font-semibold text-amber-300 mb-2 flex items-center">
                   <Star className="w-4 h-4 mr-1" />
                   Achievement Writing Tips
                 </h4>
-                <div className="grid md:grid-cols-2 gap-4 text-xs text-yellow-800">
+                <div className="grid md:grid-cols-2 gap-4 text-xs text-gray-300">
                   <div>
                     <p className="font-medium mb-1">Start with action verbs:</p>
                     <div className="flex flex-wrap gap-1">
                       {actionVerbSuggestions.slice(0, 6).map(verb => (
-                        <span key={verb} className="bg-yellow-100 px-2 py-1 rounded text-xs">
+                        <span key={verb} className="bg-amber-800/50 px-2 py-1 rounded text-xs text-amber-200">
                           {verb}
                         </span>
                       ))}
@@ -471,9 +471,9 @@ function createEmptyExperience(): Experience {
       </div>
 
       {/* Overall Tips */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Experience Section Tips</h3>
-        <div className="grid md:grid-cols-2 gap-4 text-blue-800">
+      <div className="bg-teal-900/30 border border-teal-700/50 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-teal-300 mb-3">💡 Experience Section Tips</h3>
+        <div className="grid md:grid-cols-2 gap-4 text-gray-300">
           <div>
             <h4 className="font-medium mb-2">What ATS Systems Look For:</h4>
             <ul className="space-y-1 text-sm">
