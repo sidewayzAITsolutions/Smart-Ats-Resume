@@ -39,6 +39,10 @@ const PricingPage = () => {
     message: ''
   });
 
+  // Admin premium override
+  const [adminCode, setAdminCode] = useState('');
+  const [adminLoading, setAdminLoading] = useState(false);
+
   // Check user authentication and get user data
   useEffect(() => {
     const checkUserData = async () => {
@@ -327,6 +331,78 @@ const PricingPage = () => {
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Get the perfect plan for your career goals. Start free and upgrade when you're ready.
           </p>
+        </div>
+
+        {/* Admin Premium Override (hidden helper for site owner) */}
+        <div className="max-w-xl mx-auto mb-10">
+          <details className="group bg-gray-900/60 border border-dashed border-pink-500/40 rounded-2xl p-4 text-sm text-gray-300">
+            <summary className="flex items-center justify-between cursor-pointer list-none">
+              <span className="font-semibold text-pink-400 flex items-center gap-2">
+                <Crown className="w-4 h-4" />
+                Admin Tools
+              </span>
+              <span className="text-xs text-gray-500 group-open:hidden">(for site owner testing only)</span>
+              <span className="text-xs text-gray-500 hidden group-open:inline">Hide admin tools</span>
+            </summary>
+            <div className="mt-4 space-y-3">
+              <p className="text-xs text-gray-400">
+                Enter your secret admin code to instantly unlock premium on your account without going through Stripe checkout.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="password"
+                  value={adminCode}
+                  onChange={(e) => setAdminCode(e.target.value)}
+                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/70"
+                  placeholder="Enter admin premium code"
+                />
+                <button
+                  type="button"
+                  disabled={adminLoading || !adminCode}
+                  onClick={async () => {
+                    try {
+                      setAdminLoading(true);
+                      const res = await fetch('/api/admin/upgrade-premium', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ adminCode }),
+                      });
+
+                      const data = await res.json();
+
+                      if (!res.ok) {
+                        throw new Error(data.error || 'Failed to apply admin override');
+                      }
+
+                      toast.success('Premium enabled on your account (admin override).');
+                      // Nudge premium status hooks & any listeners
+                      if (typeof window !== 'undefined') {
+                        localStorage.setItem('premium_status_updated', Date.now().toString());
+                      }
+                    } catch (error: any) {
+                      console.error('Admin override failed:', error);
+                      toast.error(error.message || 'Invalid admin code');
+                    } finally {
+                      setAdminLoading(false);
+                    }
+                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  {adminLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Activating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Activate Premium</span>
+                      <Crown className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </details>
         </div>
 
         {/* Pricing Cards */}
