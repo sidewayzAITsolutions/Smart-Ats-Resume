@@ -98,8 +98,8 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Education</h2>
-          <p className="text-lg text-gray-600">
+          <h2 className="text-3xl font-bold text-pink-500 mb-2">Education</h2>
+          <p className="text-lg text-white">
             Add your educational background, starting with the most recent. Include relevant coursework, honors, or achievements.
           </p>
         </div>
@@ -111,10 +111,10 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
 
       <div className="space-y-6">
         {education.map((edu, index) => (
-          <div key={edu.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+          <div key={edu.id} className="border border-gray-700 rounded-lg p-6 bg-gray-800 shadow-sm">
             <div className="flex justify-between items-start mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <GraduationCap className="w-5 h-5 mr-2 text-blue-600" />
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <GraduationCap className="w-5 h-5 mr-2 text-blue-400" />
                 {edu.degree ? `${edu.degree}${edu.field ? ` in ${edu.field}` : ''}` : `Education ${index + 1}`}
               </h3>
               {education.length > 1 && (
@@ -122,7 +122,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                   variant="outline"
                   size="sm"
                   onClick={() => removeEducation(index)}
-                  className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
+                  className="text-red-400 hover:text-red-300 border-red-700 hover:bg-red-900/50"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -132,7 +132,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Institution */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor={`institution-${index}`}>
+                <label className="block text-sm font-medium text-white mb-2" htmlFor={`institution-${index}`}>
                   Institution/School *
                 </label>
                 <div className="relative">
@@ -144,7 +144,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                     type="text"
                     value={edu.institution}
                     onChange={(e) => updateEducation(index, 'institution', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     placeholder="e.g., University of California, Berkeley"
                   />
                 </div>
@@ -152,13 +152,13 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
 
               {/* Degree */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Degree *
                 </label>
                 <select
                   value={edu.degree}
                   onChange={(e) => updateEducation(index, 'degree', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
                 >
                   <option value="">Select degree type</option>
                   {commonDegrees.map(degree => (
@@ -169,7 +169,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
 
               {/* Field of Study */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Field of Study *
                 </label>
                 <input
@@ -177,7 +177,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                   value={edu.field}
                   onChange={(e) => updateEducation(index, 'field', e.target.value)}
                   list={`fields-${index}`}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400" // Apply sleek-input
                   placeholder="e.g., Computer Science"
                 />
                 <datalist id={`fields-${index}`}>
@@ -189,7 +189,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
 
               {/* Graduation Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Graduation Date *
                 </label>
                 <div className="relative">
@@ -200,24 +200,24 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                     type="month"
                     value={typeof edu.graduationDate === 'string' ? edu.graduationDate : ''}
                     onChange={(e) => updateEducation(index, 'graduationDate', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
+                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
                   />
                 </div>
               </div>
 
               {/* GPA */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   GPA (Optional)
                 </label>
                 <input
                   type="text"
                   value={edu.gpa}
                   onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400" // Apply sleek-input
                   placeholder="e.g., 3.8/4.0"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-400">
                   Only include if 3.5 or above, or if specifically requested by the employer
                 </p>
               </div>
@@ -227,9 +227,9 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
       </div>
 
       {/* Tips Section */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Education Section Tips</h3>
-        <div className="grid md:grid-cols-2 gap-4 text-blue-800">
+      <div className="bg-teal-900/30 border border-teal-700/50 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-teal-300 mb-3">💡 Education Section Tips</h3>
+        <div className="grid md:grid-cols-2 gap-4 text-gray-300">
           <div>
             <h4 className="font-medium mb-2">What to Include:</h4>
             <ul className="space-y-1 text-sm">
@@ -254,10 +254,10 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
       </div>
 
       {/* Additional Education Prompt */}{/* Apply btn-modern */}
-      <div className="text-center p-6 border-2 border-dashed border-gray-300 rounded-lg">
+      <div className="text-center p-6 border-2 border-dashed border-gray-700 rounded-lg bg-gray-800/50">
         <GraduationCap className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Have Additional Education?</h3>
-        <p className="text-gray-600 mb-4">
+        <h3 className="text-lg font-medium text-white mb-2">Have Additional Education?</h3>
+        <p className="text-gray-300 mb-4">
           Include certifications, online courses, bootcamps, or continuing education that&apos;s relevant to your career
         </p>
         <Button onClick={addEducation} variant="outline" className="btn-modern">

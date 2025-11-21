@@ -99,9 +99,9 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
 
   const getCategoryColor = (category: Skill['category']) => {
     switch (category) {
-      case 'technical': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'soft': return 'bg-green-100 text-green-800 border-green-200';
-      case 'language': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'technical': return 'bg-blue-900/30 text-blue-300 border-blue-700/50';
+      case 'soft': return 'bg-green-900/30 text-green-300 border-green-700/50';
+      case 'language': return 'bg-purple-900/30 text-purple-300 border-purple-700/50';
     }
   };
 
@@ -113,22 +113,22 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Skills</h2>
-        <p className="text-lg text-gray-600">
+        <h2 className="text-3xl font-bold text-pink-500 mb-2">Skills</h2>
+        <p className="text-lg text-white">
           Add skills that are relevant to your target position. Focus on skills mentioned in job descriptions to improve your ATS score.
         </p>
       </div>
 
       {/* Add New Skill */}
-      <div className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <Plus className="w-5 h-5 mr-2 text-blue-600" />
+      <div className="border border-gray-700 rounded-lg p-6 bg-gray-800 shadow-sm">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <Plus className="w-5 h-5 mr-2 text-blue-400" />
           Add Skills
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Skill Name
             </label>
             <input
@@ -136,34 +136,34 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
               placeholder="Enter a skill..."
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Category
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value as 'technical' | 'soft' | 'language')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="technical">Technical</option>
               <option value="soft">Soft Skills</option>
               <option value="language">Languages</option>
             </select>
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Level
             </label>
             <select
               value={selectedLevel}
               onChange={(e) => setSelectedLevel(e.target.value as 'beginner' | 'intermediate' | 'advanced' | 'expert')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
@@ -180,7 +180,7 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
 
         {/* Skill Suggestions */}
         <div className="mt-6">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">
+          <h4 className="text-sm font-medium text-white mb-3">
             Popular {selectedCategory} skills:
           </h4>
           <div className="flex flex-wrap gap-2">
@@ -188,7 +188,7 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
               <button
                 key={suggestion}
                 onClick={() => addSuggestedSkill(suggestion)}
-                className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                className="px-3 py-1 text-sm bg-gray-700 text-gray-300 hover:bg-gray-600 rounded-full transition-colors border border-gray-600"
                 disabled={skills.some(skill => skill.name.toLowerCase() === suggestion.toLowerCase())}
               >
                 {suggestion}
@@ -208,9 +208,9 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
 
             return (
               <div key={category} className="mb-8">
-                <h3 className="text-lg font-semibold mb-4 capitalize">
-                  {category === 'technical' ? 'Technical Skills' : 
-                   category === 'soft' ? 'Soft Skills' : 
+                <h3 className="text-lg font-semibold mb-4 capitalize text-white">
+                  {category === 'technical' ? 'Technical Skills' :
+                   category === 'soft' ? 'Soft Skills' :
                    'Languages'}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -220,7 +220,7 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
                         <span className="font-medium">{skill.name}</span>
                         <button
                           onClick={() => removeSkill(skill.id)}
-                          className="text-red-500 hover:text-red-700 p-1"
+                          className="text-red-400 hover:text-red-300 p-1"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -250,19 +250,19 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
       )}
 
       {skills.length === 0 && (
-        <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+        <div className="text-center py-12 border-2 border-dashed border-gray-700 rounded-lg bg-gray-800/50">
           <Code className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No skills added yet</h3>
-          <p className="text-gray-600 mb-4">
+          <h3 className="text-lg font-medium text-white mb-2">No skills added yet</h3>
+          <p className="text-gray-300 mb-4">
             Start by adding your most relevant skills above. Aim for 8-15 skills total.
           </p>
         </div>
       )}
 
       {/* Tips Section */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Skills Section Tips</h3>
-        <div className="grid md:grid-cols-2 gap-4 text-blue-800">
+      <div className="bg-teal-900/30 border border-teal-700/50 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-teal-300 mb-3">💡 Skills Section Tips</h3>
+        <div className="grid md:grid-cols-2 gap-4 text-gray-300">
           <div>
             <h4 className="font-medium mb-2 flex items-center">
               <Target className="w-4 h-4 mr-1" />
@@ -291,24 +291,24 @@ export default function SkillsForm({ initialData, onUpdate }: SkillsFormProps) {
       </div>
 
       {/* Skill Level Guide */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">📚 Skill Level Guide</h3>
+      <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-white mb-3">📚 Skill Level Guide</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
           <div className="text-center">
-            <div className="font-medium text-gray-700 mb-1">Beginner</div>
-            <div className="text-xs text-gray-600">Basic understanding, some experience</div>
+            <div className="font-medium text-gray-300 mb-1">Beginner</div>
+            <div className="text-xs text-gray-400">Basic understanding, some experience</div>
           </div>
           <div className="text-center">
-            <div className="font-medium text-gray-700 mb-1">Intermediate</div>
-            <div className="text-xs text-gray-600">Good working knowledge, can work independently</div>
+            <div className="font-medium text-gray-300 mb-1">Intermediate</div>
+            <div className="text-xs text-gray-400">Good working knowledge, can work independently</div>
           </div>
           <div className="text-center">
-            <div className="font-medium text-gray-700 mb-1">Advanced</div>
-            <div className="text-xs text-gray-600">Extensive experience, can teach others</div>
+            <div className="font-medium text-gray-300 mb-1">Advanced</div>
+            <div className="text-xs text-gray-400">Extensive experience, can teach others</div>
           </div>
           <div className="text-center">
-            <div className="font-medium text-gray-700 mb-1">Expert</div>
-            <div className="text-xs text-gray-600">Deep expertise, industry recognition</div>
+            <div className="font-medium text-gray-300 mb-1">Expert</div>
+            <div className="text-xs text-gray-400">Deep expertise, industry recognition</div>
           </div>
         </div>
       </div>

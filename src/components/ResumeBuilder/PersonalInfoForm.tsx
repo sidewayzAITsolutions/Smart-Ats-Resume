@@ -28,86 +28,86 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Information</h2>
-      
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
+      <h2 className="text-2xl font-bold text-pink-500 mb-6">Personal Information</h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Full Name *
           </label>
 <input
   type="text"
   value={formData.fullName}
   onChange={(e) => handleChange('fullName', e.target.value)}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input"
+  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-400"
   placeholder="John Doe"
   required
 />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Email Address *
           </label>
           <input
             type="email"
             value={formData.email}
             onChange={(e) => handleChange('email', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input" // Apply sleek-input
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-400" // Apply sleek-input
             placeholder="john@example.com"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Phone Number
           </label>
           <input
             type="tel"
             value={formData.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input" // Apply sleek-input
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-400" // Apply sleek-input
             placeholder="(555) 123-4567"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Location
           </label>
           <input
             type="text"
             value={formData.location}
             onChange={(e) => handleChange('location', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input" // Apply sleek-input
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-400" // Apply sleek-input
             placeholder="New York, NY"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             LinkedIn Profile
           </label>
           <input
             type="url"
             value={formData.linkedin || ''}
             onChange={(e) => handleChange('linkedin', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input" // Apply sleek-input
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-400" // Apply sleek-input
             placeholder="https://linkedin.com/in/johndoe"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Portfolio Website
           </label>
           <input
             type="url"
             value={formData.portfolio || ''}
             onChange={(e) => handleChange('portfolio', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input" // Apply sleek-input
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-400" // Apply sleek-input
             placeholder="https://johndoe.com"
           />
         </div>

@@ -126,7 +126,7 @@ export default function BuilderSidebar({
           <img
             src="/logo.png"
             alt="Smart ATS Donkey"
-            className="w-32 h-64 object-contain opacity-80"
+            className="w-48 h-72 object-contain opacity-80"
           />
         </div>
 

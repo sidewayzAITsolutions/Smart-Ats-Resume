@@ -53,7 +53,7 @@ export function ProjectsForm({ projects, onChange }: ProjectsFormProps) {
       {projects.map((project, index) => (
         <div
           key={project.id}
-          className="bg-gray-50 rounded-lg p-6 relative group"
+          className="bg-gray-800 rounded-lg p-6 relative group border border-gray-700"
         >
           <div className="absolute left-2 top-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-move">
             <GripVertical className="h-5 w-5 text-gray-400" />
@@ -61,53 +61,53 @@ export function ProjectsForm({ projects, onChange }: ProjectsFormProps) {
 
           <button
             onClick={() => removeProject(project.id)}
-            className="absolute right-4 top-4 text-red-500 hover:text-red-700 transition-colors"
+            className="absolute right-4 top-4 text-red-400 hover:text-red-300 transition-colors"
           >
             <Trash2 className="h-5 w-5" />
           </button>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Project Name
               </label>
               <input
                 type="text"
                 value={project.name}
                 onChange={(e) => updateProject(project.id, { name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="e.g., E-commerce Platform"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Project Link (Optional)
               </label>
               <input
                 type="url"
                 value={project.link || ''}
                 onChange={(e) => updateProject(project.id, { link: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="https://github.com/username/project"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Description
               </label>
               <textarea
                 value={project.description}
                 onChange={(e) => updateProject(project.id, { description: e.target.value })}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="Describe the project, your role, and key achievements..."
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Technologies Used
               </label>
               <input
@@ -121,7 +121,7 @@ export function ProjectsForm({ projects, onChange }: ProjectsFormProps) {
                       .filter(Boolean),
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="React, Node.js, MongoDB, AWS"
               />
             </div>
@@ -131,7 +131,7 @@ export function ProjectsForm({ projects, onChange }: ProjectsFormProps) {
 
       <button
         onClick={addProject}
-        className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 transition-colors flex items-center justify-center gap-2 text-gray-600 hover:text-indigo-600"
+        className="w-full py-3 border-2 border-dashed border-gray-700 rounded-lg hover:border-indigo-500 transition-colors flex items-center justify-center gap-2 text-gray-300 hover:text-indigo-400 bg-gray-800/50"
       >
         <Plus className="h-5 w-5" />
         Add Project
@@ -188,92 +188,92 @@ export function CertificationsForm({
       {certifications.map((cert) => (
         <div
           key={cert.id}
-          className="bg-gray-50 rounded-lg p-6 relative"
+          className="bg-gray-800 rounded-lg p-6 relative border border-gray-700"
         >
           <div className="absolute left-4 top-4">
-            <Award className="h-5 w-5 text-indigo-500" />
+            <Award className="h-5 w-5 text-indigo-400" />
           </div>
 
           <button
             onClick={() => removeCertification(cert.id)}
-            className="absolute right-4 top-4 text-red-500 hover:text-red-700 transition-colors"
+            className="absolute right-4 top-4 text-red-400 hover:text-red-300 transition-colors"
           >
             <Trash2 className="h-5 w-5" />
           </button>
 
           <div className="ml-8 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Certification Name
               </label>
               <input
                 type="text"
                 value={cert.name}
                 onChange={(e) => updateCertification(cert.id, { name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="e.g., AWS Certified Solutions Architect"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Issuing Organization
               </label>
               <input
                 type="text"
                 value={cert.issuer}
                 onChange={(e) => updateCertification(cert.id, { issuer: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="e.g., Amazon Web Services"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Date Obtained
               </label>
               <input
                 type="month"
                 value={cert.date}
                 onChange={(e) => updateCertification(cert.id, { date: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Expiration Date (Optional)
               </label>
               <input
                 type="month"
                 value={cert.expirationDate || ''}
                 onChange={(e) => updateCertification(cert.id, { expirationDate: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Credential ID (Optional)
               </label>
               <input
                 type="text"
                 value={cert.credentialId || ''}
                 onChange={(e) => updateCertification(cert.id, { credentialId: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="e.g., ABC123XYZ"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Credential URL (Optional)
               </label>
               <input
                 type="url"
                 value={cert.credentialUrl || ''}
                 onChange={(e) => updateCertification(cert.id, { credentialUrl: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                 placeholder="https://..."
               />
             </div>
@@ -283,7 +283,7 @@ export function CertificationsForm({
 
       <button
         onClick={addCertification}
-        className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 transition-colors flex items-center justify-center gap-2 text-gray-600 hover:text-indigo-600"
+        className="w-full py-3 border-2 border-dashed border-gray-700 rounded-lg hover:border-indigo-500 transition-colors flex items-center justify-center gap-2 text-gray-300 hover:text-indigo-400 bg-gray-800/50"
       >
         <Plus className="h-5 w-5" />
         Add Certification
@@ -332,10 +332,10 @@ export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-teal-900/30 border border-teal-700/50 rounded-lg p-4">
         <div className="flex gap-2">
-          <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-800">
+          <AlertCircle className="h-5 w-5 text-teal-400 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-gray-300">
             <p className="font-semibold mb-1">Tips for a great summary:</p>
             <ul className="list-disc list-inside space-y-1">
               <li>Keep it concise (2-4 sentences)</li>
@@ -349,7 +349,7 @@ export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-white">
             Professional Summary
           </label>
           <button
@@ -366,17 +366,17 @@ export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
           value={data}
           onChange={(e) => handleChange(e.target.value)}
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
           placeholder="Write a brief summary of your professional background, key skills, and career objectives..."
         />
 
-        <div className="mt-1 text-sm text-gray-500 text-right">
+        <div className="mt-1 text-sm text-gray-400 text-right">
           {charCount} / 500 characters
         </div>
       </div>
 
       {!jobTitle && (
-        <p className="text-sm text-amber-600">
+        <p className="text-sm text-amber-400">
           💡 Add a job title in Personal Info to enable AI summary generation
         </p>
       )}
