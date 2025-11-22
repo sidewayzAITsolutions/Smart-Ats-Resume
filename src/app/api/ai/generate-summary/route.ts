@@ -40,14 +40,15 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: 'user',
-          content: `Generate a professional summary for a resume for someone with the job title: "${jobTitle}". 
-          
+          content: `Generate a professional summary for a resume for someone with the job title: "${jobTitle}".
+
           The summary should be:
           - 2-4 sentences long
           - Highlight key strengths and experience relevant to the role
           - Use professional language
           - Include relevant keywords for ATS optimization
-          
+          - MUST be under 500 characters
+
           Return only the summary text, no additional formatting.`
         }
       ],
@@ -65,8 +66,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Enforce 500 character limit
+    const truncatedSummary = summary.trim().slice(0, 500);
+
     return NextResponse.json({
-      summary: summary.trim()
+      summary: truncatedSummary
     });
   } catch (error: any) {
     console.error('AI summary generation error:', error);

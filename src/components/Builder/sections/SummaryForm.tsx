@@ -17,8 +17,10 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
   const [charCount, setCharCount] = useState(data.length);
 
   const handleChange = (value: string) => {
-    onChange(value);
-    setCharCount(value.length);
+    // Enforce 500 character limit
+    const truncated = value.slice(0, 500);
+    onChange(truncated);
+    setCharCount(truncated.length);
   };
 
   const generateAISummary = async () => {
@@ -36,6 +38,7 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
       - Highlight key strengths and experience relevant to the role
       - Use professional language
       - Include relevant keywords for ATS optimization
+      - MUST be under 500 characters
 
       Return only the summary text, no additional formatting.`;
 
@@ -48,7 +51,9 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
         throw new Error('No summary was generated');
       }
 
-      handleChange(summary.trim());
+      // Enforce 500 character limit
+      const truncatedSummary = summary.trim().slice(0, 500);
+      handleChange(truncatedSummary);
       toast.success('Summary generated successfully!');
     } catch (error) {
       console.error('Failed to generate summary:', error);
