@@ -9,13 +9,16 @@ import { createClientFromRequest } from '@/lib/supabase/server';
 // Helper to parse PDF content using pdf-parse
 const parseEnhancedPDF = async (buffer: Buffer) => {
   try {
+    console.log('📖 Attempting to parse PDF, buffer size:', buffer.length);
     // Use require for CommonJS module in Node.js environment
     const pdfParse = require('pdf-parse');
+    console.log('✅ pdf-parse loaded:', typeof pdfParse);
     const data = await pdfParse(buffer);
+    console.log('✅ PDF parsed successfully, text length:', data?.text?.length);
     return { text: data?.text || null, error: null };
   } catch (error) {
-    console.error('Error parsing PDF:', error);
-    return { text: null, error: 'Failed to parse PDF' };
+    console.error('❌ Error parsing PDF:', error);
+    return { text: null, error: `Failed to parse PDF: ${error instanceof Error ? error.message : String(error)}` };
   }
 };
 
@@ -63,6 +66,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
+    console.log('📥 Received file:', file.name, 'Type:', file.type, 'Size:', file.size);
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     let fileType = file.type || 'application/octet-stream';
@@ -78,11 +82,13 @@ export async function POST(req: NextRequest) {
       else if (lower.endsWith('.txt')) fileType = 'text/plain';
     }
 
+    console.log('📋 Detected file type:', fileType);
     let parsedText: string | null = null;
     let parseError: string | null = null;
 
     switch (fileType) {
       case 'application/pdf': {
+        console.log('🔄 Parsing PDF...');
         const { text, error } = await parseEnhancedPDF(buffer);
         parsedText = text;
         parseError = error;
