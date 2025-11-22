@@ -6,18 +6,60 @@ import {
 
 import { createClientFromRequest } from '@/lib/supabase/server';
 
-// Helper to parse PDF content using pdf-parse
+// Helper to parse PDF content using pdf-parse with pdfjs-dist fallback
 const parseEnhancedPDF = async (buffer: Buffer) => {
   try {
-    console.log('📖 Attempting to parse PDF, buffer size:', buffer.length);
-    // Use require for CommonJS module in Node.js environment
+    console.log('📖 Attempting to parse PDF with pdf-parse, buffer size:', buffer.length);
     const pdfParse = require('pdf-parse');
-    console.log('✅ pdf-parse loaded:', typeof pdfParse);
     const data = await pdfParse(buffer);
-    console.log('✅ PDF parsed successfully, text length:', data?.text?.length);
+    console.log('✅ PDF parsed successfully with pdf-parse, text length:', data?.text?.length);
     return { text: data?.text || null, error: null };
   } catch (error) {
-    console.error('❌ Error parsing PDF:', error);
+    console.error('❌ pdf-parse failed:', error instanceof Error ? error.message : String(error));
+
+    // Fallback 1: Try pdfjs-dist
+    console.log('🔄 Attempting fallback with pdfjs-dist...');
+    try {
+      const pdfjsLib = require('pdfjs-dist');
+      const pdfData = new Uint8Array(buffer);
+      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+      let extractedText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map((item: any) => item.str).join(' ');
+        extractedText += pageText + '\n';
+      }
+
+      if (extractedText.trim().length > 50) {
+        console.log('✅ pdfjs-dist extraction successful, text length:', extractedText.length);
+        return { text: extractedText.trim(), error: null };
+      }
+    } catch (pdfJsError) {
+      console.error('❌ pdfjs-dist also failed:', pdfJsError instanceof Error ? pdfJsError.message : String(pdfJsError));
+    }
+
+    // Fallback 2: Try raw text extraction from PDF buffer
+    console.log('🔄 Attempting raw buffer text extraction...');
+    try {
+      const text = buffer.toString('latin1');
+      // Extract text between common PDF text markers
+      const matches = text.match(/BT\s+(.*?)\s+ET/gs) || [];
+      const extractedText = matches
+        .map(m => m.replace(/BT|ET|Tj|TJ|\(|\)|<|>|\/F\d+|\/Tf/g, ' '))
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (extractedText.length > 50) {
+        console.log('✅ Raw buffer extraction successful, text length:', extractedText.length);
+        return { text: extractedText, error: null };
+      }
+    } catch (fallbackError) {
+      console.error('❌ Raw buffer extraction failed:', fallbackError instanceof Error ? fallbackError.message : String(fallbackError));
+    }
+
     return { text: null, error: `Failed to parse PDF: ${error instanceof Error ? error.message : String(error)}` };
   }
 };
