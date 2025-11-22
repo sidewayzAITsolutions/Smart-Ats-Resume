@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 interface PersonalInfo {
   fullName: string;
   email: string;
+  title?: string;
   phone?: string;
   location?: string;
   linkedin?: string;
@@ -58,6 +59,20 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             placeholder="john@example.com"
             required
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-white mb-2">
+            Job Title
+          </label>
+          <input
+            type="text"
+            value={formData.title || ''}
+            onChange={(e) => handleChange('title', e.target.value)}
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            placeholder="e.g., Software Engineer, Marketing Manager"
+          />
+          <p className="mt-1 text-xs text-gray-400">Required for AI-powered summary generation</p>
         </div>
 
         <div>
