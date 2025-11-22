@@ -9,7 +9,6 @@ import React, {
 
 import { Loader2 } from 'lucide-react';
 
-import { useAutoSave } from '@/hooks/useAutoSave';
 import toast from 'react-hot-toast';
 import { useResumeStore } from '@/store/resumeStore';
 import { ResumeData } from '@/types/resume';
@@ -317,26 +316,6 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       updateResumeData(initialData);
     }
   }, [initialData, updateResumeData]);
-
-  // Auto-save functionality
-  useAutoSave({
-    data: resumeData,
-    onSave: async (data) => {
-      setIsSaving(true);
-      try {
-        await saveResume(resumeId || 'new', data);
-      } finally {
-        // Keep saving indicator visible for at least 500ms to prevent flashing
-        if (savingTimeoutRef.current) {
-          clearTimeout(savingTimeoutRef.current);
-        }
-        savingTimeoutRef.current = setTimeout(() => {
-          setIsSaving(false);
-        }, 500);
-      }
-    },
-    delay: 3000, // Save after 3 seconds of inactivity
-  });
 
   // Cleanup timeout on unmount
   useEffect(() => {

@@ -2542,10 +2542,8 @@ function EnhancedATSResumeBuilderContent() {
   const [savedResumes, setSavedResumes] = useState<SavedResume[]>([])
   const [showLoadDialog, setShowLoadDialog] = useState(false)
   const [lastSaved, setLastSaved] = useState<string>()
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true)
   const skillSearchRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const autoSaveRef = useRef<number | NodeJS.Timeout | null>(null)
   const resumePreviewRef = useRef<HTMLDivElement>(null)
 
   // Check user authentication and premium status
@@ -2644,29 +2642,6 @@ function EnhancedATSResumeBuilderContent() {
   useEffect(() => {
     loadSavedResumes()
   }, [])
-
-  // Auto-save functionality - debounced to prevent input interruption
-  useEffect(() => {
-    if (autoSaveEnabled && userData?.isPremium) {
-      // Clear existing timer
-      if (autoSaveRef.current) {
-        clearTimeout(autoSaveRef.current)
-      }
-
-      // Set new timer for auto-save after 5 seconds of inactivity (increased delay)
-      autoSaveRef.current = setTimeout(() => {
-        if (resumeName || resumeData.personal.fullName) {
-          autoSaveResume()
-        }
-      }, 5000) as unknown as number
-    }
-
-    return () => {
-      if (autoSaveRef.current) {
-        clearTimeout(autoSaveRef.current)
-      }
-    }
-  }, [resumeData, resumeName, autoSaveEnabled, userData?.isPremium])
 
   // Mark as unsaved when data changes - debounced
   useEffect(() => {
@@ -3074,19 +3049,6 @@ function EnhancedATSResumeBuilderContent() {
       }
 
       throw error
-    }
-  }
-
-  const autoSaveResume = async () => {
-    if (resumeData.personal.fullName || resumeName) {
-      try {
-        await saveResume(
-          resumeName || resumeData.personal.fullName || 'Auto-saved Resume',
-          true
-        )
-      } catch (error) {
-        console.error('Auto-save failed:', error)
-      }
     }
   }
 
@@ -4297,22 +4259,6 @@ Return only the bullet points, one per line, with no numbering or additional tex
                   placeholder='Enter resume name...'
                   autoFocus
                 />
-              </div>
-
-              <div className='mb-6'>
-                <label
-                  htmlFor='auto-save'
-                  className='flex items-center gap-2 text-sm text-gray-300 cursor-pointer'
-                >
-                  <input
-                    id='auto-save'
-                    type='checkbox'
-                    checked={autoSaveEnabled}
-                    onChange={e => setAutoSaveEnabled(e.target.checked)}
-                    className='w-4 h-4 rounded border-gray-600 text-teal-600 focus:ring-teal-500'
-                  />
-                  Enable auto-save (saves every 3 seconds)
-                </label>
               </div>
 
               <div className='flex gap-3'>

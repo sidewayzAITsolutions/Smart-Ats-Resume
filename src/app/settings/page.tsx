@@ -50,9 +50,8 @@ const SettingsPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPasswords, setShowPasswords] = useState(false);
-  
+
   // Preferences
-  const [autoSave, setAutoSave] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(true);
   
@@ -101,7 +100,6 @@ const SettingsPage = () => {
       const savedPrefs = localStorage.getItem('smartats_preferences');
       if (savedPrefs) {
         const prefs = JSON.parse(savedPrefs);
-        setAutoSave(prefs.autoSave ?? true);
         setEmailNotifications(prefs.emailNotifications ?? true);
         setDarkMode(prefs.darkMode ?? true);
       }
@@ -169,7 +167,6 @@ const SettingsPage = () => {
   const savePreferences = () => {
     try {
       const preferences = {
-        autoSave,
         emailNotifications,
         darkMode
       };
@@ -476,27 +473,8 @@ const SettingsPage = () => {
               {activeSection === 'preferences' && (
                 <div>
                   <h2 className="text-xl font-bold text-white mb-6">Preferences</h2>
-                  
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-white font-medium">Auto-save</h3>
-                        <p className="text-gray-400 text-sm">Automatically save your resume as you work</p>
-                      </div>
-                      <button
-                        onClick={() => setAutoSave(!autoSave)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          autoSave ? 'bg-blue-600' : 'bg-gray-600'
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            autoSave ? 'translate-x-6' : 'translate-x-1'
-                          }`}
-                        />
-                      </button>
-                    </div>
 
+                  <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-white font-medium">Email Notifications</h3>
