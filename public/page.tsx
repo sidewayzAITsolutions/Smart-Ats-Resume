@@ -56,6 +56,7 @@ import FloatingATSGuide from '@/components/FloatingATSGuide';
 import GlobalNavigation from '@/components/GlobalNavigation';
 import UserDropdown from '@/components/UserDropdown';
 import { createClient } from '@/lib/supabase/client';
+import { useWebLLM } from '@/hooks/useWebLLM';
 
 // DRY: Lock icon for non-premium sections
 const NonPremiumLockIcon = () => <Lock className='w-4 h-4 text-pink-400' />
@@ -2546,6 +2547,9 @@ function EnhancedATSResumeBuilderContent() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const resumePreviewRef = useRef<HTMLDivElement>(null)
 
+  // Initialize WebLLM for browser-based AI
+  const webLLM = useWebLLM()
+
   // Check user authentication and premium status
   useEffect(() => {
     checkUserStatus()
@@ -3224,45 +3228,30 @@ function EnhancedATSResumeBuilderContent() {
     }
   }
 
-  // AI Suggestion Functions
+  // AI Suggestion Functions using WebLLM (browser-based, no API costs)
   const generateAISummary = async () => {
     if (!userData?.isPremium) return
+
+    // Initialize model if not ready
+    if (!webLLM.isReady && !webLLM.isLoading) {
+      toast.loading('Loading AI model for the first time... This may take a minute.', { duration: 5000 })
+      await webLLM.initModel()
+    }
+
+    if (!webLLM.isReady) {
+      toast.error('AI model is still loading. Please wait and try again.')
+      return
+    }
 
     setLoadingStates(prev => ({ ...prev, summary: true }))
 
     try {
-      const prompt = `Generate 3 professional summary options for a resume based on the following information:
-
-Target Role: ${targetRole || 'professional'}
-Industry Focus: ${industryFocus || 'various industries'}
-Skills: ${resumeData.skills.join(', ')}
-Experience: ${resumeData.experience.map(exp => `${exp.position} at ${exp.company}`).join('; ')}
-
-Each summary should be:
-- 2-3 sentences long
-- ATS-friendly with relevant keywords
-- Highlight key achievements and skills
-- Professional and impactful
-
-Return only the 3 summaries separated by "|||" with no additional text or numbering.`
-
-      const response = await fetch('/api/ai/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt,
-          temperature: 0.7,
-          maxTokens: 800
-        })
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || 'Failed to generate summary')
-      }
-
-      const { completion } = await response.json()
-      const suggestions = completion.split('|||').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
+      const suggestions = await webLLM.generateSummary(
+        targetRole || 'professional',
+        industryFocus || 'various industries',
+        resumeData.skills,
+        resumeData.experience.map(exp => ({ position: exp.position, company: exp.company }))
+      )
 
       if (suggestions.length > 0) {
         setAiSuggestions(prev => ({ ...prev, summary: suggestions }))
@@ -3281,6 +3270,17 @@ Return only the 3 summaries separated by "|||" with no additional text or number
   const generateAIAchievements = async (experienceId: string | number) => {
     if (!userData?.isPremium) return
 
+    // Initialize model if not ready
+    if (!webLLM.isReady && !webLLM.isLoading) {
+      toast.loading('Loading AI model for the first time... This may take a minute.', { duration: 5000 })
+      await webLLM.initModel()
+    }
+
+    if (!webLLM.isReady) {
+      toast.error('AI model is still loading. Please wait and try again.')
+      return
+    }
+
     setLoadingStates(prev => ({
       ...prev,
       achievements: { ...prev.achievements, [experienceId]: true }
@@ -3295,43 +3295,12 @@ Return only the 3 summaries separated by "|||" with no additional text or number
         throw new Error('Experience not found')
       }
 
-      const prompt = `Generate 3-5 impactful achievement bullet points for the following work experience:
-
-Position: ${experience.position}
-Company: ${experience.company}
-Description: ${experience.description || 'Not provided'}
-Current Achievements: ${experience.achievements?.join('; ') || 'None'}
-
-Requirements:
-- Start with strong action verbs
-- Include quantifiable metrics and results where possible
-- Be specific and impactful
-- ATS-friendly and professional
-- Focus on accomplishments, not just responsibilities
-
-Return only the bullet points, one per line, with no numbering or additional text.`
-
-      const response = await fetch('/api/ai/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt,
-          temperature: 0.7,
-          maxTokens: 600
-        })
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || 'Failed to generate achievements')
-      }
-
-      const { completion } = await response.json()
-      const achievements = completion
-        .split('\n')
-        .map((line: string) => line.trim().replace(/^[-•*]\s*/, ''))
-        .filter((line: string) => line.length > 0)
-        .slice(0, 5)
+      const achievements = await webLLM.generateAchievements(
+        experience.position,
+        experience.company,
+        experience.description || '',
+        experience.achievements || []
+      )
 
       if (achievements.length > 0) {
         // Update the specific experience with new achievements
@@ -3751,6 +3720,45 @@ Return only the bullet points, one per line, with no numbering or additional tex
           <UserDropdown userData={rawUser} />
         )}
       </div>
+
+      {/* AI Model Status Indicator */}
+      {userData?.isPremium && (webLLM.isLoading || !webLLM.isReady) && (
+        <div className="fixed bottom-4 left-4 z-50 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-xl max-w-sm">
+          <div className="flex items-center gap-3">
+            {webLLM.isLoading ? (
+              <>
+                <Loader className="w-5 h-5 text-teal-400 animate-spin" />
+                <div>
+                  <p className="text-sm font-medium text-white">Loading AI Model...</p>
+                  <p className="text-xs text-gray-400 mt-1">{webLLM.progress}</p>
+                </div>
+              </>
+            ) : webLLM.error ? (
+              <>
+                <X className="w-5 h-5 text-red-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">AI Model Error</p>
+                  <p className="text-xs text-red-400 mt-1">{webLLM.error}</p>
+                  <button
+                    onClick={() => webLLM.initModel()}
+                    className="text-xs text-teal-400 hover:text-teal-300 mt-1 underline"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Brain className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">AI Ready</p>
+                  <p className="text-xs text-gray-400 mt-1">Click AI Generate to use</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Background Logo - Large and Faded */}
       <div className='fixed inset-0 overflow-hidden pointer-events-none'>

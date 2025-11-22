@@ -28,22 +28,39 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
       .replace(/^\s*[•\u2022]\s+/gm, '• ') // normalize bullet symbols
       .replace(/^\s*-\s+/gm, '• '); // treat leading hyphen as bullet only when at line start
 
+  // Expanded heading variations for better detection
   const headings = [
     'professional summary',
+    'professional profile',
+    'profile',
     'summary',
+    'objective',
+    'about me',
     'experience',
     'work experience',
+    'professional experience',
+    'employment history',
+    'work history',
     'education',
+    'academic background',
+    'qualifications',
     'skills',
+    'technical skills',
+    'core competencies',
+    'expertise',
     'projects',
+    'personal projects',
+    'key projects',
     'certifications',
+    'certificates',
+    'licenses',
   ];
   const normalizedText = normalize(text);
   const lower = normalizedText.toLowerCase();
   const indices: Record<string, number> = {};
   for (const h of headings) {
     const idx = lower.indexOf(h);
-    if (idx !== -1) indices[h] = idx;
+    if (idx !== -1 && !indices[h]) indices[h] = idx;
   }
   const order = Object.entries(indices).sort((a, b) => a[1] - b[1]);
   const slice = (startLabel: string) => {
@@ -61,12 +78,12 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     return '';
   };
 
-  const summaryRaw = sectionOr('professional summary', 'summary') || normalizedText.split(/\n\n/)[0] || '';
-  const skillsRaw = sectionOr('skills');
-  const projectsRaw = sectionOr('projects');
-  const certsRaw = sectionOr('certifications');
-  const expRaw = sectionOr('experience', 'work experience');
-  const eduRaw = sectionOr('education');
+  const summaryRaw = sectionOr('professional summary', 'professional profile', 'profile', 'summary', 'objective', 'about me') || normalizedText.split(/\n\n/)[0] || '';
+  const skillsRaw = sectionOr('skills', 'technical skills', 'core competencies', 'expertise');
+  const projectsRaw = sectionOr('projects', 'personal projects', 'key projects');
+  const certsRaw = sectionOr('certifications', 'certificates', 'licenses');
+  const expRaw = sectionOr('experience', 'work experience', 'professional experience', 'employment history', 'work history');
+  const eduRaw = sectionOr('education', 'academic background', 'qualifications');
 
   const toLines = (s: string) => {
     if (!s) return [] as string[];
@@ -206,60 +223,222 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     date: '',
   }));
 
+  // Improved experience parsing - handle multiple formats
   const experience = expRaw
     ? expRaw
         .split(/\n\s*\n/)
         .map((block, i) => {
           const lines = toLines(block);
-          const [first, ...rest] = lines;
-          const [position, company] = first ? first.split(' at ') : ['', ''];
-          const achievements = rest.filter(Boolean);
+          if (lines.length === 0) return null;
+
+          let position = '';
+          let company = '';
+          let startDate = '';
+          let endDate = '';
+          let current = false;
+          const achievements: string[] = [];
+
+          // Try to extract dates from the block (common formats)
+          const datePattern = /(\d{1,2}\/\d{4}|\d{4}|[A-Z][a-z]{2,8}\s+\d{4}|[A-Z][a-z]{2,8}\.\s+\d{4})/gi;
+          const dateMatches = block.match(datePattern);
+          if (dateMatches && dateMatches.length >= 1) {
+            startDate = dateMatches[0] || '';
+            endDate = dateMatches[1] || '';
+            // Check for "Present", "Current", "Now"
+            if (/present|current|now/i.test(block)) {
+              current = true;
+              endDate = 'Present';
+            }
+          }
+
+          // Parse first few lines for position and company
+          const [first, second, ...rest] = lines;
+
+          // Format 1: "Position at Company" or "Position | Company"
+          if (first && (first.includes(' at ') || first.includes(' | '))) {
+            const separator = first.includes(' at ') ? ' at ' : ' | ';
+            [position, company] = first.split(separator).map(s => s.trim());
+          }
+          // Format 2: "Position" on first line, "Company" on second line
+          else if (first && second) {
+            // Check if first line looks like a position (contains common job title words)
+            const jobTitleWords = ['engineer', 'developer', 'manager', 'analyst', 'designer', 'consultant', 'director', 'specialist', 'coordinator', 'lead', 'senior', 'junior', 'intern', 'associate'];
+            const firstLower = first.toLowerCase();
+            const isLikelyPosition = jobTitleWords.some(word => firstLower.includes(word)) || first.length < 60;
+
+            if (isLikelyPosition) {
+              position = first;
+              company = second;
+            } else {
+              // Assume first is company, second is position
+              company = first;
+              position = second;
+            }
+          }
+          // Format 3: Single line with position only
+          else if (first) {
+            position = first;
+          }
+
+          // Collect achievements from remaining lines
+          rest.forEach(line => {
+            if (line && line.length > 10 && !datePattern.test(line)) {
+              achievements.push(line);
+            }
+          });
+
+          // Clean up extracted values
+          position = position.replace(/^[•\-\u2022]\s*/, '').trim();
+          company = company.replace(/^[•\-\u2022]\s*/, '').trim();
+
+          // Remove dates from position/company if they got included
+          position = position.replace(datePattern, '').trim();
+          company = company.replace(datePattern, '').trim();
+
+          if (!position && !company) return null;
+
           return {
             id: `${Date.now()}-ex-${i}`,
-            company: (company || '').trim(),
-            position: (position || '').trim(),
-            startDate: '',
-            endDate: '',
-            current: false,
-            description: rest.join(' '),
+            company: company || '',
+            position: position || '',
+            startDate: startDate || '',
+            endDate: endDate || '',
+            current,
+            description: achievements.join(' '),
             achievements,
             keywords: [],
           };
         })
-        .filter((e) => e.company || e.position)
+        .filter((e): e is NonNullable<typeof e> => e !== null && (!!e.company || !!e.position))
     : [];
 
+  // Improved education parsing - handle multiple formats
   const education = eduRaw
     ? eduRaw.split(/\n\s*\n/).map((block, i) => {
         const lines = toLines(block);
-        const [first] = lines;
+        if (lines.length === 0) return null;
+
         let degree = '';
         let field = '';
         let institution = '';
-        if (first && first.includes(' - ')) {
-          const [left, right] = first.split(' - ');
-          institution = right.trim();
-          if (left.includes(' in ')) {
-            const [d, f] = left.split(' in ');
-            degree = d.trim();
-            field = f.trim();
-          } else {
-            degree = left.trim();
-          }
-        } else {
-          institution = first || '';
+        let graduationDate = '';
+        let gpa = '';
+
+        // Extract dates
+        const datePattern = /(\d{1,2}\/\d{4}|\d{4}|[A-Z][a-z]{2,8}\s+\d{4})/gi;
+        const dateMatches = block.match(datePattern);
+        if (dateMatches && dateMatches.length >= 1) {
+          graduationDate = dateMatches[dateMatches.length - 1] || ''; // Usually graduation is the last date
         }
+
+        // Extract GPA
+        const gpaMatch = block.match(/GPA[:\s]*(\d+\.\d+|\d+\/\d+)/i);
+        if (gpaMatch) {
+          gpa = gpaMatch[1];
+        }
+
+        const [first, second] = lines;
+
+        // Common degree keywords
+        const degreeKeywords = ['bachelor', 'master', 'phd', 'doctorate', 'associate', 'diploma', 'certificate', 'b.s.', 'b.a.', 'm.s.', 'm.a.', 'mba', 'ph.d.'];
+
+        // Format 1: "Degree in Field - Institution" or "Degree in Field | Institution"
+        if (first && (first.includes(' - ') || first.includes(' | '))) {
+          const separator = first.includes(' - ') ? ' - ' : ' | ';
+          const [left, right] = first.split(separator).map(s => s.trim());
+
+          // Check which side has the degree
+          const leftLower = left.toLowerCase();
+          const rightLower = right.toLowerCase();
+          const leftHasDegree = degreeKeywords.some(kw => leftLower.includes(kw));
+          const rightHasDegree = degreeKeywords.some(kw => rightLower.includes(kw));
+
+          if (leftHasDegree) {
+            institution = right;
+            if (left.includes(' in ')) {
+              const [d, f] = left.split(' in ').map(s => s.trim());
+              degree = d;
+              field = f;
+            } else {
+              degree = left;
+            }
+          } else if (rightHasDegree) {
+            institution = left;
+            if (right.includes(' in ')) {
+              const [d, f] = right.split(' in ').map(s => s.trim());
+              degree = d;
+              field = f;
+            } else {
+              degree = right;
+            }
+          } else {
+            // Assume left is degree, right is institution
+            institution = right;
+            degree = left;
+          }
+        }
+        // Format 2: Institution on first line, degree on second
+        else if (first && second) {
+          const firstLower = first.toLowerCase();
+          const secondLower = second.toLowerCase();
+          const firstHasDegree = degreeKeywords.some(kw => firstLower.includes(kw));
+          const secondHasDegree = degreeKeywords.some(kw => secondLower.includes(kw));
+
+          if (firstHasDegree) {
+            degree = first;
+            institution = second;
+          } else if (secondHasDegree) {
+            institution = first;
+            degree = second;
+          } else {
+            // Assume first is institution (usually universities are listed first)
+            institution = first;
+            degree = second;
+          }
+
+          // Extract field from degree if present
+          if (degree.includes(' in ')) {
+            const [d, f] = degree.split(' in ').map(s => s.trim());
+            degree = d;
+            field = f;
+          }
+        }
+        // Format 3: Single line
+        else if (first) {
+          const firstLower = first.toLowerCase();
+          const hasDegree = degreeKeywords.some(kw => firstLower.includes(kw));
+
+          if (hasDegree) {
+            degree = first;
+            if (degree.includes(' in ')) {
+              const [d, f] = degree.split(' in ').map(s => s.trim());
+              degree = d;
+              field = f;
+            }
+          } else {
+            institution = first;
+          }
+        }
+
+        // Clean up extracted values
+        degree = degree.replace(/^[•\-\u2022]\s*/, '').replace(datePattern, '').replace(/GPA[:\s]*\d+\.\d+/gi, '').trim();
+        institution = institution.replace(/^[•\-\u2022]\s*/, '').replace(datePattern, '').replace(/GPA[:\s]*\d+\.\d+/gi, '').trim();
+        field = field.replace(/^[•\-\u2022]\s*/, '').replace(datePattern, '').trim();
+
+        if (!degree && !institution) return null;
+
         return {
           id: `${Date.now()}-ed-${i}`,
-          institution,
-          degree,
-          field,
+          institution: institution || '',
+          degree: degree || '',
+          field: field || '',
           startDate: '',
-          graduationDate: '',
-          gpa: '',
+          graduationDate: graduationDate || '',
+          gpa: gpa || '',
           achievements: [],
         } as any;
       })
+      .filter((e): e is NonNullable<typeof e> => e !== null)
     : [];
 
   // Extract contact info from whole document
@@ -267,19 +446,56 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
   const phoneMatch = normalizedText.match(/\+?\d[\d\s().-]{7,}\d/);
   const linkedinMatch = normalizedText.match(/https?:\/\/[^\s]*linkedin\.com\/in\/[A-Za-z0-9\-_%]+/i);
 
-  // Guess full name as the first non-empty line before the first heading
+  // Extract location (common patterns)
+  const locationMatch = normalizedText.match(/(?:location|address|city)[:\s]*([A-Z][a-z]+(?:,?\s+[A-Z]{2})?(?:,?\s+[A-Z][a-z]+)?)/i) ||
+                        normalizedText.match(/([A-Z][a-z]+,\s*[A-Z]{2}(?:\s+\d{5})?)/); // City, ST or City, ST ZIP
+  const location = locationMatch ? locationMatch[1] : '';
+
+  // Improved name extraction
   const topBlockEnd = Object.values(indices).length
     ? Math.min(...Object.values(indices))
-    : Math.min(200, normalizedText.length);
+    : Math.min(300, normalizedText.length);
   const topBlock = normalizedText.slice(0, topBlockEnd).split(/\n+/).map((l) => l.trim()).filter(Boolean);
-  const fullName = (topBlock.find((l) => !l.includes('@') && !/linkedin/i.test(l) && l.length >= 2 && l.length <= 80) || '').replace(/^name[:\-]\s*/i, '');
+
+  // Find the most likely name line
+  let fullName = '';
+  for (const line of topBlock) {
+    // Skip lines with email, phone, linkedin, or common resume keywords
+    if (
+      line.includes('@') ||
+      /linkedin|github|portfolio|website|http/i.test(line) ||
+      /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/.test(line) || // phone pattern
+      /resume|curriculum vitae|cv/i.test(line)
+    ) {
+      continue;
+    }
+
+    // Check if line looks like a name (2-4 words, each capitalized, reasonable length)
+    const words = line.split(/\s+/);
+    const looksLikeName =
+      words.length >= 2 &&
+      words.length <= 4 &&
+      line.length >= 4 &&
+      line.length <= 50 &&
+      words.every(w => /^[A-Z][a-z]+/.test(w) || w.length <= 3); // Allow initials
+
+    if (looksLikeName) {
+      fullName = line.replace(/^name[:\-]\s*/i, '').trim();
+      break;
+    }
+  }
+
+  // Fallback: use first non-empty line if no good name found
+  if (!fullName && topBlock.length > 0) {
+    fullName = topBlock[0].replace(/^name[:\-]\s*/i, '').trim();
+  }
 
   return {
     personalInfo: {
       fullName: fullName || '',
       email: emailMatch?.[0] || '',
       phone: phoneMatch?.[0] || '',
-      location: '',
+      location: location || '',
       linkedin: linkedinMatch?.[0],
     },
     summary: summaryRaw,
