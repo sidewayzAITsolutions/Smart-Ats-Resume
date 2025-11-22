@@ -73,9 +73,9 @@ export default function KeywordsForm({ data, onChange }: KeywordsFormProps) {
         throw new Error(error.error || "Failed to generate keywords");
       }
 
-      const data = await response.json();
-      const newKeywords: string[] = Array.isArray(data.keywords)
-        ? data.keywords
+      const responseData = await response.json();
+      const newKeywords: string[] = Array.isArray(responseData.keywords)
+        ? responseData.keywords
         : [];
 
       if (!newKeywords.length) {
