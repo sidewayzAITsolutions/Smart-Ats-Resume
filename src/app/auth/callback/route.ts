@@ -57,14 +57,25 @@ export async function GET(request: NextRequest) {
     }
 
     if (data.user) {
-      // Ensure the user profile exists
-      const { data: profile } = await supabase
+      console.log('🔍 Checking if profile exists for user:', data.user.id);
+
+      // Wait a moment for the database trigger to create the profile
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Check if profile was created by the database trigger
+      const { data: profile, error: selectError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', data.user.id)
         .maybeSingle();
 
+      if (selectError) {
+        console.error('Error checking profile:', selectError);
+      }
+
       if (!profile) {
+        console.log('⚠️ Profile not found, attempting to create with service role');
+
         // Use service role key to bypass RLS for profile creation
         const supabaseServiceRole = createServiceClient(
           supabaseUrl,
@@ -84,8 +95,7 @@ export async function GET(request: NextRequest) {
             updated_at: new Date().toISOString(),
           });
         if (insertError) {
-          console.error('Failed to create user profile:', insertError);
-          // Log more details to help debug
+          console.error('❌ Failed to create user profile:', insertError);
           console.error('Insert error details:', {
             code: insertError.code,
             message: insertError.message,
@@ -94,6 +104,8 @@ export async function GET(request: NextRequest) {
         } else {
           console.log('✅ User profile created successfully for:', data.user.id);
         }
+      } else {
+        console.log('✅ Profile already exists for user:', data.user.id);
       }
     }
 
