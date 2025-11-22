@@ -63,9 +63,9 @@ export default function BuilderToolbar({
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <img 
-              src="/logo.png" 
+              src="/horse-logo.png" 
               alt="SmartATS Logo" 
-              className="h-10 w-10 rounded-lg transition-transform group-hover:scale-110"
+              className="h-10 w-10 rounded-lg transition-transform group-hover:scale-110 object-contain"
             />
             <div className="flex flex-col">
               <h1 className="text-lg font-bold text-white tracking-tight">
@@ -96,16 +96,11 @@ export default function BuilderToolbar({
             </Link>
           </div>
 
-          {/* Save Status */}
-          {isSaving ? (
+          {/* Save Status - Only show when actively saving */}
+          {isSaving && (
             <div className="flex items-center gap-2 text-sm text-gray-400 ml-4">
               <Loader2 className="h-4 w-4 animate-spin text-teal-400" />
               <span>Saving...</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 text-sm text-green-400 ml-4">
-              <div className="h-2 w-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="font-medium">All changes saved</span>
             </div>
           )}
         </div>

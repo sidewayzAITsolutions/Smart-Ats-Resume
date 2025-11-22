@@ -50,8 +50,161 @@ export default function ResumePreview({
   const renderPreviewContent = () => {
     const templateId = selectedTemplate || resumeData?.templateId || 'modern';
     
-    // Modern Professional Template (default) - Elegant serif fonts
-    if (templateId === 'modern' || templateId === 'modern-professional' || !templateId) {
+    // Modern Template - Clean sans-serif, contemporary design
+    if (templateId === 'modern' || !templateId) {
+      return (
+        <div className="bg-white p-8 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Inter", "Roboto", sans-serif' }}>
+          {/* Header */}
+          {resumeData.personalInfo && (
+            <header className="mb-6 pb-6 border-b border-gray-200">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700 }}>
+                {resumeData.personalInfo.fullName || 'Your Name'}
+              </h1>
+              {resumeData.personalInfo.title && (
+                <p className="text-lg text-gray-600 mb-4 font-medium" style={{ fontFamily: '"Inter", sans-serif' }}>
+                  {resumeData.personalInfo.title}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                {resumeData.personalInfo.email && <span>{resumeData.personalInfo.email}</span>}
+                {resumeData.personalInfo.phone && <span>•</span>}
+                {resumeData.personalInfo.phone && <span>{resumeData.personalInfo.phone}</span>}
+                {resumeData.personalInfo.location && <span>•</span>}
+                {resumeData.personalInfo.location && <span>{resumeData.personalInfo.location}</span>}
+                {resumeData.personalInfo.linkedin && <span>•</span>}
+                {resumeData.personalInfo.linkedin && <span>{resumeData.personalInfo.linkedin}</span>}
+              </div>
+            </header>
+          )}
+
+          {/* Summary */}
+          {resumeData.summary && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+                Professional Summary
+              </h2>
+              <p className="text-gray-700 leading-relaxed text-sm" style={{ fontFamily: '"Inter", sans-serif', lineHeight: '1.6' }}>
+                {resumeData.summary}
+              </p>
+            </section>
+          )}
+
+          {/* Experience */}
+          {resumeData.experience && resumeData.experience.length > 0 && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+                Work Experience
+              </h2>
+              {resumeData.experience.map((exp, index) => (
+                <div key={index} className="mb-4">
+                  <div className="flex justify-between items-start mb-1">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-base" style={{ fontFamily: '"Inter", sans-serif' }}>
+                        {exp.position}
+                      </h3>
+                      <p className="text-gray-600 text-sm" style={{ fontFamily: '"Inter", sans-serif' }}>{exp.company}</p>
+                    </div>
+                    <span className="text-sm text-gray-500 font-medium whitespace-nowrap ml-4">
+                      {exp.startDate} - {exp.endDate || 'Present'}
+                    </span>
+                  </div>
+                  {exp.description && (
+                    <ul className="mt-2 space-y-1">
+                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                        <li key={i} className="text-gray-700 text-sm pl-5 relative" style={{ fontFamily: '"Inter", sans-serif', lineHeight: '1.5' }}>
+                          <span className="absolute left-0 text-gray-400">•</span>
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Education */}
+          {resumeData.education && resumeData.education.length > 0 && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+                Education
+              </h2>
+              {resumeData.education.map((edu, index) => (
+                <div key={index} className="mb-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Inter", sans-serif' }}>
+                        {edu.degree}
+                      </h3>
+                      <p className="text-gray-600 text-sm" style={{ fontFamily: '"Inter", sans-serif' }}>{edu.school || edu.institution}</p>
+                    </div>
+                    <span className="text-sm text-gray-500 font-medium">
+                      {edu.graduationDate}
+                    </span>
+                  </div>
+                  {edu.gpa && (
+                    <p className="text-sm text-gray-600 mt-1" style={{ fontFamily: '"Inter", sans-serif' }}>GPA: {edu.gpa}</p>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Skills */}
+          {resumeData.skills && resumeData.skills.length > 0 && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+                Skills
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {resumeData.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm font-medium"
+                    style={{ fontFamily: '"Inter", sans-serif' }}
+                  >
+                    {typeof skill === 'string' ? skill : skill.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Projects */}
+          {resumeData.projects && resumeData.projects.length > 0 && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+                Projects
+              </h2>
+              {resumeData.projects.map((project, index) => (
+                <div key={index} className="mb-3">
+                  <h3 className="font-semibold text-gray-900 text-sm mb-1" style={{ fontFamily: '"Inter", sans-serif' }}>
+                    {project.name}
+                  </h3>
+                  {project.description && (
+                    <p className="text-gray-700 text-sm mt-1 leading-relaxed" style={{ fontFamily: '"Inter", sans-serif', lineHeight: '1.5' }}>
+                      {project.description}
+                    </p>
+                  )}
+                  {project.technologies && project.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {project.technologies.map((tech: string, i: number) => (
+                        <span key={i} className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded border border-gray-200" style={{ fontFamily: '"Inter", sans-serif' }}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+        </div>
+      );
+    }
+
+    // Modern Professional Template - Elegant serif fonts
+    if (templateId === 'modern-professional') {
       return (
         <div className="bg-white p-10 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Crimson Pro", "Lora", "Georgia", serif' }}>
           {/* Header */}
@@ -208,24 +361,27 @@ export default function ResumePreview({
       );
     }
 
-    // Classic Template
-    if (templateId === 'classic' || templateId === 'basic-clean') {
+    // Classic Template - Traditional, formal style
+    if (templateId === 'classic') {
       return (
-        <div className="bg-white p-8 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px' }}>
+        <div className="bg-white p-8 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Times New Roman", "Georgia", serif' }}>
           {resumeData.personalInfo && (
-            <header className="mb-6 pb-4 border-b border-gray-300 text-center">
-              <h1 className="text-2xl font-bold text-gray-900 uppercase mb-1">
+            <header className="mb-6 pb-4 border-b-2 border-gray-400 text-center">
+              <h1 className="text-2xl font-bold text-gray-900 uppercase mb-1 tracking-wide" style={{ fontFamily: '"Times New Roman", serif', letterSpacing: '0.1em' }}>
                 {resumeData.personalInfo.fullName || 'Your Name'}
               </h1>
               {resumeData.personalInfo.title && (
-                <p className="text-lg text-gray-700 mb-2">
+                <p className="text-base text-gray-700 mb-2 font-semibold" style={{ fontFamily: '"Times New Roman", serif' }}>
                   {resumeData.personalInfo.title}
                 </p>
               )}
-              <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-600">
+              <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-600">
                 {resumeData.personalInfo.email && <span>{resumeData.personalInfo.email}</span>}
+                {resumeData.personalInfo.phone && <span>|</span>}
                 {resumeData.personalInfo.phone && <span>{resumeData.personalInfo.phone}</span>}
+                {resumeData.personalInfo.location && <span>|</span>}
                 {resumeData.personalInfo.location && <span>{resumeData.personalInfo.location}</span>}
+                {resumeData.personalInfo.linkedin && <span>|</span>}
                 {resumeData.personalInfo.linkedin && <span>{resumeData.personalInfo.linkedin}</span>}
               </div>
             </header>
@@ -233,10 +389,10 @@ export default function ResumePreview({
 
           {resumeData.summary && (
             <section className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900 uppercase border-b border-gray-300 pb-1 mb-2">
+              <h2 className="text-base font-bold text-gray-900 uppercase border-b-2 border-gray-400 pb-1 mb-2" style={{ fontFamily: '"Times New Roman", serif' }}>
                 Professional Summary
               </h2>
-              <p className="text-gray-700 text-sm leading-relaxed">
+              <p className="text-gray-700 text-sm leading-relaxed" style={{ fontFamily: '"Times New Roman", serif', lineHeight: '1.6' }}>
                 {resumeData.summary}
               </p>
             </section>
@@ -244,24 +400,24 @@ export default function ResumePreview({
 
           {resumeData.experience && resumeData.experience.length > 0 && (
             <section className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900 uppercase border-b border-gray-300 pb-1 mb-2">
+              <h2 className="text-base font-bold text-gray-900 uppercase border-b-2 border-gray-400 pb-1 mb-2" style={{ fontFamily: '"Times New Roman", serif' }}>
                 Work Experience
               </h2>
               {resumeData.experience.map((exp, index) => (
                 <div key={index} className="mb-3">
                   <div className="flex justify-between items-start mb-1">
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-sm">
+                      <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: '"Times New Roman", serif' }}>
                         {exp.position}
                       </h3>
-                      <p className="text-gray-600 text-xs italic">{exp.company}</p>
+                      <p className="text-gray-600 text-xs italic" style={{ fontFamily: '"Times New Roman", serif' }}>{exp.company}</p>
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 font-semibold">
                       {exp.startDate} - {exp.endDate || 'Present'}
                     </span>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-700 text-xs mt-1">{exp.description}</p>
+                    <p className="text-gray-700 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Times New Roman", serif', lineHeight: '1.5' }}>{exp.description}</p>
                   )}
                 </div>
               ))}
@@ -270,19 +426,19 @@ export default function ResumePreview({
 
           {resumeData.education && resumeData.education.length > 0 && (
             <section className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900 uppercase border-b border-gray-300 pb-1 mb-2">
+              <h2 className="text-base font-bold text-gray-900 uppercase border-b-2 border-gray-400 pb-1 mb-2" style={{ fontFamily: '"Times New Roman", serif' }}>
                 Education
               </h2>
               {resumeData.education.map((edu, index) => (
                 <div key={index} className="mb-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-sm">
+                      <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: '"Times New Roman", serif' }}>
                         {edu.degree}
                       </h3>
-                      <p className="text-gray-600 text-xs">{edu.school || edu.institution}</p>
+                      <p className="text-gray-600 text-xs" style={{ fontFamily: '"Times New Roman", serif' }}>{edu.school || edu.institution}</p>
                     </div>
-                    <span className="text-xs text-gray-500">{edu.graduationDate}</span>
+                    <span className="text-xs text-gray-500 font-semibold">{edu.graduationDate}</span>
                   </div>
                 </div>
               ))}
@@ -291,14 +447,15 @@ export default function ResumePreview({
 
           {resumeData.skills && resumeData.skills.length > 0 && (
             <section className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900 uppercase border-b border-gray-300 pb-1 mb-2">
+              <h2 className="text-base font-bold text-gray-900 uppercase border-b-2 border-gray-400 pb-1 mb-2" style={{ fontFamily: '"Times New Roman", serif' }}>
                 Skills
               </h2>
               <div className="flex flex-wrap gap-1">
                 {resumeData.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-100 text-gray-700 text-xs"
+                    className="px-2 py-1 bg-gray-100 text-gray-700 text-xs border border-gray-300"
+                    style={{ fontFamily: '"Times New Roman", serif' }}
                   >
                     {typeof skill === 'string' ? skill : skill.name}
                   </span>
@@ -309,21 +466,21 @@ export default function ResumePreview({
 
           {resumeData.projects && resumeData.projects.length > 0 && (
             <section className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900 uppercase border-b border-gray-300 pb-1 mb-2">
+              <h2 className="text-base font-bold text-gray-900 uppercase border-b-2 border-gray-400 pb-1 mb-2" style={{ fontFamily: '"Times New Roman", serif' }}>
                 Projects
               </h2>
               {resumeData.projects.map((project, index) => (
                 <div key={index} className="mb-2">
-                  <h3 className="font-semibold text-gray-900 text-sm">
+                  <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: '"Times New Roman", serif' }}>
                     {project.name}
                   </h3>
                   {project.description && (
-                    <p className="text-gray-700 text-xs mt-1">{project.description}</p>
+                    <p className="text-gray-700 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Times New Roman", serif', lineHeight: '1.5' }}>{project.description}</p>
                   )}
                   {project.technologies && project.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {project.technologies.map((tech: string, i: number) => (
-                        <span key={i} className="text-xs text-gray-600 bg-gray-50 px-1.5 py-0.5">
+                        <span key={i} className="text-xs text-gray-600 bg-gray-50 px-1.5 py-0.5 border border-gray-200" style={{ fontFamily: '"Times New Roman", serif' }}>
                           {tech}
                         </span>
                       ))}
@@ -337,8 +494,408 @@ export default function ResumePreview({
       );
     }
 
-    // Minimalist Elegant Template - Ultra refined
-    if (templateId === 'minimal' || templateId === 'minimalist-elegant') {
+    // Basic Clean Template - Simple, ATS-friendly, minimal styling
+    if (templateId === 'basic-clean') {
+      return (
+        <div className="bg-white p-8 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Arial", "Helvetica", sans-serif' }}>
+          {resumeData.personalInfo && (
+            <header className="mb-6 pb-4 border-b border-gray-200">
+              <h1 className="text-2xl font-bold text-gray-900 mb-1" style={{ fontFamily: '"Arial", sans-serif' }}>
+                {resumeData.personalInfo.fullName || 'Your Name'}
+              </h1>
+              {resumeData.personalInfo.title && (
+                <p className="text-base text-gray-600 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                  {resumeData.personalInfo.title}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                {resumeData.personalInfo.email && <span>{resumeData.personalInfo.email}</span>}
+                {resumeData.personalInfo.phone && <span>• {resumeData.personalInfo.phone}</span>}
+                {resumeData.personalInfo.location && <span>• {resumeData.personalInfo.location}</span>}
+                {resumeData.personalInfo.linkedin && <span>• {resumeData.personalInfo.linkedin}</span>}
+              </div>
+            </header>
+          )}
+
+          {resumeData.summary && (
+            <section className="mb-5">
+              <h2 className="text-base font-bold text-gray-900 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                Professional Summary
+              </h2>
+              <p className="text-gray-700 text-sm leading-relaxed" style={{ fontFamily: '"Arial", sans-serif', lineHeight: '1.5' }}>
+                {resumeData.summary}
+              </p>
+            </section>
+          )}
+
+          {resumeData.experience && resumeData.experience.length > 0 && (
+            <section className="mb-5">
+              <h2 className="text-base font-bold text-gray-900 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                Work Experience
+              </h2>
+              {resumeData.experience.map((exp, index) => (
+                <div key={index} className="mb-3">
+                  <div className="flex justify-between items-start mb-1">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Arial", sans-serif' }}>
+                        {exp.position}
+                      </h3>
+                      <p className="text-gray-600 text-xs" style={{ fontFamily: '"Arial", sans-serif' }}>{exp.company}</p>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      {exp.startDate} - {exp.endDate || 'Present'}
+                    </span>
+                  </div>
+                  {exp.description && (
+                    <p className="text-gray-700 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Arial", sans-serif', lineHeight: '1.4' }}>{exp.description}</p>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {resumeData.education && resumeData.education.length > 0 && (
+            <section className="mb-5">
+              <h2 className="text-base font-bold text-gray-900 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                Education
+              </h2>
+              {resumeData.education.map((edu, index) => (
+                <div key={index} className="mb-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Arial", sans-serif' }}>
+                        {edu.degree}
+                      </h3>
+                      <p className="text-gray-600 text-xs" style={{ fontFamily: '"Arial", sans-serif' }}>{edu.school || edu.institution}</p>
+                    </div>
+                    <span className="text-xs text-gray-500">{edu.graduationDate}</span>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {resumeData.skills && resumeData.skills.length > 0 && (
+            <section className="mb-5">
+              <h2 className="text-base font-bold text-gray-900 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                Skills
+              </h2>
+              <div className="flex flex-wrap gap-1">
+                {resumeData.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs"
+                    style={{ fontFamily: '"Arial", sans-serif' }}
+                  >
+                    {typeof skill === 'string' ? skill : skill.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {resumeData.projects && resumeData.projects.length > 0 && (
+            <section className="mb-5">
+              <h2 className="text-base font-bold text-gray-900 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                Projects
+              </h2>
+              {resumeData.projects.map((project, index) => (
+                <div key={index} className="mb-2">
+                  <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Arial", sans-serif' }}>
+                    {project.name}
+                  </h3>
+                  {project.description && (
+                    <p className="text-gray-700 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Arial", sans-serif', lineHeight: '1.4' }}>{project.description}</p>
+                  )}
+                  {project.technologies && project.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {project.technologies.map((tech: string, i: number) => (
+                        <span key={i} className="text-xs text-gray-600" style={{ fontFamily: '"Arial", sans-serif' }}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+        </div>
+      );
+    }
+
+    // Creative Template - Colorful, artistic but simpler
+    if (templateId === 'creative') {
+      return (
+        <div className="bg-white p-8 shadow-lg mx-auto relative overflow-hidden" style={{ maxWidth: '850px', minHeight: '1100px' }}>
+          {/* Decorative top accent */}
+          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400"></div>
+          
+          <div className="mt-4">
+            {resumeData.personalInfo && (
+              <header className="mb-8 pb-6 border-b-2 border-purple-200">
+                <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-600 mb-2" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                  {resumeData.personalInfo.fullName || 'Your Name'}
+                </h1>
+                {resumeData.personalInfo.title && (
+                  <p className="text-lg text-purple-600 font-semibold mb-4" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                    {resumeData.personalInfo.title}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600 font-medium" style={{ fontFamily: '"Open Sans", sans-serif' }}>
+                  {resumeData.personalInfo.email && <span className="flex items-center gap-1"><span className="text-blue-500">✉</span> {resumeData.personalInfo.email}</span>}
+                  {resumeData.personalInfo.phone && <span className="flex items-center gap-1"><span className="text-purple-500">📱</span> {resumeData.personalInfo.phone}</span>}
+                  {resumeData.personalInfo.location && <span className="flex items-center gap-1"><span className="text-pink-500">📍</span> {resumeData.personalInfo.location}</span>}
+                  {resumeData.personalInfo.linkedin && <span className="flex items-center gap-1"><span className="text-blue-500">🔗</span> {resumeData.personalInfo.linkedin}</span>}
+                </div>
+              </header>
+            )}
+
+            {resumeData.summary && (
+              <section className="mb-6">
+                <h2 className="text-lg font-bold text-purple-600 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                  Professional Summary
+                </h2>
+                <p className="text-gray-700 leading-relaxed pl-4 border-l-3 border-purple-300" style={{ fontFamily: '"Open Sans", sans-serif', borderLeftWidth: '3px' }}>
+                  {resumeData.summary}
+                </p>
+              </section>
+            )}
+
+            {resumeData.experience && resumeData.experience.length > 0 && (
+              <section className="mb-6">
+                <h2 className="text-lg font-bold text-purple-600 mb-4 uppercase tracking-wide" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                  Work Experience
+                </h2>
+                {resumeData.experience.map((exp, index) => (
+                  <div key={index} className="mb-4 pl-4 border-l-3 border-blue-300 relative">
+                    <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 border-2 border-white"></div>
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 className="font-bold text-gray-900 text-base mb-1" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                          {exp.position}
+                        </h3>
+                        <p className="text-purple-600 font-semibold text-sm" style={{ fontFamily: '"Montserrat", sans-serif' }}>{exp.company}</p>
+                      </div>
+                      <span className="text-sm text-gray-500 font-medium bg-purple-50 px-2 py-1 rounded">
+                        {exp.startDate} - {exp.endDate || 'Present'}
+                      </span>
+                    </div>
+                    {exp.description && (
+                      <p className="text-gray-700 text-sm mt-2 leading-relaxed" style={{ fontFamily: '"Open Sans", sans-serif' }}>{exp.description}</p>
+                    )}
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {resumeData.education && resumeData.education.length > 0 && (
+              <section className="mb-6">
+                <h2 className="text-lg font-bold text-purple-600 mb-4 uppercase tracking-wide" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                  Education
+                </h2>
+                {resumeData.education.map((edu, index) => (
+                  <div key={index} className="mb-3 pl-4 border-l-3 border-pink-300 relative">
+                    <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 border-2 border-white"></div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                          {edu.degree}
+                        </h3>
+                        <p className="text-purple-600 font-semibold text-xs" style={{ fontFamily: '"Montserrat", sans-serif' }}>{edu.school || edu.institution}</p>
+                      </div>
+                      <span className="text-xs text-gray-500 font-medium">{edu.graduationDate}</span>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {resumeData.skills && resumeData.skills.length > 0 && (
+              <section className="mb-6">
+                <h2 className="text-lg font-bold text-purple-600 mb-4 uppercase tracking-wide" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                  Skills
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {resumeData.skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1.5 bg-gradient-to-r from-blue-100 to-pink-100 text-purple-900 rounded-full text-sm font-semibold border border-purple-200"
+                      style={{ fontFamily: '"Montserrat", sans-serif' }}
+                    >
+                      {typeof skill === 'string' ? skill : skill.name}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {resumeData.projects && resumeData.projects.length > 0 && (
+              <section className="mb-6">
+                <h2 className="text-lg font-bold text-purple-600 mb-4 uppercase tracking-wide" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                  Projects
+                </h2>
+                {resumeData.projects.map((project, index) => (
+                  <div key={index} className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-pink-50 rounded-lg border border-purple-200">
+                    <h3 className="font-bold text-purple-900 text-base mb-2" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                      {project.name}
+                    </h3>
+                    {project.description && (
+                      <p className="text-gray-700 text-sm mt-1 leading-relaxed" style={{ fontFamily: '"Open Sans", sans-serif' }}>
+                        {project.description}
+                      </p>
+                    )}
+                    {project.technologies && project.technologies.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {project.technologies.map((tech: string, i: number) => (
+                          <span key={i} className="text-xs text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 font-semibold" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </section>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Minimal Template - Very simple, clean lines, sans-serif
+    if (templateId === 'minimal') {
+      return (
+        <div className="bg-white p-10 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Roboto", "Arial", sans-serif' }}>
+          {resumeData.personalInfo && (
+            <header className="mb-8 text-center">
+              <h1 className="text-3xl font-light text-gray-900 mb-2" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>
+                {resumeData.personalInfo.fullName || 'Your Name'}
+              </h1>
+              {resumeData.personalInfo.title && (
+                <p className="text-base text-gray-500 mb-4 font-light" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>
+                  {resumeData.personalInfo.title}
+                </p>
+              )}
+              <div className="w-20 h-px bg-gray-300 mx-auto mb-4"></div>
+              <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-500 font-light" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>
+                {resumeData.personalInfo.email && <span>{resumeData.personalInfo.email}</span>}
+                {resumeData.personalInfo.phone && <span>{resumeData.personalInfo.phone}</span>}
+                {resumeData.personalInfo.location && <span>{resumeData.personalInfo.location}</span>}
+                {resumeData.personalInfo.linkedin && <span>{resumeData.personalInfo.linkedin}</span>}
+              </div>
+            </header>
+          )}
+
+          {resumeData.summary && (
+            <section className="mb-8">
+              <h2 className="text-sm font-light text-gray-500 mb-3 uppercase tracking-wider text-center" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, letterSpacing: '0.15em' }}>
+                Summary
+              </h2>
+              <p className="text-gray-600 text-sm leading-relaxed text-center max-w-xl mx-auto" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, lineHeight: '1.7' }}>
+                {resumeData.summary}
+              </p>
+            </section>
+          )}
+
+          {resumeData.experience && resumeData.experience.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-sm font-light text-gray-500 mb-4 uppercase tracking-wider" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, letterSpacing: '0.15em' }}>
+                Experience
+              </h2>
+              {resumeData.experience.map((exp, index) => (
+                <div key={index} className="mb-5 pb-5 border-b border-gray-200 last:border-0">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-normal text-gray-900 text-sm mb-1" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 400 }}>
+                        {exp.position}
+                      </h3>
+                      <p className="text-gray-500 text-xs font-light" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>{exp.company}</p>
+                    </div>
+                    <span className="text-xs text-gray-400 font-light whitespace-nowrap ml-4" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>
+                      {exp.startDate} - {exp.endDate || 'Present'}
+                    </span>
+                  </div>
+                  {exp.description && (
+                    <p className="text-gray-600 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, lineHeight: '1.6' }}>{exp.description}</p>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {resumeData.education && resumeData.education.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-sm font-light text-gray-500 mb-4 uppercase tracking-wider" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, letterSpacing: '0.15em' }}>
+                Education
+              </h2>
+              {resumeData.education.map((edu, index) => (
+                <div key={index} className="mb-4 pb-4 border-b border-gray-200 last:border-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-normal text-gray-900 text-sm" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 400 }}>
+                        {edu.degree}
+                      </h3>
+                      <p className="text-gray-500 text-xs font-light" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>{edu.school || edu.institution}</p>
+                    </div>
+                    <span className="text-xs text-gray-400 font-light" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>{edu.graduationDate}</span>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {resumeData.skills && resumeData.skills.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-sm font-light text-gray-500 mb-4 uppercase tracking-wider" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, letterSpacing: '0.15em' }}>
+                Skills
+              </h2>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {resumeData.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 text-gray-600 text-xs border border-gray-300 font-light"
+                    style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}
+                  >
+                    {typeof skill === 'string' ? skill : skill.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {resumeData.projects && resumeData.projects.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-sm font-light text-gray-500 mb-4 uppercase tracking-wider" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, letterSpacing: '0.15em' }}>
+                Projects
+              </h2>
+              {resumeData.projects.map((project, index) => (
+                <div key={index} className="mb-4 pb-4 border-b border-gray-200 last:border-0">
+                  <h3 className="font-normal text-gray-900 text-sm mb-1" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 400 }}>
+                    {project.name}
+                  </h3>
+                  {project.description && (
+                    <p className="text-gray-600 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, lineHeight: '1.6' }}>{project.description}</p>
+                  )}
+                  {project.technologies && project.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {project.technologies.map((tech: string, i: number) => (
+                        <span key={i} className="text-xs text-gray-400 font-light" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+        </div>
+      );
+    }
+
+    // Minimalist Elegant Template - Ultra refined serif design
+    if (templateId === 'minimalist-elegant') {
       return (
         <div className="bg-white p-12 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Lora", "Crimson Pro", serif' }}>
           {resumeData.personalInfo && (
@@ -468,8 +1025,8 @@ export default function ResumePreview({
       );
     }
 
-    // Creative Designer Template - Bold and artistic
-    if (templateId === 'creative' || templateId === 'creative-designer') {
+    // Creative Designer Template - Bold and artistic with gradient side bar
+    if (templateId === 'creative-designer') {
       return (
         <div className="bg-white p-8 shadow-lg mx-auto relative overflow-hidden" style={{ maxWidth: '850px', minHeight: '1100px' }}>
           {/* Decorative side bar */}
