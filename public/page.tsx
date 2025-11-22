@@ -2676,11 +2676,6 @@ function EnhancedATSResumeBuilderContent() {
     return () => clearTimeout(timer)
   }, [resumeData, targetRole, industryFocus])
 
-  // Mark as unsaved when data changes
-  useEffect(() => {
-    setSaveStatus('unsaved')
-  }, [resumeData, targetRole, industryFocus])
-
   // Helper functions for score display
   const getScoreRingColor = (score: number) => {
     if (score >= 90) return 'text-green-400'
@@ -3273,36 +3268,52 @@ function EnhancedATSResumeBuilderContent() {
 
     setLoadingStates(prev => ({ ...prev, summary: true }))
 
-    // Simulate AI generation
-    setTimeout(() => {
-      const suggestions = [
-        `Results-driven ${
-          targetRole || 'professional'
-        } with proven expertise in ${resumeData.skills
-          .slice(0, 3)
-          .join(
-            ', '
-          )}. Demonstrated success in delivering high-impact solutions and driving measurable business outcomes in ${
-          industryFocus || 'dynamic'
-        } environments.`,
-        `Innovative ${
-          targetRole || 'professional'
-        } combining technical excellence with strategic thinking. Track record of ${
-          resumeData.experience[0]?.achievements[0] ||
-          'achieving significant results'
-        } while maintaining focus on continuous improvement and team collaboration.`,
-        `Dynamic ${
-          targetRole || 'professional'
-        } passionate about leveraging ${resumeData.skills
-          .slice(0, 2)
-          .join(
-            ' and '
-          )} to solve complex challenges. Committed to delivering exceptional results through data-driven decision making and innovative problem-solving approaches.`
-      ]
+    try {
+      const prompt = `Generate 3 professional summary options for a resume based on the following information:
 
-      setAiSuggestions(prev => ({ ...prev, summary: suggestions }))
+Target Role: ${targetRole || 'professional'}
+Industry Focus: ${industryFocus || 'various industries'}
+Skills: ${resumeData.skills.join(', ')}
+Experience: ${resumeData.experience.map(exp => `${exp.position} at ${exp.company}`).join('; ')}
+
+Each summary should be:
+- 2-3 sentences long
+- ATS-friendly with relevant keywords
+- Highlight key achievements and skills
+- Professional and impactful
+
+Return only the 3 summaries separated by "|||" with no additional text or numbering.`
+
+      const response = await fetch('/api/ai/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          temperature: 0.7,
+          maxTokens: 800
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to generate summary')
+      }
+
+      const { completion } = await response.json()
+      const suggestions = completion.split('|||').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
+
+      if (suggestions.length > 0) {
+        setAiSuggestions(prev => ({ ...prev, summary: suggestions }))
+        toast.success('AI summaries generated successfully!')
+      } else {
+        throw new Error('No summaries generated')
+      }
+    } catch (error: any) {
+      console.error('Error generating AI summary:', error)
+      toast.error(error.message || 'Failed to generate AI summary. Please try again.')
+    } finally {
       setLoadingStates(prev => ({ ...prev, summary: false }))
-    }, 2000)
+    }
   }
 
   const generateAIAchievements = async (experienceId: string | number) => {
@@ -3313,34 +3324,75 @@ function EnhancedATSResumeBuilderContent() {
       achievements: { ...prev.achievements, [experienceId]: true }
     }))
 
-    // Simulate AI generation
-    setTimeout(() => {
+    try {
       const experience = resumeData.experience.find(
         exp => exp.id === experienceId
       )
-      const achievements = [
-        `Led cross-functional team of 12 to deliver ${
-          experience?.position || 'project'
-        } ahead of schedule, resulting in 25% cost savings`,
-        `Implemented innovative solutions that improved operational efficiency by 40% and reduced processing time from 5 days to 24 hours`,
-        `Drove revenue growth of $2.5M through strategic initiatives and process optimization`,
-        `Mentored 5 junior team members, with 100% receiving promotions within 18 months`,
-        `Spearheaded digital transformation initiative affecting 500+ employees, achieving 95% adoption rate`
-      ]
 
-      // Update the specific experience with new achievements
-      const updatedExperience = resumeData.experience.map(exp =>
-        exp.id === experienceId
-          ? { ...exp, achievements: achievements.slice(0, 3) }
-          : exp
-      )
+      if (!experience) {
+        throw new Error('Experience not found')
+      }
 
-      updateResumeData('experience', () => updatedExperience)
+      const prompt = `Generate 3-5 impactful achievement bullet points for the following work experience:
+
+Position: ${experience.position}
+Company: ${experience.company}
+Description: ${experience.description || 'Not provided'}
+Current Achievements: ${experience.achievements?.join('; ') || 'None'}
+
+Requirements:
+- Start with strong action verbs
+- Include quantifiable metrics and results where possible
+- Be specific and impactful
+- ATS-friendly and professional
+- Focus on accomplishments, not just responsibilities
+
+Return only the bullet points, one per line, with no numbering or additional text.`
+
+      const response = await fetch('/api/ai/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          temperature: 0.7,
+          maxTokens: 600
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to generate achievements')
+      }
+
+      const { completion } = await response.json()
+      const achievements = completion
+        .split('\n')
+        .map((line: string) => line.trim().replace(/^[-•*]\s*/, ''))
+        .filter((line: string) => line.length > 0)
+        .slice(0, 5)
+
+      if (achievements.length > 0) {
+        // Update the specific experience with new achievements
+        const updatedExperience = resumeData.experience.map(exp =>
+          exp.id === experienceId
+            ? { ...exp, achievements }
+            : exp
+        )
+
+        updateResumeData('experience', () => updatedExperience)
+        toast.success('AI achievements generated successfully!')
+      } else {
+        throw new Error('No achievements generated')
+      }
+    } catch (error: any) {
+      console.error('Error generating AI achievements:', error)
+      toast.error(error.message || 'Failed to generate achievements. Please try again.')
+    } finally {
       setLoadingStates(prev => ({
         ...prev,
         achievements: { ...prev.achievements, [experienceId]: false }
       }))
-    }, 2000)
+    }
   }
 
   const suggestSkills = () => {
