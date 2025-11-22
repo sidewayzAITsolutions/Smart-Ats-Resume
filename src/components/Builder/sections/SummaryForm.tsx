@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { AlertCircle, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useWebLLM } from '@/hooks/useWebLLM';
 
 interface SummaryFormProps {
   data: string;
@@ -14,6 +15,7 @@ interface SummaryFormProps {
 export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [charCount, setCharCount] = useState(data.length);
+  const webLLM = useWebLLM();
 
   const handleChange = (value: string) => {
     onChange(value);
@@ -26,25 +28,44 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
       return;
     }
 
+    // Initialize WebLLM if not ready
+    if (!webLLM.isReady && !webLLM.isLoading) {
+      toast.loading('Loading AI model for the first time... This may take a minute.', { duration: 5000 });
+      await webLLM.initModel();
+    }
+
+    if (!webLLM.isReady) {
+      toast.error('AI model is still loading. Please wait and try again.');
+      return;
+    }
+
+    if (webLLM.error) {
+      toast.error(webLLM.error);
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/ai/generate-summary', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobTitle }),
+      const prompt = `Generate a professional summary for a resume for someone with the job title: "${jobTitle}".
+
+      The summary should be:
+      - 2-4 sentences long
+      - Highlight key strengths and experience relevant to the role
+      - Use professional language
+      - Include relevant keywords for ATS optimization
+
+      Return only the summary text, no additional formatting.`;
+
+      const summary = await webLLM.generateCompletion(prompt, {
+        temperature: 0.7,
+        maxTokens: 200,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Failed to generate summary (${response.status})`);
-      }
-
-      const { summary } = await response.json();
-      if (!summary) {
+      if (!summary || summary.trim().length === 0) {
         throw new Error('No summary was generated');
       }
 
-      handleChange(summary);
+      handleChange(summary.trim());
       toast.success('Summary generated successfully!');
     } catch (error) {
       console.error('Failed to generate summary:', error);
