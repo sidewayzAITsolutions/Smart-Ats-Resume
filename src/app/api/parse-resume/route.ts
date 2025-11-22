@@ -6,29 +6,12 @@ import {
 
 import { createClientFromRequest } from '@/lib/supabase/server';
 
-// Dynamically import libraries for parsing different file types
-// This helps in reducing the initial bundle size for serverless functions
-const loadLibraries = async () => {
-  const [pdfParse, mammoth] = await Promise.all([
-    import('pdf-parse').catch(() => null), // Catch import errors gracefully
-    import('mammoth').catch(() => null),
-  ]);
-  return { pdfParse, mammoth };
-};
-
-// Helper to parse PDF content (handles CommonJS + ESM shapes)
-const parseEnhancedPDF = async (buffer: Buffer, pdfParseModule: any) => {
-  if (!pdfParseModule) {
-    console.error('PDF parsing library not loaded.');
-    return { text: null, error: 'PDF parsing library missing' };
-  }
-  const pdfParseFn = pdfParseModule.default || pdfParseModule; // Support both import styles
-  if (typeof pdfParseFn !== 'function') {
-    console.error('pdf-parse module did not export a function:', pdfParseModule);
-    return { text: null, error: 'Invalid pdf-parse export' };
-  }
+// Helper to parse PDF content using pdf-parse
+const parseEnhancedPDF = async (buffer: Buffer) => {
   try {
-    const data = await pdfParseFn(buffer);
+    // Use require for CommonJS module in Node.js environment
+    const pdfParse = require('pdf-parse');
+    const data = await pdfParse(buffer);
     return { text: data?.text || null, error: null };
   } catch (error) {
     console.error('Error parsing PDF:', error);
@@ -37,12 +20,9 @@ const parseEnhancedPDF = async (buffer: Buffer, pdfParseModule: any) => {
 };
 
 // Helper to parse DOCX content
-const parseEnhancedDocument = async (buffer: Buffer, mammoth: any) => {
-  if (!mammoth) {
-    console.error("DOCX parsing library not loaded.");
-    return null;
-  }
+const parseEnhancedDocument = async (buffer: Buffer) => {
   try {
+    const mammoth = require('mammoth');
     // Ensure we pass just the used slice of the underlying ArrayBuffer
     const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
     const result = await mammoth.extractRawText({ arrayBuffer });
@@ -99,20 +79,18 @@ export async function POST(req: NextRequest) {
     }
 
     let parsedText: string | null = null;
-    const { pdfParse, mammoth } = await loadLibraries();
-
     let parseError: string | null = null;
 
     switch (fileType) {
       case 'application/pdf': {
-        const { text, error } = await parseEnhancedPDF(buffer, pdfParse);
+        const { text, error } = await parseEnhancedPDF(buffer);
         parsedText = text;
         parseError = error;
         break;
       }
       // cspell:disable-next-line
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': // .docx
-        parsedText = await parseEnhancedDocument(buffer, mammoth);
+        parsedText = await parseEnhancedDocument(buffer);
         break;
       case 'application/rtf':
         parsedText = parseRTF(buffer);

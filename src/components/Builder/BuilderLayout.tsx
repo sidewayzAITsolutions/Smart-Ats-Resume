@@ -20,6 +20,8 @@ import ResumeEditor from './ResumeEditor';
 import ResumePreview from './ResumePreview';
 
 function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
+  console.log('🔍 Starting resume parsing, text length:', text.length);
+
   // Normalize whitespace and bullets, preserve hyphenated words
   const normalize = (s: string) =>
     s
@@ -535,7 +537,7 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     fullName = topBlock[0].replace(/^name[:\-]\s*/i, '').trim();
   }
 
-  return {
+  const result = {
     personalInfo: {
       fullName: fullName || '',
       email: emailMatch?.[0] || '',
@@ -554,6 +556,18 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     keywords,
     jobDescription,
   };
+
+  console.log('✅ Resume parsing complete:', {
+    name: result.personalInfo.fullName,
+    email: result.personalInfo.email,
+    skills: result.skills.length,
+    experience: result.experience.length,
+    education: result.education.length,
+    projects: result.projects.length,
+    certifications: result.certifications.length,
+  });
+
+  return result;
 }
 
 interface BuilderLayoutProps {
@@ -618,20 +632,33 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      console.log('📄 Uploading resume:', file.name, file.type, file.size);
       const form = new FormData();
       form.append('resume', file);
       const res = await fetch('/api/parse-resume', { method: 'POST', body: form });
+      console.log('📡 API response status:', res.status);
       const json = await res.json();
+      console.log('📦 API response:', json);
+
       if (!res.ok || !json?.success) {
-        console.error('Resume parse failed:', json?.error || res.statusText);
+        console.error('❌ Resume parse failed:', json?.error || res.statusText);
         toast.error(`Failed to parse resume: ${json?.error || 'Unknown error'}`);
         return;
       }
 
       if (json?.parsedText) {
-        const patch = buildResumePatchFromParsedText(json.parsedText as string);
-        const combined = { ...resumeData, ...patch } as any;
+        console.log('✅ Parsed text received, length:', json.parsedText.length);
+        let patch: Partial<ResumeData>;
+        try {
+          patch = buildResumePatchFromParsedText(json.parsedText as string);
+          console.log('✅ Resume patch created:', patch);
+        } catch (parseErr) {
+          console.error('❌ Error parsing resume text:', parseErr);
+          toast.error(`Failed to parse resume content: ${parseErr instanceof Error ? parseErr.message : 'Unknown error'}`);
+          return;
+        }
 
+        const combined = { ...resumeData, ...patch } as any;
         updateResumeData(patch);
         setActiveSection('summary');
 
