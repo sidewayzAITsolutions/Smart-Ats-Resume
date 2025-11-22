@@ -17,32 +17,50 @@ export async function POST(req: NextRequest) {
     }
     const adminCode = rawCode.trim();
 
-    // Support multiple admin codes separated by comma/space/newline
-    const adminCodesRaw = process.env.ADMIN_PREMIUM_CODE || '';
-    const adminCodes = adminCodesRaw.split(/[\n,\s]+/).filter(Boolean);
+    // Support multiple admin codes separated by comma/space/newline.
+    // Accept several possible env var names to reduce production misconfiguration risk.
+    const adminCodesRaw =
+      process.env.ADMIN_PREMIUM_CODE ||
+      process.env.ADMIN_PREMIUM_CODES ||
+      process.env.ADMIN_CODES ||
+      process.env.PREMIUM_ADMIN_CODE ||
+      '';
+    const adminCodes = adminCodesRaw.split(/[\n,\s,]+/).filter(Boolean);
 
     // Also allow any PROMO_CODES value as fallback (multi code list)
-    const promoCodesRaw = process.env.PROMO_CODES || '';
+    const promoCodesRaw = process.env.PROMO_CODES || process.env.PROMO_CODE || '';
     const promoCodes = promoCodesRaw.split(/[\n,\s,]+/).filter(Boolean);
+
+    if (adminCodes.length === 0 && promoCodes.length === 0) {
+      console.error('Configuration error: No admin or promo codes found in environment variables.');
+      return NextResponse.json({ error: 'Server not configured with any admin/promo codes', configurationError: true }, { status: 500 });
+    }
 
     const matchAdmin = adminCodes.find(c => c.toLowerCase() === adminCode.toLowerCase());
     const matchPromo = !matchAdmin && promoCodes.find(c => c.toLowerCase() === adminCode.toLowerCase());
 
     if (!matchAdmin && !matchPromo) {
-      return NextResponse.json({ error: 'Invalid admin/promo code' }, { status: 403 });
+      return NextResponse.json({ error: 'Invalid admin/promo code', attempted: adminCode }, { status: 403 });
     }
 
   // Maintain Stripe-style 'active' to satisfy subscription_status constraint
   const subscription_status = 'active';
     const { data: profileCheck, error: selectErr } = await supabase
       .from('profiles')
-      .select('id, is_premium, subscription_status')
+      .select('id')
       .eq('id', user.id)
       .single();
 
     if (selectErr) {
-      console.error('Profile fetch before update failed:', selectErr);
-      return NextResponse.json({ error: 'Profile not found for user', detail: selectErr.message }, { status: 404 });
+      // Attempt to create profile if it doesn't exist (user signed up before initial schema ran)
+      console.warn('Profile missing, attempting auto-create for user:', user.id);
+      const { error: insertErr } = await supabase
+        .from('profiles')
+        .insert({ id: user.id, email: user.email, full_name: user.email?.split('@')[0] || 'User' });
+      if (insertErr) {
+        console.error('Auto-create profile failed:', insertErr);
+        return NextResponse.json({ error: 'Profile not found and auto-create failed', detail: insertErr.message }, { status: 500 });
+      }
     }
 
     const { error: updateError } = await supabase

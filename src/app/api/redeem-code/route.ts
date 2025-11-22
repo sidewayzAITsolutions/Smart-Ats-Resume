@@ -32,6 +32,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Invalid or expired code' }, { status: 404 });
     }
 
+    // Ensure profile exists
+    const { data: profileRow, error: profileErr } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (profileErr) {
+      const { error: insertErr } = await supabase
+        .from('profiles')
+        .insert({ id: user.id, email: user.email, full_name: user.email?.split('@')[0] || 'User' });
+      if (insertErr) {
+        console.error('Promo auto-create profile failed:', insertErr);
+        return NextResponse.json({ success: false, error: 'Profile create failed' }, { status: 500 });
+      }
+    }
+
     // Mark user premium
     const { error: updateError } = await supabase
       .from('profiles')

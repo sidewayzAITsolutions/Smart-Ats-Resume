@@ -127,16 +127,21 @@ export class AuthService {
 
       if (!existingProfile) {
         // Create profile
+        // IMPORTANT: Do NOT set subscription_status to a value outside the CHECK constraint list.
+        // Allowed values: ('active','canceled','past_due','unpaid','incomplete','incomplete_expired','trialing')
+        // For a new non-premium user we leave subscription_status NULL so the CHECK passes (NULL is allowed).
+        const insertPayload = {
+          id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || '',
+          avatar_url: user.user_metadata?.avatar_url || '',
+          is_premium: false,
+          // subscription_status intentionally omitted
+        } as const;
+
         const { error: insertError } = await this.supabase
           .from('profiles')
-          .insert({
-            id: user.id,
-            email: user.email,
-            full_name: user.user_metadata?.full_name || '',
-            avatar_url: user.user_metadata?.avatar_url || '',
-            is_premium: false,
-            subscription_status: 'free',
-          });
+          .insert(insertPayload);
 
         if (insertError) {
           console.error('Error creating user profile:', insertError);
