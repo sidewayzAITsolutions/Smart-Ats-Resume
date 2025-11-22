@@ -118,7 +118,7 @@ export default function SignupPage(): React.JSX.Element {
               email: data.user.email,
               full_name: fullName,
               is_premium: false,
-              subscription_status: 'free'
+              // subscription_status intentionally omitted for free users (NULL is allowed)
             });
             console.log('Profile created successfully');
           } catch (profileError) {

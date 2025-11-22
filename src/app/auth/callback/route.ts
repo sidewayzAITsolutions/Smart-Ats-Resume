@@ -72,12 +72,20 @@ export async function GET(request: NextRequest) {
             full_name: data.user.user_metadata?.full_name || data.user.user_metadata?.name || '',
             avatar_url: data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || '',
             is_premium: false,
-            subscription_status: 'free',
+            // subscription_status intentionally omitted for free users (NULL is allowed)
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
         if (insertError) {
-          console.warn('Failed to create user profile:', insertError);
+          console.error('Failed to create user profile:', insertError);
+          // Log more details to help debug
+          console.error('Insert error details:', {
+            code: insertError.code,
+            message: insertError.message,
+            details: insertError.details,
+          });
+        } else {
+          console.log('✅ User profile created successfully for:', data.user.id);
         }
       }
     }
