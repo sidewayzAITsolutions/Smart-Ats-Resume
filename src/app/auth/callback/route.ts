@@ -5,6 +5,7 @@ import {
 } from 'next/server';
 
 import { createServerClient } from '@supabase/ssr';
+import { createClient as createServiceClient } from '@supabase/supabase-js';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -64,7 +65,13 @@ export async function GET(request: NextRequest) {
         .maybeSingle();
 
       if (!profile) {
-        const { error: insertError } = await supabase
+        // Use service role key to bypass RLS for profile creation
+        const supabaseServiceRole = createServiceClient(
+          supabaseUrl,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        const { error: insertError } = await supabaseServiceRole
           .from('profiles')
           .insert({
             id: data.user.id,
