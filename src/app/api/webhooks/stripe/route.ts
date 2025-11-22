@@ -8,8 +8,6 @@ import { createClientFromRequest } from '@/lib/supabase/server';
 const Stripe = require('stripe');
 let stripe: any;
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
 export async function POST(req: NextRequest) {
   // Create Supabase client within request context
   const { supabase } = createClientFromRequest(req);
@@ -19,12 +17,24 @@ export async function POST(req: NextRequest) {
     console.error('STRIPE_SECRET_KEY is not configured');
     return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
   }
+  
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!endpointSecret) {
+    console.error('STRIPE_WEBHOOK_SECRET is not configured');
+    return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
+  }
+  
   if (!stripe) {
     stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   }
 
   const body = await req.text();
-  const sig = req.headers.get('stripe-signature')!;
+  const sig = req.headers.get('stripe-signature');
+  
+  if (!sig) {
+    console.error('Missing stripe-signature header');
+    return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
+  }
 
   let event;
 

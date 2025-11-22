@@ -53,7 +53,7 @@ export const createCheckoutSession = async (data: CheckoutSessionData): Promise<
 
     // Check authentication before making API call
     const isAuthenticated = await checkAuthStatus();
-    if (!isAuthenticated) {
+    if (!isAuthenticated.isAuthenticated) {
       toast.error('Please sign in to continue with your purchase');
       redirectToSignIn('/pricing');
       return;

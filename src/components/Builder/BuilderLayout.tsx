@@ -100,12 +100,105 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
       keywords: [],
     }));
 
-  const projects = toLines(projectsRaw).map((line, i) => ({
-    id: `${Date.now()}-pr-${i}`,
-    name: line,
-    description: '',
-    technologies: [],
-  }));
+  // Improved projects parsing - handle multiple formats
+  const projects: any[] = [];
+  if (projectsRaw) {
+    // Try to split by double newlines first (project blocks)
+    const projectBlocks = projectsRaw.split(/\n\s*\n/).filter(Boolean);
+    
+    if (projectBlocks.length > 0) {
+      // Multiple project blocks
+      projectBlocks.forEach((block, i) => {
+        const lines = toLines(block);
+        if (lines.length === 0) return;
+        
+        const firstLine = lines[0];
+        let name = firstLine;
+        let description = '';
+        let technologies: string[] = [];
+        
+        // Try to extract project name (usually first line, may have colon or dash)
+        if (firstLine.includes(':') || firstLine.includes(' - ')) {
+          const parts = firstLine.split(/[:–-]/).map(p => p.trim());
+          name = parts[0] || firstLine;
+          if (parts[1]) description = parts[1];
+        }
+        
+        // Look for description in remaining lines
+        const descLines: string[] = [];
+        for (let j = 1; j < lines.length; j++) {
+          const line = lines[j];
+          // Check if line looks like technologies (common tech keywords or short phrases)
+          const techKeywords = ['javascript', 'python', 'react', 'node', 'java', 'sql', 'html', 'css', 'typescript', 'angular', 'vue', 'django', 'flask', 'express', 'mongodb', 'postgresql', 'aws', 'docker', 'kubernetes', 'git', 'github'];
+          const lowerLine = line.toLowerCase();
+          const isTechLine = techKeywords.some(keyword => lowerLine.includes(keyword)) || 
+                            (line.length < 50 && /^[a-z\s,]+$/i.test(line));
+          
+          if (isTechLine && technologies.length === 0) {
+            // Extract technologies (comma-separated or space-separated)
+            const techs = line.split(/[,;|]/).map(t => t.trim()).filter(Boolean);
+            technologies = techs;
+          } else {
+            descLines.push(line);
+          }
+        }
+        
+        if (descLines.length > 0) {
+          description = descLines.join(' ').trim();
+        }
+        
+        // Clean up name (remove bullets, dashes at start)
+        name = name.replace(/^[•\-\u2022]\s*/, '').trim();
+        
+        if (name) {
+          projects.push({
+            id: `${Date.now()}-pr-${i}`,
+            name,
+            description: description || '',
+            technologies: technologies.length > 0 ? technologies : [],
+          });
+        }
+      });
+    } else {
+      // Single line format - try to parse
+      const lines = toLines(projectsRaw);
+      lines.forEach((line, i) => {
+        if (!line.trim()) return;
+        
+        let name = line;
+        let description = '';
+        let technologies: string[] = [];
+        
+        // Check for colon or dash separator
+        if (line.includes(':') || line.includes(' - ')) {
+          const parts = line.split(/[:–-]/).map(p => p.trim());
+          name = parts[0] || line;
+          if (parts[1]) {
+            // Check if part after separator looks like tech stack
+            const techKeywords = ['javascript', 'python', 'react', 'node', 'java', 'sql'];
+            const lowerPart = parts[1].toLowerCase();
+            if (techKeywords.some(kw => lowerPart.includes(kw)) && parts[1].length < 100) {
+              technologies = parts[1].split(/[,;|]/).map(t => t.trim()).filter(Boolean);
+            } else {
+              description = parts[1];
+            }
+          }
+        }
+        
+        // Clean up name
+        name = name.replace(/^[•\-\u2022]\s*/, '').trim();
+        
+        if (name) {
+          projects.push({
+            id: `${Date.now()}-pr-${i}`,
+            name,
+            description,
+            technologies,
+          });
+        }
+      });
+    }
+  }
 
   const certifications = toLines(certsRaw).map((line, i) => ({
     id: `${Date.now()}-ce-${i}`,
@@ -470,7 +563,12 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         {/* Preview Panel */}
         {showPreview && (
           <div className="w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
-            <ResumePreview resumeData={resumeData} />
+            <ResumePreview 
+              resumeData={resumeData} 
+              onTemplateChange={(templateId) => {
+                updateResumeData({ templateId });
+              }}
+            />
           </div>
         )}
       </div>
