@@ -112,18 +112,6 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
               <span className="text-gray-300 font-medium text-sm sm:text-base truncate max-w-[200px]">
                 {resumeName}
               </span>
-              {saveStatus === 'saved' && (
-                <div className="flex items-center gap-1 text-green-400 text-sm">
-                  <Check className="w-4 h-4" />
-                  <span className="hidden sm:inline">Saved</span>
-                </div>
-              )}
-              {saveStatus === 'saving' && (
-                <div className="flex items-center gap-1 text-yellow-400 text-sm">
-                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-yellow-400"></div>
-                  <span className="hidden sm:inline">Saving...</span>
-                </div>
-              )}
             </div>
           )}
         </div>
