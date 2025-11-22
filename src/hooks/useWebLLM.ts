@@ -30,8 +30,8 @@ export function useWebLLM() {
 
     try {
       // Use a smaller, faster model for resume tasks
-      // Phi-2 is a good balance of speed and quality for text generation
-      const selectedModel = 'Phi-2-q4f16_1-MLC';
+      // Phi-3.5-mini is a good balance of speed and quality for text generation
+      const selectedModel = 'Phi-3.5-mini-instruct-q4f16_1-MLC-1k';
 
       const engine = await webllm.CreateMLCEngine(selectedModel, {
         initProgressCallback: (progress) => {
@@ -48,10 +48,16 @@ export function useWebLLM() {
       });
     } catch (error: any) {
       console.error('Failed to initialize WebLLM:', error);
+
+      let message = error?.message || 'Failed to load AI model';
+      if (error?.name === 'WebGPUNotAvailableError' || error?.name === 'WebGPUNotFoundError') {
+        message = 'Your browser does not support WebGPU, which is required to run the built-in AI. Please use the latest Chrome or Edge on desktop with hardware acceleration enabled.';
+      }
+
       setState({
         isLoading: false,
         isReady: false,
-        error: error.message || 'Failed to load AI model',
+        error: message,
         progress: '',
       });
     } finally {
