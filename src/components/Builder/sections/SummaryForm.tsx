@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { AlertCircle, Sparkles } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface SummaryFormProps {
   data: string;
@@ -20,6 +21,11 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
   };
 
   const generateAISummary = async () => {
+    if (!jobTitle) {
+      toast.error('Please add a job title first');
+      return;
+    }
+
     setIsGenerating(true);
     try {
       const response = await fetch('/api/ai/generate-summary', {
@@ -27,12 +33,23 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jobTitle }),
       });
-      if (response.ok) {
-        const { summary } = await response.json();
-        handleChange(summary);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to generate summary (${response.status})`);
       }
+
+      const { summary } = await response.json();
+      if (!summary) {
+        throw new Error('No summary was generated');
+      }
+
+      handleChange(summary);
+      toast.success('Summary generated successfully!');
     } catch (error) {
       console.error('Failed to generate summary:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate summary. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setIsGenerating(false);
     }

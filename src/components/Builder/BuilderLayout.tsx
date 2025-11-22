@@ -308,7 +308,8 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     risks: string[];
   } | null>(null);
 
-  const { resumeData, updateResumeData, saveResume, setResumeData } = useResumeStore();
+  const { resumeData, updateResumeData, saveResume } = useResumeStore();
+  const savingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Initialize with existing data if provided
   useEffect(() => {
@@ -325,19 +326,39 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       try {
         await saveResume(resumeId || 'new', data);
       } finally {
-        setIsSaving(false);
+        // Keep saving indicator visible for at least 500ms to prevent flashing
+        if (savingTimeoutRef.current) {
+          clearTimeout(savingTimeoutRef.current);
+        }
+        savingTimeoutRef.current = setTimeout(() => {
+          setIsSaving(false);
+        }, 500);
       }
     },
     delay: 3000, // Save after 3 seconds of inactivity
   });
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (savingTimeoutRef.current) {
+        clearTimeout(savingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
     try {
       await saveResume(resumeId || 'new', resumeData);
     } finally {
-      setIsSaving(false);
+      // Keep saving indicator visible for at least 500ms to prevent flashing
+      if (savingTimeoutRef.current) {
+        clearTimeout(savingTimeoutRef.current);
+      }
+      savingTimeoutRef.current = setTimeout(() => {
+        setIsSaving(false);
+      }, 500);
     }
   }, [resumeId, resumeData, saveResume]);
 
