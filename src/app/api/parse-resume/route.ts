@@ -62,6 +62,7 @@ const parseRTF = (buffer: Buffer) => {
   text = text.replace(/\{[^}]*\}/g, ''); // Remove RTF groups
   text = text.replace(/\\'[0-9a-fA-F]{2}/g, (match) => String.fromCharCode(parseInt(match.substring(2), 16))); // Convert hex to char
   text = text.replace(/[\r\n]+/g, '\n'); // Normalize newlines
+  // cspell:disable-next-line
   text = text.replace(/\\cell|\\row|\\trowd|\\trgaph|\\trleft|\\trbrdrb|\\trbrdrl|\\trbrdrr|\\trbrdrt|\\clbrdrb|\\clbrdrl|\\clbrdrr|\\clbrdrt/g, ''); // Remove table formatting
   return text.trim();
 };
@@ -91,6 +92,7 @@ export async function POST(req: NextRequest) {
     if (fileType === 'application/octet-stream' && fileName) {
       const lower = fileName.toLowerCase();
       if (lower.endsWith('.pdf')) fileType = 'application/pdf';
+      // cspell:disable-next-line
       else if (lower.endsWith('.docx')) fileType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
       else if (lower.endsWith('.rtf')) fileType = 'application/rtf';
       else if (lower.endsWith('.txt')) fileType = 'text/plain';
@@ -108,6 +110,7 @@ export async function POST(req: NextRequest) {
         parseError = error;
         break;
       }
+      // cspell:disable-next-line
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': // .docx
         parsedText = await parseEnhancedDocument(buffer, mammoth);
         break;

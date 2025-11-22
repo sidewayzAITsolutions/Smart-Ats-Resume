@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Ensure profile exists
-    const { data: profileRow, error: profileErr } = await supabase
+    const { error: profileErr } = await supabase
       .from('profiles')
       .select('id')
       .eq('id', user.id)

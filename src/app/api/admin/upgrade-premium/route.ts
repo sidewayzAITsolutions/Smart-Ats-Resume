@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   // Maintain Stripe-style 'active' to satisfy subscription_status constraint
   const subscription_status = 'active';
-    const { data: profileCheck, error: selectErr } = await supabase
+    const { error: selectErr } = await supabase
       .from('profiles')
       .select('id')
       .eq('id', user.id)
