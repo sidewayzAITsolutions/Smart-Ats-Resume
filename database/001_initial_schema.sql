@@ -167,6 +167,10 @@ CREATE POLICY "Users can update own profile" ON profiles
 CREATE POLICY "Users can insert own profile" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
+-- Allow service role to insert profiles (for auth callbacks)
+CREATE POLICY "Service role can insert profiles" ON profiles
+  FOR INSERT WITH CHECK (auth.role() = 'service_role');
+
 -- Resumes policies
 CREATE POLICY "Users can view own resumes" ON resumes
   FOR SELECT USING (auth.uid() = user_id);
