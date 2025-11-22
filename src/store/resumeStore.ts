@@ -34,6 +34,8 @@ const initialResumeData: ResumeData = {
   certifications: [],
   customSections: [],
   templateId: '',
+  keywords: [],
+  jobDescription: '',
 };
 
 export const useResumeStore = create<ResumeStore>()(

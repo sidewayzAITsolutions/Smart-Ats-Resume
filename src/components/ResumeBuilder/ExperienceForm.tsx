@@ -5,6 +5,7 @@ import { Experience } from '../../types/resume';
 import { Plus, Trash2, Calendar, Building, Briefcase, Star, Lightbulb, Loader } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'react-hot-toast'; // Import toast
+import { callAICompletion } from '@/utils/ai';
 
 interface ExperienceFormProps {
   initialData: Experience[];
@@ -106,53 +107,40 @@ function createEmptyExperience(): Experience {
     setGeneratingAchievementIndex(expIndex);
 
     try {
-      const prompt = `Generate 3 impactful, quantifiable, and ATS-friendly achievement bullet points for a resume. Focus on results using action verbs. Each point should start with a hyphen.
-      
-      Job Title: ${experience.position}
-      Company: ${experience.company}
-      My Responsibilities/Summary for this role: ${experience.description}
-      ${jobDescription ? `Target Job Description (for keywords): ${jobDescription}` : ''}
-      
-      Achievements:`;
+      const prompt = `Generate 3-5 impactful, quantifiable, and ATS-friendly achievement bullet points for a resume. Focus on results using action verbs.
 
-      const chatHistory = [];
-      chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-      const payload = { contents: chatHistory };
-      const apiKey = ""; // Canvas will automatically provide this in runtime
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+Job Title: ${experience.position}
+Company: ${experience.company}
+My Responsibilities/Summary for this role: ${experience.description}
+${jobDescription ? `Target Job Description (for keywords): ${jobDescription}` : ''}
+
+Return only bullet points starting with "- ", one per line.`;
+
+      const completion = await callAICompletion(prompt, {
+        model: 'gpt-4o-mini',
+        maxTokens: 600,
+        temperature: 0.7,
+        debug: false,
       });
 
-      const result = await response.json();
+      const generatedAchievements = completion
+        .split('\n')
+        .map((line: string) => line.trim().replace(/^[-\u2022*]\s*/, ''))
+        .filter((line: string) => line.length > 0);
 
-      if (result.candidates && result.candidates.length > 0 &&
-          result.candidates[0].content && result.candidates[0].content.parts &&
-          result.candidates[0].content.parts.length > 0) {
-        const text = result.candidates[0].content.parts[0].text;
-        const generatedAchievements = text.split('\n').filter((line: string) => line.trim().startsWith('-')).map((line: string) => line.trim().substring(1).trim());
-
-        // Update the achievements for the specific experience entry
-        const updatedExperiences = experiences.map((exp, i) =>
-          i === expIndex ? { ...exp, achievements: generatedAchievements.filter(Boolean) } : exp
-        );
-        setExperiences(updatedExperiences);
-        onUpdate(updatedExperiences);
-        toast.success('AI achievements generated!');
-
-      } else {
-        toast.error("Failed to generate achievements. Please try again.");
-      }
+      const updatedExperiences = experiences.map((exp, i) =>
+        i === expIndex ? { ...exp, achievements: generatedAchievements.filter(Boolean) } : exp
+      );
+      setExperiences(updatedExperiences);
+      onUpdate(updatedExperiences);
+      toast.success('AI achievements generated!');
     } catch (err) {
       console.error('Error generating achievements:', err);
-      toast.error("Failed to generate achievements. Network error or API issue.");
+      toast.error('Failed to generate achievements. Please try again.');
     } finally {
       setGeneratingAchievementIndex(null);
     }
-  }, [experiences, jobDescription, onUpdate, isProUser, onUpgradeClick]); // Added onUpgradeClick to dependencies
+  }, [experiences, jobDescription, onUpdate, isProUser, onUpgradeClick]);
 
   const actionVerbSuggestions = [
     'Achieved', 'Managed', 'Led', 'Developed', 'Implemented', 'Increased', 'Decreased',

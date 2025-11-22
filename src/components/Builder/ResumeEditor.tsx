@@ -8,6 +8,7 @@ import {
   ProjectsForm,
   SummaryForm,
 } from '@/hooks/ProjectsForm';
+import KeywordsForm from './sections/KeywordsForm';
 import { ResumeData } from '@/types/resume';
 
 import EducationForm from '../ResumeBuilder/EducationForm';
@@ -93,6 +94,16 @@ export default function ResumeEditor({
             <SkillsForm
               initialData={resumeData.skills || []}
               onUpdate={(skills) => onUpdate({ skills })}
+            />
+          </div>
+        );
+
+      case 'keywords':
+        return (
+          <div>
+            <KeywordsForm
+              data={resumeData}
+              onChange={onUpdate}
             />
           </div>
         );

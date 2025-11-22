@@ -32,38 +32,44 @@ export default function AISkillsSuggestion({
 
     setLoading(true);
     try {
-      // For now, use predefined suggestions based on role
-      // In production, this would call your AI API
-      const roleSuggestions: Record<string, string[]> = {
-        'general manager of restaurant': [
-          'Staff Management', 'Budget Planning', 'Customer Service Excellence', 
-          'Inventory Control', 'Food Safety Compliance', 'POS Systems',
-          'Team Leadership', 'Conflict Resolution', 'Sales Analysis',
-          'Menu Development', 'Vendor Relations', 'Health Regulations'
-        ],
-        'software engineer': [
-          'JavaScript', 'React', 'Node.js', 'Python', 'Git', 'AWS',
-          'Docker', 'Kubernetes', 'CI/CD', 'Agile', 'REST APIs', 'SQL'
-        ],
-        'default': [
-          'Communication', 'Problem Solving', 'Time Management',
-          'Teamwork', 'Leadership', 'Adaptability', 'Critical Thinking'
-        ]
-      };
+      const prompt = `Suggest 10 skills that would make a resume stronger for this target role. Include both technical and soft skills.
 
-      const roleKey = targetRole.toLowerCase();
-      const availableSuggestions = roleSuggestions[roleKey] || roleSuggestions['default'];
-      
-      // Filter out skills already added
-      const newSuggestions = availableSuggestions.filter(
-        skill => !currentSkills.some(
-          current => current.toLowerCase() === skill.toLowerCase()
-        )
+Target Role: ${targetRole}
+Current Skills: ${currentSkills.join(', ') || 'None'}
+
+Return the skills as a comma-separated list with no explanations.`;
+
+      const response = await fetch('/api/ai/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to generate skill suggestions');
+      }
+
+      const json = await response.json();
+      const completion: string = json.completion || '';
+
+      const rawSkills = completion
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter(Boolean);
+
+      const newSuggestions = rawSkills.filter(
+        (skill) =>
+          !currentSkills.some(
+            (current) => current.toLowerCase() === skill.toLowerCase()
+          )
       );
 
       setSuggestions(newSuggestions);
       setShowSuggestions(true);
-      
+
       if (newSuggestions.length === 0) {
         toast('No new skill suggestions available for this role');
       }

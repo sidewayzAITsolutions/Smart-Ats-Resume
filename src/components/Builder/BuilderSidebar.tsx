@@ -12,6 +12,7 @@ import {
   FileText,
   FolderOpen,
   GraduationCap,
+  Tag,
   User,
 } from 'lucide-react';
 
@@ -37,6 +38,7 @@ const sections = [
   { id: 'experience', label: 'Work Experience', icon: Briefcase, required: true },
   { id: 'education', label: 'Education', icon: GraduationCap, required: true },
   { id: 'skills', label: 'Skills', icon: Code, required: true },
+  { id: 'keywords', label: 'ATS Keywords', icon: Tag, required: false },
   { id: 'projects', label: 'Projects', icon: FolderOpen, required: false },
   { id: 'certifications', label: 'Certifications', icon: Award, required: false },
 ];

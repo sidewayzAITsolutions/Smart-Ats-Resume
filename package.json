@@ -12,7 +12,6 @@
      },
      "dependencies": {
           "@genkit-ai/mcp": "^1.21.0",
-          "@mlc-ai/web-llm": "^0.2.79",
           "@playwright/test": "^1.54.1",
           "@sentry/nextjs": "^10.0.0",
           "@stripe/stripe-js": "^7.4.0",

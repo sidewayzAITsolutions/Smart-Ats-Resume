@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { AlertCircle, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useWebLLM } from '@/hooks/useWebLLM';
+import { callAICompletion } from '@/utils/ai';
 
 interface SummaryFormProps {
   data: string;
@@ -15,7 +15,6 @@ interface SummaryFormProps {
 export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [charCount, setCharCount] = useState(data.length);
-  const webLLM = useWebLLM();
 
   const handleChange = (value: string) => {
     onChange(value);
@@ -25,22 +24,6 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
   const generateAISummary = async () => {
     if (!jobTitle) {
       toast.error('Please add a job title first');
-      return;
-    }
-
-    // Initialize WebLLM if not ready
-    if (!webLLM.isReady && !webLLM.isLoading) {
-      toast.loading('Loading AI model for the first time... This may take a minute.', { duration: 5000 });
-      await webLLM.initModel();
-    }
-
-    if (!webLLM.isReady) {
-      toast.error('AI model is still loading. Please wait and try again.');
-      return;
-    }
-
-    if (webLLM.error) {
-      toast.error(webLLM.error);
       return;
     }
 
@@ -56,7 +39,7 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
 
       Return only the summary text, no additional formatting.`;
 
-      const summary = await webLLM.generateCompletion(prompt, {
+      const summary = await callAICompletion(prompt, {
         temperature: 0.7,
         maxTokens: 200,
       });

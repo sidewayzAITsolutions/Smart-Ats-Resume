@@ -80,4 +80,7 @@ export interface ResumeData {
   certifications?: any[];
   customSections?: any[];
   templateId?: string;
+  // New: global ATS keywords and job description for the builder UI
+  keywords?: string[];
+  jobDescription?: string;
 }

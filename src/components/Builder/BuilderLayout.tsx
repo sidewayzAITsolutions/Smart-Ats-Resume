@@ -54,6 +54,14 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     'certifications',
     'certificates',
     'licenses',
+    'keywords',
+    'key words',
+    'ats keywords',
+    'job description',
+    'target role',
+    'portfolio',
+    'title',
+    'professional title',
   ];
   const normalizedText = normalize(text);
   const lower = normalizedText.toLowerCase();
@@ -84,6 +92,10 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
   const certsRaw = sectionOr('certifications', 'certificates', 'licenses');
   const expRaw = sectionOr('experience', 'work experience', 'professional experience', 'employment history', 'work history');
   const eduRaw = sectionOr('education', 'academic background', 'qualifications');
+  const keywordsRaw = sectionOr('keywords', 'key words', 'ats keywords');
+  const jobDescriptionRaw = sectionOr('job description', 'target role');
+  const portfolioRaw = sectionOr('portfolio');
+  const titleRaw = sectionOr('title', 'professional title');
 
   const toLines = (s: string) => {
     if (!s) return [] as string[];
@@ -441,21 +453,54 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
       .filter((e): e is NonNullable<typeof e> => e !== null)
     : [];
 
+  // Extract top block first (for name and title extraction)
+  const topBlockEnd = Object.values(indices).length
+    ? Math.min(...Object.values(indices))
+    : Math.min(300, normalizedText.length);
+  const topBlock = normalizedText.slice(0, topBlockEnd).split(/\n+/).map((l) => l.trim()).filter(Boolean);
+
   // Extract contact info from whole document
   const emailMatch = normalizedText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
   const phoneMatch = normalizedText.match(/\+?\d[\d\s().-]{7,}\d/);
   const linkedinMatch = normalizedText.match(/https?:\/\/[^\s]*linkedin\.com\/in\/[A-Za-z0-9\-_%]+/i);
+  const portfolioMatch = normalizedText.match(/https?:\/\/[^\s]+(?:portfolio|github|website|personal)[^\s]*/i) ||
+                         normalizedText.match(/https?:\/\/(?:www\.)?[^\s]+\.[a-z]{2,}/i);
 
   // Extract location (common patterns)
   const locationMatch = normalizedText.match(/(?:location|address|city)[:\s]*([A-Z][a-z]+(?:,?\s+[A-Z]{2})?(?:,?\s+[A-Z][a-z]+)?)/i) ||
                         normalizedText.match(/([A-Z][a-z]+,\s*[A-Z]{2}(?:\s+\d{5})?)/); // City, ST or City, ST ZIP
   const location = locationMatch ? locationMatch[1] : '';
 
-  // Improved name extraction
-  const topBlockEnd = Object.values(indices).length
-    ? Math.min(...Object.values(indices))
-    : Math.min(300, normalizedText.length);
-  const topBlock = normalizedText.slice(0, topBlockEnd).split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  // Process keywords (comma or newline separated)
+  const keywords = keywordsRaw
+    ? keywordsRaw
+        .split(/[,\n]/)
+        .map(k => k.trim())
+        .filter(k => k.length > 0)
+    : [];
+
+  // Process job description
+  const jobDescription = jobDescriptionRaw.trim();
+
+  // Extract portfolio URL
+  const portfolio = portfolioRaw.trim() || (portfolioMatch ? portfolioMatch[0] : '');
+
+  // Extract title (job title)
+  const title = titleRaw.trim() || '';
+
+  // Try to extract title from near the name if not found in dedicated section
+  let extractedTitle = title;
+  if (!extractedTitle && topBlock.length > 1) {
+    // Look for a line after the name that might be a title
+    for (let i = 0; i < Math.min(3, topBlock.length); i++) {
+      const line = topBlock[i];
+      const titleKeywords = ['engineer', 'developer', 'manager', 'analyst', 'designer', 'consultant', 'director', 'specialist', 'coordinator', 'lead', 'architect', 'officer', 'executive', 'associate', 'senior', 'junior'];
+      if (titleKeywords.some(kw => line.toLowerCase().includes(kw)) && line.length < 80) {
+        extractedTitle = line;
+        break;
+      }
+    }
+  }
 
   // Find the most likely name line
   let fullName = '';
@@ -496,7 +541,9 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
       email: emailMatch?.[0] || '',
       phone: phoneMatch?.[0] || '',
       location: location || '',
+      title: extractedTitle || '',
       linkedin: linkedinMatch?.[0],
+      portfolio: portfolio || '',
     },
     summary: summaryRaw,
     skills,
@@ -504,6 +551,8 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     certifications,
     experience,
     education,
+    keywords,
+    jobDescription,
   };
 }
 
