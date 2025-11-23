@@ -40,6 +40,11 @@ const initialResumeData: ResumeData = {
     bulletStyle: 'bullet',
     fontSize: 'medium',
     lineSpacing: 'normal',
+    colors: {
+      primaryText: '#374151',
+      headingText: '#111827',
+      accentColor: '#3B82F6',
+    },
   },
 };
 

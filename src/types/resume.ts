@@ -73,6 +73,11 @@ export interface FormattingOptions {
   bulletStyle: 'bullet' | 'dash' | 'circle' | 'number';
   fontSize: 'small' | 'medium' | 'large';
   lineSpacing: 'compact' | 'normal' | 'relaxed';
+  colors?: {
+    primaryText?: string;
+    headingText?: string;
+    accentColor?: string;
+  };
 }
 
 // Lightweight UI state for the builder (persisted locally)
