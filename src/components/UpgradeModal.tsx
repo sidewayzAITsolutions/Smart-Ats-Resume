@@ -22,7 +22,16 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const handleUpgradeClick = async () => {
-    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    // TEMPORARY FIX: Hardcode correct price ID until Vercel env var updates
+    // TODO: Remove this hardcode once Vercel environment variable is properly updated
+    const envPriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
+    const priceId = envPriceId && envPriceId !== 'price_1RfIhREXTLOxdWgMKQJGzJzJ' 
+      ? envPriceId 
+      : CORRECT_PRICE_ID; // Fallback to correct price ID
+    
+    console.log('🔍 DEBUG UpgradeModal: Env price ID:', envPriceId);
+    console.log('🔍 DEBUG UpgradeModal: Using price ID:', priceId);
 
     if (!priceId) {
       setError('Payment configuration error. Please contact support.');

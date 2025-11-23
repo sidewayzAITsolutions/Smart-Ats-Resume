@@ -90,6 +90,8 @@ export async function POST(req: NextRequest) {
 
     try {
       // Log the price ID for debugging
+      console.log('🔍 SERVER DEBUG: Received priceId from client:', priceId);
+      console.log('🔍 SERVER DEBUG: Environment NEXT_PUBLIC_STRIPE_PRO_PRICE_ID:', process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID);
       console.log('Using price ID:', priceId);
       console.log('Creating checkout session for user:', user.email);
 
@@ -128,8 +130,20 @@ export async function POST(req: NextRequest) {
       });
     } catch (stripeError: any) {
       console.error('Stripe error:', stripeError);
+      
+      // Provide more helpful error messages for common issues
+      let errorMessage = stripeError.message || 'Failed to create checkout session';
+      
+      if (stripeError.type === 'StripeInvalidRequestError') {
+        if (stripeError.message?.includes('No such price')) {
+          errorMessage = `Invalid price ID: ${priceId}. Please check your NEXT_PUBLIC_STRIPE_PRO_PRICE_ID environment variable and ensure the price exists in your Stripe account.`;
+        } else if (stripeError.message?.includes('Invalid API Key')) {
+          errorMessage = 'Invalid Stripe API key. Please check your STRIPE_SECRET_KEY environment variable.';
+        }
+      }
+      
       return NextResponse.json(
-        { error: `Failed to create checkout session: ${stripeError.message}` },
+        { error: errorMessage },
         { status: 500 }
       );
     }

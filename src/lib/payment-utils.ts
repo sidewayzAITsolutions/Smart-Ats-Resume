@@ -129,8 +129,17 @@ export const handleProPlanCheckout = async (
       return;
     }
 
-    // Log the price ID for debugging
-    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    // TEMPORARY FIX: Hardcode correct price ID until Vercel env var updates
+    // TODO: Remove this hardcode once Vercel environment variable is properly updated
+    const envPriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
+    const priceId = envPriceId && envPriceId !== 'price_1RfIhREXTLOxdWgMKQJGzJzJ' 
+      ? envPriceId 
+      : CORRECT_PRICE_ID; // Fallback to correct price ID
+    
+    console.log('🔍 DEBUG payment-utils: Env price ID:', envPriceId);
+    console.log('🔍 DEBUG payment-utils: Using price ID:', priceId);
+    
     if (!priceId) {
       toast.error('Payment configuration error. Please contact support.');
       console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
@@ -138,7 +147,7 @@ export const handleProPlanCheckout = async (
       setSelectedPlan('');
       return;
     }
-    console.log('Using price ID:', priceId);
+    console.log('✅ Using price ID:', priceId);
 
     await createCheckoutSession({
       priceId: priceId,

@@ -261,12 +261,24 @@ const PricingPage = () => {
           router.push('/builder');
           break;
         case 'Pro':
-          const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+          // TEMPORARY FIX: Hardcode correct price ID until Vercel env var updates
+          // TODO: Remove this hardcode once Vercel environment variable is properly updated
+          const envPriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+          const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
+          const priceId = envPriceId && envPriceId !== 'price_1RfIhREXTLOxdWgMKQJGzJzJ' 
+            ? envPriceId 
+            : CORRECT_PRICE_ID; // Fallback to correct price ID
+          
+          console.log('🔍 DEBUG: Env price ID:', envPriceId);
+          console.log('🔍 DEBUG: Using price ID:', priceId);
+          console.log('🔍 DEBUG: Is fallback?', priceId === CORRECT_PRICE_ID && envPriceId !== CORRECT_PRICE_ID);
+          
           if (!priceId) {
             toast.error('Payment configuration error. Please contact support.');
             console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
             return;
           }
+          console.log('✅ Final price ID being used:', priceId);
           await createCheckoutSession(priceId);
           break;
         default:
