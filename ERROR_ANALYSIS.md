@@ -7,7 +7,7 @@
 Failed to create checkout session: No such price: 'price_1RfIhREXTLOxdWgMKQJGzJzJ'
 ```
 
-**✅ Your Correct Price ID:** `price_1Ro7SxEXTLOxdWgM7s3Qs7ei`
+**✅ Your Current Price ID:** `price_1SWVxVEXTLOxdWgMLE1igHr4`
 
 ### Root Cause
 The environment variable `NEXT_PUBLIC_STRIPE_PRO_PRICE_ID` is set to a price ID that doesn't exist in your Stripe account. This can happen if:
@@ -26,18 +26,18 @@ The environment variable `NEXT_PUBLIC_STRIPE_PRO_PRICE_ID` is set to a price ID 
 #### Step 2: Update Environment Variable
 Update `NEXT_PUBLIC_STRIPE_PRO_PRICE_ID` in your environment:
 
-**✅ Your Correct Price ID:** `price_1Ro7SxEXTLOxdWgM7s3Qs7ei`
+**✅ Your Current Price ID:** `price_1SWVxVEXTLOxdWgMLE1igHr4`
 
 **For Production (Vercel):**
 1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
 2. Find `NEXT_PUBLIC_STRIPE_PRO_PRICE_ID`
-3. Update it to: `price_1Ro7SxEXTLOxdWgM7s3Qs7ei`
+3. Update it to: `price_1SWVxVEXTLOxdWgMLE1igHr4`
 4. Redeploy your application
 
 **For Local Development:**
 Create/update `.env.local`:
 ```bash
-NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=price_1Ro7SxEXTLOxdWgM7s3Qs7ei
+NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=price_1SWVxVEXTLOxdWgMLE1igHr4
 ```
 
 #### Step 3: Create a New Price (if needed)

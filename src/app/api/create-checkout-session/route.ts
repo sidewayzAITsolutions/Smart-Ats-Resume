@@ -30,22 +30,21 @@ export async function POST(req: NextRequest) {
 
     console.log('Received priceId from client:', priceId);
 
-    // TEMPORARY FIX: Override old price ID with correct one
-    // TODO: Remove this once Vercel environment variable is properly updated everywhere
-    const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
-    const OLD_PRICE_ID = 'price_1RfIhREXTLOxdWgMKQJGzJzJ';
+    // Fallback to environment variable or default price ID
+    const DEFAULT_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_1SWVxVEXTLOxdWgMLE1igHr4';
+    const OLD_PRICE_IDS = ['price_1RfIhREXTLOxdWgMKQJGzJzJ', 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei'];
     
-    if (priceId === OLD_PRICE_ID) {
-      console.warn('⚠️ Detected old price ID from client, overriding with correct one');
-      console.warn('⚠️ Old:', OLD_PRICE_ID);
-      console.warn('⚠️ Correct:', CORRECT_PRICE_ID);
-      priceId = CORRECT_PRICE_ID;
+    if (priceId && OLD_PRICE_IDS.includes(priceId)) {
+      console.warn('⚠️ Detected old price ID from client, overriding with current one');
+      console.warn('⚠️ Old:', priceId);
+      console.warn('⚠️ Current:', DEFAULT_PRICE_ID);
+      priceId = DEFAULT_PRICE_ID;
     }
 
-    // If no priceId provided, use correct one as fallback
+    // If no priceId provided, use default one as fallback
     if (!priceId) {
-      console.warn('⚠️ No priceId provided, using correct price ID as fallback');
-      priceId = CORRECT_PRICE_ID;
+      console.warn('⚠️ No priceId provided, using default price ID as fallback');
+      priceId = DEFAULT_PRICE_ID;
     }
 
     // Validate priceId format

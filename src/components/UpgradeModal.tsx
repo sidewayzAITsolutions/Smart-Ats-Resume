@@ -22,13 +22,14 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const handleUpgradeClick = async () => {
-    // TEMPORARY FIX: Hardcode correct price ID until Vercel env var updates
-    // TODO: Remove this hardcode once Vercel environment variable is properly updated
+    // Use environment variable or fallback to default price ID
     const envPriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
-    const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
-    const priceId = envPriceId && envPriceId !== 'price_1RfIhREXTLOxdWgMKQJGzJzJ' 
+    const DEFAULT_PRICE_ID = 'price_1SWVxVEXTLOxdWgMLE1igHr4';
+    const OLD_PRICE_IDS = ['price_1RfIhREXTLOxdWgMKQJGzJzJ', 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei'];
+    
+    const priceId = envPriceId && !OLD_PRICE_IDS.includes(envPriceId)
       ? envPriceId 
-      : CORRECT_PRICE_ID; // Fallback to correct price ID
+      : DEFAULT_PRICE_ID; // Fallback to default price ID
     
     console.log('🔍 DEBUG UpgradeModal: Env price ID:', envPriceId);
     console.log('🔍 DEBUG UpgradeModal: Using price ID:', priceId);

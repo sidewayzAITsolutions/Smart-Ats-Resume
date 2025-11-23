@@ -12,9 +12,9 @@ export async function GET() {
     const stripePriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     
-    // TEMPORARY: Show raw env var value for debugging
-    const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
-    const OLD_PRICE_ID = 'price_1RfIhREXTLOxdWgMKQJGzJzJ';
+    // Show raw env var value for debugging
+    const CURRENT_PRICE_ID = 'price_1SWVxVEXTLOxdWgMLE1igHr4';
+    const OLD_PRICE_IDS = ['price_1RfIhREXTLOxdWgMKQJGzJzJ', 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei'];
     
     // Get ALL env vars that start with NEXT_PUBLIC_STRIPE to see what's available
     const allStripeEnvVars = Object.keys(process.env)
@@ -24,6 +24,9 @@ export async function GET() {
         return acc;
       }, {} as Record<string, string | undefined>);
     
+    const isOldPriceId = stripePriceId ? OLD_PRICE_IDS.includes(stripePriceId) : false;
+    const isCurrentPriceId = stripePriceId === CURRENT_PRICE_ID;
+    
     const config = {
       hasStripeSecretKey: !!stripeSecretKey,
       hasStripePublishableKey: !!stripePublishableKey,
@@ -32,23 +35,23 @@ export async function GET() {
       stripePriceId: stripePriceId || 'NOT_SET',
       appUrl: appUrl || 'NOT_SET',
       // Debug info
-      isOldPriceId: stripePriceId === OLD_PRICE_ID,
-      isCorrectPriceId: stripePriceId === CORRECT_PRICE_ID,
+      isOldPriceId: isOldPriceId,
+      isCurrentPriceId: isCurrentPriceId,
       rawEnvValue: stripePriceId, // Show exactly what Vercel is providing
-      expectedValue: CORRECT_PRICE_ID,
+      expectedValue: CURRENT_PRICE_ID,
       timestamp: new Date().toISOString(),
       allStripeEnvVars, // Show all Stripe-related env vars
-      recommendation: stripePriceId === OLD_PRICE_ID 
+      recommendation: isOldPriceId
         ? 'Serverless function is using cached old value. Try redeploying or wait for function to restart.'
-        : stripePriceId === CORRECT_PRICE_ID
+        : isCurrentPriceId
         ? 'Environment variable is correct! ✅'
         : 'Environment variable value is unexpected.'
     };
 
     console.log('🔍 Stripe Configuration Check:', config);
     console.log('🔍 Raw NEXT_PUBLIC_STRIPE_PRO_PRICE_ID:', stripePriceId);
-    console.log('🔍 Expected:', CORRECT_PRICE_ID);
-    console.log('🔍 Match?', stripePriceId === CORRECT_PRICE_ID);
+    console.log('🔍 Expected:', CURRENT_PRICE_ID);
+    console.log('🔍 Match?', stripePriceId === CURRENT_PRICE_ID);
     console.log('🔍 All Stripe env vars:', allStripeEnvVars);
     console.log('🔍 Timestamp:', config.timestamp);
 
@@ -58,8 +61,8 @@ export async function GET() {
       message: 'Stripe configuration check complete',
       debug: {
         rawEnvVar: stripePriceId,
-        expected: CORRECT_PRICE_ID,
-        matches: stripePriceId === CORRECT_PRICE_ID,
+        expected: CURRENT_PRICE_ID,
+        matches: stripePriceId === CURRENT_PRICE_ID,
         timestamp: config.timestamp
       }
     }, {

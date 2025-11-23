@@ -1,7 +1,7 @@
 # 🔧 Quick Fix: Update Stripe Price ID
 
-## ✅ Your Correct Price ID
-**`price_1Ro7SxEXTLOxdWgM7s3Qs7ei`**
+## ✅ Your Current Price ID
+**`price_1SWVxVEXTLOxdWgMLE1igHr4`**
 
 This is the price ID for "Smart ATS Resume PRO" at $22.00/month as shown in your Stripe Dashboard.
 
@@ -17,7 +17,7 @@ This is the price ID for "Smart ATS Resume PRO" at $22.00/month as shown in your
 4. Find `NEXT_PUBLIC_STRIPE_PRO_PRICE_ID`
 5. Click **Edit** and update the value to:
    ```
-   price_1Ro7SxEXTLOxdWgM7s3Qs7ei
+   price_1SWVxVEXTLOxdWgMLE1igHr4
    ```
 6. **Important:** Make sure it's set for:
    - ✅ Production
@@ -34,7 +34,7 @@ This is the price ID for "Smart ATS Resume PRO" at $22.00/month as shown in your
 Create or update `.env.local` in your project root:
 
 ```bash
-NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=price_1Ro7SxEXTLOxdWgM7s3Qs7ei
+NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=price_1SWVxVEXTLOxdWgMLE1igHr4
 ```
 
 Then restart your development server:
@@ -54,7 +54,7 @@ After updating:
    - Should redirect to Stripe Checkout (no error)
 
 2. **Check browser console:**
-   - Should see: `Creating checkout session with priceId: price_1Ro7SxEXTLOxdWgM7s3Qs7ei`
+   - Should see: `Creating checkout session with priceId: price_1SWVxVEXTLOxdWgMLE1igHr4`
    - Should NOT see: `No such price` error
 
 3. **Check server logs:**
@@ -68,7 +68,7 @@ After updating:
 Based on your Stripe Dashboard:
 - **Product:** Smart ATS Resume PRO
 - **Price:** $22.00 USD / month
-- **Price ID:** `price_1Ro7SxEXTLOxdWgM7s3Qs7ei`
+- **Price ID:** `price_1SWVxVEXTLOxdWgMLE1igHr4`
 - **Type:** Recurring subscription (monthly)
 - **Status:** Active
 
@@ -100,7 +100,7 @@ If you still see errors after updating:
 
 ## 📞 Quick Reference
 
-- **Stripe Dashboard:** https://dashboard.stripe.com/prices/price_1Ro7SxEXTLOxdWgM7s3Qs7ei
+- **Stripe Dashboard:** https://dashboard.stripe.com/prices/price_1SWVxVEXTLOxdWgMLE1igHr4
 - **Vercel Environment Variables:** Project Settings → Environment Variables
 - **Price Details:** $22/month, USD, Monthly recurring
 
