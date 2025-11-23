@@ -152,10 +152,11 @@ export default function SignupPage(): React.JSX.Element {
 
   const handleGoogleSignup = async () => {
     try {
+      console.log('🚀 Starting Google OAuth signup...');
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -164,11 +165,13 @@ export default function SignupPage(): React.JSX.Element {
       });
 
       if (error) {
-        console.error('Google signup error:', error);
+        console.error('❌ Google signup error:', error);
         toast.error(error.message);
+      } else {
+        console.log('✅ Google OAuth redirect initiated');
       }
     } catch (error) {
-      console.error('Google signup error:', error);
+      console.error('❌ Google signup error:', error);
       toast.error('Failed to sign up with Google');
     }
   };
