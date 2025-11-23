@@ -90,10 +90,11 @@ const PricingPage = () => {
         'Basic keyword optimization'
       ],
       highlighted: false,
-      buttonText: 'Get Started Free'
+      buttonText: 'Get Started Free',
+      priceId: null
     },
     {
-      name: 'Pro',
+      name: 'Pro Monthly',
       price: 22,
       period: 'month',
       icon: Crown,
@@ -109,11 +110,34 @@ const PricingPage = () => {
         'Resume analytics'
       ],
       highlighted: true,
-      buttonText: 'Start Pro Trial'
+      buttonText: 'Start Pro Monthly',
+      priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID
+    },
+    {
+      name: 'Pro Yearly',
+      price: 200,
+      period: 'year',
+      icon: Crown,
+      description: 'Best value - Save $64/year',
+      features: [
+        'Everything in Free',
+        'All premium templates',
+        'AI-powered optimization',
+        'Unlimited downloads',
+        'Advanced ATS analysis',
+        'Job description scanner',
+        'Priority email support',
+        'Resume analytics',
+        '2 months free compared to monthly'
+      ],
+      highlighted: false,
+      buttonText: 'Start Pro Yearly',
+      priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID,
+      savings: 'Save $64'
     }
   ];
 
-  const createCheckoutSession = async (): Promise<void> => {
+  const createCheckoutSession = async (priceId: string): Promise<void> => {
     try {
       // Check if user is authenticated first
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -124,11 +148,8 @@ const PricingPage = () => {
         return;
       }
 
-      // Get price ID from environment variable
-      const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
-      
       if (!priceId) {
-        console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+        console.error('Price ID is not configured');
         toast.error('Payment configuration error. Please contact support.');
         return;
       }
@@ -179,9 +200,9 @@ const PricingPage = () => {
     }
   };
 
-  const handlePlanSelect = async (planName: string) => {
+  const handlePlanSelect = async (planName: string, priceId: string | null) => {
     // Check if user is authenticated for paid plans
-    if (planName === 'Pro' && !userData) {
+    if ((planName === 'Pro Monthly' || planName === 'Pro Yearly') && !userData) {
       toast.error('Please sign in to subscribe to Pro plan.');
       router.push('/login?redirectTo=/pricing');
       return;
@@ -191,17 +212,14 @@ const PricingPage = () => {
     setSelectedPlan(planName);
 
     try {
-      switch (planName) {
-        case 'Free':
-          toast.success('Free plan selected!');
-          router.push('/builder');
-          break;
-        case 'Pro':
-          await createCheckoutSession();
-          break;
-        default:
-          console.warn(`Unknown plan: ${planName}`);
-          toast.error('Unknown plan selected');
+      if (planName === 'Free') {
+        toast.success('Free plan selected!');
+        router.push('/builder');
+      } else if (priceId) {
+        await createCheckoutSession(priceId);
+      } else {
+        console.warn(`No price ID for plan: ${planName}`);
+        toast.error('Payment configuration error. Please contact support.');
       }
     } catch (error) {
       // Error handling is done in createCheckoutSession
@@ -303,7 +321,7 @@ const PricingPage = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
           {pricingTiers.map((tier) => {
             const Icon = tier.icon;
             const isHighlighted = tier.highlighted;
@@ -320,6 +338,14 @@ const PricingPage = () => {
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold">
                       Most Popular
+                    </div>
+                  </div>
+                )}
+
+                {tier.savings && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                      {tier.savings}
                     </div>
                   </div>
                 )}
@@ -343,7 +369,7 @@ const PricingPage = () => {
 
                 <button
                   type="button"
-                  onClick={() => handlePlanSelect(tier.name)}
+                  onClick={() => handlePlanSelect(tier.name, tier.priceId || null)}
                   disabled={loading && selectedPlan === tier.name}
                   className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
                     isHighlighted
