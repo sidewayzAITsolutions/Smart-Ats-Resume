@@ -26,17 +26,26 @@ export async function POST(req: NextRequest) {
 
     // Parse request body
     const body = await req.json();
-    const { priceId, successUrl: customSuccessUrl, cancelUrl: customCancelUrl } = body;
+    let { priceId, successUrl: customSuccessUrl, cancelUrl: customCancelUrl } = body;
 
-    console.log('Received priceId:', priceId);
+    console.log('Received priceId from client:', priceId);
 
-    // Validate priceId
+    // TEMPORARY FIX: Override old price ID with correct one
+    // TODO: Remove this once Vercel environment variable is properly updated everywhere
+    const CORRECT_PRICE_ID = 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei';
+    const OLD_PRICE_ID = 'price_1RfIhREXTLOxdWgMKQJGzJzJ';
+    
+    if (priceId === OLD_PRICE_ID) {
+      console.warn('⚠️ Detected old price ID from client, overriding with correct one');
+      console.warn('⚠️ Old:', OLD_PRICE_ID);
+      console.warn('⚠️ Correct:', CORRECT_PRICE_ID);
+      priceId = CORRECT_PRICE_ID;
+    }
+
+    // If no priceId provided, use correct one as fallback
     if (!priceId) {
-      console.error('No priceId provided in request');
-      return NextResponse.json(
-        { error: 'Price ID is required' },
-        { status: 400 }
-      );
+      console.warn('⚠️ No priceId provided, using correct price ID as fallback');
+      priceId = CORRECT_PRICE_ID;
     }
 
     // Validate priceId format
@@ -47,6 +56,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    console.log('✅ Final priceId being used:', priceId);
 
     // Get authenticated user
     const { supabase } = createClientFromRequest(req);
