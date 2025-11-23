@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "smartats-resume",
   "alias": ["smartatsresume.com", "www.smartatsresume.com"],
   "regions": ["iad1"],
   "framework": "nextjs",
@@ -11,18 +10,7 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "build": {
-    "env": {
-      "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      "SUPABASE_SERVICE_ROLE_KEY": "@SUPABASE_SERVICE_ROLE_KEY",
-      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
-      "NEXT_PUBLIC_STRIPE_PRO_PRICE_ID": "@NEXT_PUBLIC_STRIPE_PRO_PRICE_ID",
-      "STRIPE_SECRET_KEY": "@STRIPE_SECRET_KEY",
-      "STRIPE_WEBHOOK_SECRET": "@STRIPE_WEBHOOK_SECRET",
-      "NEXT_PUBLIC_APP_URL": "@NEXT_PUBLIC_APP_URL"
-    }
-  },
+
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 30
