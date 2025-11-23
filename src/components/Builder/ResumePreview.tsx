@@ -587,8 +587,6 @@ export default function ResumePreview({
                 ))}
               </section>
             )}
-              </section>
-            )}
           </div>
         </div>
       );
