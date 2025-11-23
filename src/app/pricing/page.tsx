@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, Check, Crown, FileText, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
@@ -80,7 +81,7 @@ const PricingPage = () => {
       name: 'Free',
       price: 0,
       period: 'forever',
-      icon: FileText,
+      mascotImage: '/Donkey1.png',
       description: 'Perfect for getting started',
       features: [
         'Basic resume builder',
@@ -97,7 +98,7 @@ const PricingPage = () => {
       name: 'Pro Monthly',
       price: 22,
       period: 'month',
-      icon: Crown,
+      mascotImage: '/Donkey2.png',
       description: 'Most popular for job seekers',
       features: [
         'Everything in Free',
@@ -117,7 +118,7 @@ const PricingPage = () => {
       name: 'Pro Yearly',
       price: 200,
       period: 'year',
-      icon: Crown,
+      mascotImage: '/Donkey4.png',
       description: 'Best value - Save $64/year',
       features: [
         'Everything in Free',
@@ -239,14 +240,27 @@ const PricingPage = () => {
       />
 
       <div className="container mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
-            Choose Your Plan
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Get the perfect plan for your career goals. Start free and upgrade when you're ready.
-          </p>
+        {/* Hero Section with Mascot */}
+        <div className="text-center mb-16 relative">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
+            <div className="relative w-48 h-48 md:w-64 md:h-64">
+              <Image
+                src="/donkey3.jpeg"
+                alt="Smart ATS Resume Mascot"
+                fill
+                className="object-contain drop-shadow-2xl"
+                priority
+              />
+            </div>
+            <div className="flex-1 max-w-2xl">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
+                Choose Your Plan
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300">
+                Get the perfect plan for your career goals. Start free and upgrade when you're ready to unlock AI-powered optimization and premium features.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Admin Premium Override (hidden helper for site owner) */}
@@ -323,7 +337,6 @@ const PricingPage = () => {
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
           {pricingTiers.map((tier) => {
-            const Icon = tier.icon;
             const isHighlighted = tier.highlighted;
             return (
               <div
@@ -351,10 +364,14 @@ const PricingPage = () => {
                 )}
 
                 <div className="text-center mb-8">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl mb-4 ${
-                    'bg-gradient-to-br from-blue-600 to-purple-600'
-                  }`}>
-                    <Icon className="w-8 h-8 text-white" />
+                  <div className="inline-flex items-center justify-center w-24 h-24 mb-4">
+                    <Image
+                      src={tier.mascotImage}
+                      alt={`${tier.name} mascot`}
+                      width={96}
+                      height={96}
+                      className="object-contain"
+                    />
                   </div>
                   <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
                   <p className="text-gray-400 mb-6">{tier.description}</p>

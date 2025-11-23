@@ -36,6 +36,11 @@ const initialResumeData: ResumeData = {
   templateId: '',
   keywords: [],
   jobDescription: '',
+  formattingOptions: {
+    bulletStyle: 'bullet',
+    fontSize: 'medium',
+    lineSpacing: 'normal',
+  },
 };
 
 export const useResumeStore = create<ResumeStore>()(

@@ -15,6 +15,7 @@ import EducationForm from '../ResumeBuilder/EducationForm';
 import ExperienceForm from '../ResumeBuilder/ExperienceForm';
 import PersonalInfoForm from '../ResumeBuilder/PersonalInfoForm';
 import SkillsForm from '../ResumeBuilder/SkillsForm';
+import FormattingToolbar from './FormattingToolbar';
 
 interface ResumeEditorProps {
   activeSection: string;
@@ -130,6 +131,22 @@ export default function ResumeEditor({
             <CertificationsForm
               certifications={resumeData.certifications || []}
               onChange={(certifications) => onUpdate({ certifications })}
+            />
+          </div>
+        );
+
+      case 'formatting':
+        return (
+          <div>
+            <h2 className="text-3xl font-bold text-lime-400 mb-6">
+              Formatting Options
+            </h2>
+            <p className="text-gray-300 mb-6">
+              Customize how your resume looks with different bullet styles, font sizes, and line spacing.
+            </p>
+            <FormattingToolbar
+              options={resumeData.formattingOptions || { bulletStyle: 'bullet', fontSize: 'medium', lineSpacing: 'normal' }}
+              onChange={(formattingOptions) => onUpdate({ formattingOptions })}
             />
           </div>
         );

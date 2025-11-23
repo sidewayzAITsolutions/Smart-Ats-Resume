@@ -68,21 +68,32 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
   };
 
   return (
-    <div className="fixed bottom-8 right-8 z-40">
+    <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-40 max-w-[calc(100vw-2rem)]">
       {/* Collapsed State - Circle */}
       {!isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
-          className={`relative w-20 h-20 rounded-full border-4 ${getScoreColor()} bg-gray-900 hover:scale-110 transition-all duration-300 shadow-2xl`}
+          className={`relative w-16 h-16 md:w-20 md:h-20 rounded-full border-4 ${getScoreColor()} bg-gray-900 hover:scale-110 transition-all duration-300 shadow-2xl`}
         >
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <span className={`text-2xl font-bold ${getScoreColor()}`}>{score}%</span>
-              <span className="text-[10px] text-gray-400 block -mt-1">ATS</span>
+              <span className={`text-xl md:text-2xl font-bold ${getScoreColor()}`}>{score}%</span>
+              <span className="text-[9px] md:text-[10px] text-gray-400 block -mt-1">ATS</span>
             </div>
           </div>
           {/* Animated ring */}
           <svg className="absolute inset-0 w-full h-full transform -rotate-90">
+            <circle
+              cx="32"
+              cy="32"
+              r="28"
+              stroke="currentColor"
+              strokeWidth="6"
+              fill="none"
+              strokeDasharray={`${2 * Math.PI * 28}`}
+              strokeDashoffset={`${2 * Math.PI * 28 * (1 - score / 100)}`}
+              className={`${getScoreColor()} transition-all duration-1000 md:hidden`}
+            />
             <circle
               cx="40"
               cy="40"
@@ -92,7 +103,7 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
               fill="none"
               strokeDasharray={`${2 * Math.PI * 36}`}
               strokeDashoffset={`${2 * Math.PI * 36 * (1 - score / 100)}`}
-              className={`${getScoreColor()} transition-all duration-1000`}
+              className={`${getScoreColor()} transition-all duration-1000 hidden md:block`}
             />
           </svg>
         </button>
@@ -100,7 +111,7 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
 
       {/* Expanded State - Card */}
       {isExpanded && (
-        <div className={`bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 w-96 overflow-hidden`}>
+        <div className={`bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 w-full md:w-96 max-h-[calc(100vh-6rem)] overflow-hidden flex flex-col`}>
           {/* Header */}
           <div className={`bg-gradient-to-r ${getScoreColorBg()} p-6 relative`}>
             <button
@@ -158,8 +169,8 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
 
           {/* Breakdown with per-metric coaching */}
           {breakdown && (
-            <div className="p-6 border-b border-gray-800">
-              <h4 className="text-white font-semibold mb-4">Score Breakdown</h4>
+            <div className="p-4 md:p-6 border-b border-gray-800 overflow-y-auto flex-1">
+              <h4 className="text-white font-semibold mb-4 text-sm md:text-base">Score Breakdown</h4>
               <div className="space-y-3">
                 {metricOrder.map((metricKey) => {
                   const value = breakdown[metricKey];
@@ -177,20 +188,20 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                       <button
                         type="button"
                         onClick={() => setOpenMetric(isOpen ? null : metricKey)}
-                        className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-800/70 transition-colors"
+                        className="w-full flex items-center justify-between px-3 py-3 text-left hover:bg-gray-800/70 transition-colors min-h-[60px]"
                       >
-                        <div>
-                          <div className="flex items-center gap-2 text-sm mb-0.5">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 text-xs md:text-sm mb-0.5 flex-wrap">
                             <span className="text-gray-200 font-medium">
                               {label}
                             </span>
                             {isLow && (
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/40">
+                              <span className="text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/40 whitespace-nowrap">
                                 Needs Attention
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-400">
+                          <div className="flex items-center gap-2 text-[10px] md:text-xs text-gray-400">
                             <span className={`font-semibold ${
                               value >= 80 ? 'text-green-400' :
                               value >= 60 ? 'text-amber-400' :
@@ -199,14 +210,14 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                               {value}%
                             </span>
                             {insight?.explanation && (
-                              <span className="truncate max-w-[180px]">
+                              <span className="truncate max-w-[120px] md:max-w-[180px]">
                                 {insight.explanation}
                               </span>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                        <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                          <div className="w-12 md:w-16 bg-gray-800 rounded-full h-1.5 overflow-hidden">
                             <div
                               className={`h-1.5 rounded-full transition-all duration-500 ${
                                 value >= 80 ? 'bg-green-500' :
@@ -217,9 +228,9 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                             />
                           </div>
                           {isOpen ? (
-                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                            <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
                           ) : (
-                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                            <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
                           )}
                         </div>
                       </button>
@@ -276,16 +287,16 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
           )}
 
           {/* Issues & Suggestions */}
-          <div className="p-6 max-h-64 overflow-y-auto">
+          <div className="p-4 md:p-6 max-h-48 md:max-h-64 overflow-y-auto">
             {issues.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-500" />
+                <h4 className="text-white font-semibold mb-2 flex items-center gap-2 text-sm md:text-base">
+                  <AlertCircle className="w-3 h-3 md:w-4 md:h-4 text-red-500" />
                   Issues Found
                 </h4>
                 <ul className="space-y-1">
                   {issues.map((issue, idx) => (
-                    <li key={idx} className="text-sm text-gray-400 flex items-start gap-2">
+                    <li key={idx} className="text-xs md:text-sm text-gray-400 flex items-start gap-2">
                       <span className="text-red-500 mt-1">•</span>
                       <span>{issue}</span>
                     </li>
@@ -296,13 +307,13 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
 
             {suggestions.length > 0 && (
               <div>
-                <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-green-500" />
+                <h4 className="text-white font-semibold mb-2 flex items-center gap-2 text-sm md:text-base">
+                  <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
                   Suggestions
                 </h4>
                 <ul className="space-y-1">
                   {suggestions.map((suggestion, idx) => (
-                    <li key={idx} className="text-sm text-gray-400 flex items-start gap-2">
+                    <li key={idx} className="text-xs md:text-sm text-gray-400 flex items-start gap-2">
                       <span className="text-green-500 mt-1">•</span>
                       <span>{suggestion}</span>
                     </li>

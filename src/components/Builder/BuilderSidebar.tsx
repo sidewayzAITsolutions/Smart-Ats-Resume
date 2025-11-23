@@ -14,6 +14,7 @@ import {
   GraduationCap,
   Tag,
   User,
+  Type,
 } from 'lucide-react';
 
 const cn = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(' ');
@@ -41,6 +42,7 @@ const sections = [
   { id: 'keywords', label: 'ATS Keywords', icon: Tag, required: false },
   { id: 'projects', label: 'Projects', icon: FolderOpen, required: false },
   { id: 'certifications', label: 'Certifications', icon: Award, required: false },
+  { id: 'formatting', label: 'Formatting', icon: Type, required: false },
 ];
 
 export default function BuilderSidebar({
