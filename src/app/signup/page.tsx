@@ -91,7 +91,6 @@ export default function SignupPage(): React.JSX.Element {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`
         }
       });
 
@@ -156,7 +155,7 @@ export default function SignupPage(): React.JSX.Element {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`,
+          redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

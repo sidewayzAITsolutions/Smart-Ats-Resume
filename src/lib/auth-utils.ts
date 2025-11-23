@@ -19,11 +19,11 @@ export class AuthService {
   async signInWithGoogle(callbackUrl = '/templates') {
     try {
       console.log('🚀 Starting Google OAuth...');
-      
+
       const { data, error } = await this.supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(callbackUrl)}`,
+          redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -39,7 +39,7 @@ export class AuthService {
 
       console.log('✅ OAuth redirect initiated');
       return data;
-      
+
     } catch (error) {
       console.error('❌ Unexpected Google OAuth error:', error);
       toast.error('Failed to connect with Google');

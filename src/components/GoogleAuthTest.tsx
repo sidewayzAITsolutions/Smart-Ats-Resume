@@ -15,14 +15,14 @@ export default function GoogleAuthTest() {
 
     try {
       console.log('🔍 Testing Google OAuth...');
-      
+
       // Get current URL info
       const currentUrl = window.location.origin;
       const redirectUrl = `${currentUrl}/auth/callback`;
-      
+
       console.log('📍 Current URL:', currentUrl);
       console.log('📍 Redirect URL:', redirectUrl);
-      
+
       // Test OAuth
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
