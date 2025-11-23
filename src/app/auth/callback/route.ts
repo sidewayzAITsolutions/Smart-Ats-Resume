@@ -48,8 +48,13 @@ export async function GET(request: NextRequest) {
     // Create redirect URL early
     const redirectUrl = new URL(next, requestUrl.origin);
     
-    // Create response object for cookie handling - use redirect response
-    let response = NextResponse.redirect(redirectUrl);
+    // Create a mutable response object for cookie handling
+    // We'll create the redirect response after setting cookies
+    let response = NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    });
 
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
@@ -200,10 +205,24 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Response already has cookies set from exchangeCodeForSession
-    // and is already configured to redirect to the correct URL
+    // Create final redirect response with all cookies
+    const finalResponse = NextResponse.redirect(redirectUrl);
+    
+    // Copy all cookies from the session exchange to the redirect response
+    response.cookies.getAll().forEach((cookie) => {
+      finalResponse.cookies.set(cookie.name, cookie.value, {
+        path: cookie.path || '/',
+        domain: cookie.domain,
+        maxAge: cookie.maxAge,
+        httpOnly: cookie.httpOnly,
+        secure: cookie.secure ?? true, // Default to secure in production
+        sameSite: (cookie.sameSite as 'lax' | 'strict' | 'none' | undefined) || 'lax',
+      });
+    });
+
     console.log('✅ Redirecting to:', redirectUrl.toString());
-    return response;
+    console.log('✅ Cookies set:', response.cookies.getAll().length, 'cookies');
+    return finalResponse;
 
   } catch (e: any) {
     console.error('❌ Auth callback error:', e);
