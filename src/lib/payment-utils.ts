@@ -1,9 +1,7 @@
 import toast from 'react-hot-toast';
-
 import { createClient } from '@/lib/supabase/client';
 
 export interface CheckoutSessionData {
-  priceId: string;
   successUrl?: string;
   cancelUrl?: string;
 }
@@ -42,14 +40,9 @@ export const redirectToSignIn = (callbackUrl: string): void => {
  * @param data - Checkout session configuration
  * @returns Promise that resolves when checkout is initiated
  */
-export const createCheckoutSession = async (data: CheckoutSessionData): Promise<void> => {
+export const createCheckoutSession = async (data?: CheckoutSessionData): Promise<void> => {
   try {
-    console.log('Creating checkout session with data:', data);
-
-    // Validate required data
-    if (!data.priceId) {
-      throw new Error('Price ID is required');
-    }
+    console.log('Creating checkout session');
 
     // Check authentication before making API call
     const isAuthenticated = await checkAuthStatus();
@@ -59,6 +52,13 @@ export const createCheckoutSession = async (data: CheckoutSessionData): Promise<
       return;
     }
 
+    // Get price ID from environment variable
+    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    if (!priceId) {
+      toast.error('Payment configuration error. Please contact support.');
+      throw new Error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+    }
+
     // Create checkout session
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
@@ -66,9 +66,9 @@ export const createCheckoutSession = async (data: CheckoutSessionData): Promise<
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        priceId: data.priceId,
-        successUrl: data.successUrl,
-        cancelUrl: data.cancelUrl,
+        priceId: priceId,
+        successUrl: data?.successUrl || `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: data?.cancelUrl || `${window.location.origin}/pricing?canceled=true`,
       }),
     });
 
@@ -121,7 +121,7 @@ export const handleProPlanCheckout = async (
   try {
     // Check authentication first
     const isAuthenticated = await checkAuthStatus();
-    if (!isAuthenticated) {
+    if (!isAuthenticated.isAuthenticated) {
       toast.error('Please sign in to upgrade to Pro');
       redirectToSignIn('/pricing');
       setLoading(false);
@@ -129,29 +129,7 @@ export const handleProPlanCheckout = async (
       return;
     }
 
-    // Use environment variable or fallback to default price ID
-    const envPriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
-    const DEFAULT_PRICE_ID = 'price_1SWVxVEXTLOxdWgMLE1igHr4';
-    const OLD_PRICE_IDS = ['price_1RfIhREXTLOxdWgMKQJGzJzJ', 'price_1Ro7SxEXTLOxdWgM7s3Qs7ei'];
-    
-    const priceId = envPriceId && !OLD_PRICE_IDS.includes(envPriceId)
-      ? envPriceId 
-      : DEFAULT_PRICE_ID; // Fallback to default price ID
-    
-    console.log('🔍 DEBUG payment-utils: Env price ID:', envPriceId);
-    console.log('🔍 DEBUG payment-utils: Using price ID:', priceId);
-    
-    if (!priceId) {
-      toast.error('Payment configuration error. Please contact support.');
-      console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
-      setLoading(false);
-      setSelectedPlan('');
-      return;
-    }
-    console.log('✅ Using price ID:', priceId);
-
     await createCheckoutSession({
-      priceId: priceId,
       successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${window.location.origin}/pricing?canceled=true`,
     });
@@ -164,21 +142,13 @@ export const handleProPlanCheckout = async (
 };
 
 /**
- * Handles Enterprise plan contact form
- * @param setShowContactModal - Contact modal state setter
- */
-export const handleEnterprisePlan = (setShowContactModal: (show: boolean) => void): void => {
-  setShowContactModal(true);
-};
-
-/**
  * Handles free plan selection
  * @param router - Next.js router instance
  */
 export const handleFreePlan = async (router: any): Promise<void> => {
   // Check if user is authenticated for free plan
   const isAuthenticated = await checkAuthStatus();
-  if (!isAuthenticated) {
+  if (!isAuthenticated.isAuthenticated) {
     toast('Please sign in to get started with the free plan');
     redirectToSignIn('/builder');
     return;
@@ -194,19 +164,14 @@ export const handleFreePlan = async (router: any): Promise<void> => {
  * @param router - Next.js router instance
  * @param setLoading - Loading state setter
  * @param setSelectedPlan - Selected plan state setter
- * @param setShowContactModal - Contact modal state setter
  */
 export const handlePlanSelection = async (
   planName: string,
   router: any,
   setLoading: (loading: boolean) => void,
-  setSelectedPlan: (plan: string) => void,
-  setShowContactModal: (show: boolean) => void
+  setSelectedPlan: (plan: string) => void
 ): Promise<void> => {
   switch (planName) {
-    case 'Enterprise':
-      handleEnterprisePlan(setShowContactModal);
-      break;
     case 'Free':
       await handleFreePlan(router);
       break;

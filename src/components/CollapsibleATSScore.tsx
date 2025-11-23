@@ -2,6 +2,14 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, TrendingUp, AlertCircle, CheckCircle, X } from 'lucide-react';
 
+interface MetricInsight {
+  label: string;
+  explanation: string;
+  whatsMissing: string[];
+  recommendations: string[];
+  examples: string[];
+}
+
 interface ATSScoreProps {
   score: number;
   breakdown?: {
@@ -12,10 +20,17 @@ interface ATSScoreProps {
   };
   issues?: string[];
   suggestions?: string[];
+  metricInsights?: {
+    keywords: MetricInsight;
+    formatting: MetricInsight;
+    content: MetricInsight;
+    impact: MetricInsight;
+  };
 }
 
-const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [] }: ATSScoreProps) => {
+const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], metricInsights }: ATSScoreProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [openMetric, setOpenMetric] = useState<string | null>(null);
 
   // Determine color based on score
   const getScoreColor = () => {
@@ -37,6 +52,20 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [] }
   };
 
   const status = getScoreStatus();
+
+  const metricOrder: Array<keyof NonNullable<ATSScoreProps['breakdown']>> = [
+    'keywords',
+    'impact',
+    'content',
+    'formatting',
+  ];
+
+  const metricLabelOverride: Record<string, string> = {
+    keywords: 'Keywords & Relevance',
+    impact: 'Impact & Achievements',
+    content: 'Content Depth',
+    formatting: 'Formatting & Core Sections',
+  };
 
   return (
     <div className="fixed bottom-8 right-8 z-40">
@@ -80,7 +109,7 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [] }
             >
               <X className="w-5 h-5" />
             </button>
-            
+
             <div className="flex items-center gap-4">
               <div className="relative w-24 h-24">
                 <svg className="transform -rotate-90 w-24 h-24">
@@ -112,7 +141,7 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [] }
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <status.icon className={`w-5 h-5 ${getScoreColor()}`} />
@@ -127,33 +156,121 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [] }
             </div>
           </div>
 
-          {/* Breakdown */}
+          {/* Breakdown with per-metric coaching */}
           {breakdown && (
             <div className="p-6 border-b border-gray-800">
               <h4 className="text-white font-semibold mb-4">Score Breakdown</h4>
               <div className="space-y-3">
-                {Object.entries(breakdown).map(([key, value]) => (
-                  <div key={key}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400 capitalize">{key}</span>
-                      <span className={`font-medium ${
-                        value >= 80 ? 'text-green-500' :
-                        value >= 60 ? 'text-amber-500' :
-                        'text-red-500'
-                      }`}>{value}%</span>
+                {metricOrder.map((metricKey) => {
+                  const value = breakdown[metricKey];
+                  if (typeof value !== 'number') return null;
+
+                  const isLow = value < 60;
+                  const hasInsights = metricInsights && metricInsights[metricKey];
+                  const insight = hasInsights ? metricInsights![metricKey] : undefined;
+                  const isOpen = openMetric === metricKey;
+
+                  const label = insight?.label || metricLabelOverride[metricKey] || metricKey;
+
+                  return (
+                    <div key={metricKey} className="border border-gray-800/60 rounded-lg overflow-hidden bg-gray-900/60">
+                      <button
+                        type="button"
+                        onClick={() => setOpenMetric(isOpen ? null : metricKey)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-800/70 transition-colors"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2 text-sm mb-0.5">
+                            <span className="text-gray-200 font-medium">
+                              {label}
+                            </span>
+                            {isLow && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/40">
+                                Needs Attention
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-gray-400">
+                            <span className={`font-semibold ${
+                              value >= 80 ? 'text-green-400' :
+                              value >= 60 ? 'text-amber-400' :
+                              'text-red-400'
+                            }`}>
+                              {value}%
+                            </span>
+                            {insight?.explanation && (
+                              <span className="truncate max-w-[180px]">
+                                {insight.explanation}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className={`h-1.5 rounded-full transition-all duration-500 ${
+                                value >= 80 ? 'bg-green-500' :
+                                value >= 60 ? 'bg-amber-500' :
+                                'bg-red-500'
+                              }`}
+                              style={{ width: `${value}%` }}
+                            />
+                          </div>
+                          {isOpen ? (
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                          )}
+                        </div>
+                      </button>
+
+                      {isOpen && hasInsights && insight && (
+                        <div className="px-3 pb-3 pt-1 text-xs text-gray-300 space-y-2 bg-gray-900">
+                          <p className="text-[11px] text-gray-400">
+                            {insight.explanation}
+                          </p>
+
+                          {insight.whatsMissing && insight.whatsMissing.length > 0 && (
+                            <div>
+                              <p className="font-semibold text-gray-200 mb-1">What's missing</p>
+                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
+                                {insight.whatsMissing.map((item, idx) => (
+                                  <li key={idx}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {insight.recommendations && insight.recommendations.length > 0 && (
+                            <div>
+                              <p className="font-semibold text-gray-200 mb-1">How to improve</p>
+                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
+                                {insight.recommendations.map((item, idx) => (
+                                  <li key={idx}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {insight.examples && insight.examples.length > 0 && (
+                            <div>
+                              <p className="font-semibold text-gray-200 mb-1">Example bullets</p>
+                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
+                                {insight.examples.slice(0, 2).map((item, idx) => (
+                                  <li key={idx}>
+                                    <span className="text-gray-500">"</span>
+                                    {item.replace(/^"|"$/g, '')}
+                                    <span className="text-gray-500">"</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    <div className="w-full bg-gray-800 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          value >= 80 ? 'bg-green-500' :
-                          value >= 60 ? 'bg-amber-500' :
-                          'bg-red-500'
-                        }`}
-                        style={{ width: `${value}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

@@ -199,6 +199,37 @@ export default function ResumePreview({
               ))}
             </section>
           )}
+
+          {/* Certifications */}
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+                Certifications
+              </h2>
+              {resumeData.certifications.map((cert, index) => (
+                <div key={index} className="mb-2">
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Inter", sans-serif' }}>
+                        {cert.name}
+                      </h3>
+                      {cert.issuer && (
+                        <p className="text-gray-600 text-xs" style={{ fontFamily: '"Inter", sans-serif' }}>
+                          {cert.issuer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 text-right">
+                      {cert.date && <p>{cert.date}</p>}
+                      {cert.expirationDate && (
+                        <p className="italic">Expires {cert.expirationDate}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
         </div>
       );
     }
@@ -357,6 +388,37 @@ export default function ResumePreview({
               ))}
             </section>
           )}
+
+          {/* Certifications */}
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 tracking-wide uppercase" style={{ fontFamily: '"Crimson Pro", serif', letterSpacing: '0.1em', fontSize: '0.9rem' }}>
+                Certifications
+              </h2>
+              {resumeData.certifications.map((cert, index) => (
+                <div key={index} className="mb-3">
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Crimson Pro", serif' }}>
+                        {cert.name}
+                      </h3>
+                      {cert.issuer && (
+                        <p className="text-gray-600 text-xs" style={{ fontFamily: '"Crimson Pro", serif' }}>
+                          {cert.issuer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 text-right">
+                      {cert.date && <p>{cert.date}</p>}
+                      {cert.expirationDate && (
+                        <p className="italic">Expires {cert.expirationDate}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
         </div>
       );
     }
@@ -494,6 +556,39 @@ export default function ResumePreview({
                 ))}
               </section>
             )}
+
+            {/* Certifications */}
+            {resumeData.certifications && resumeData.certifications.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-lg font-bold text-gray-900 uppercase tracking-widest mb-4 pb-2 border-b-2 border-gray-400" style={{ fontFamily: '"Times New Roman", serif', fontSize: '0.95rem', letterSpacing: '0.1em' }}>
+                  Certifications
+                </h2>
+                {resumeData.certifications.map((cert, index) => (
+                  <div key={index} className="mb-3 pb-2 border-b border-gray-200 last:border-0">
+                    <div className="flex justify-between items-baseline">
+                      <div>
+                        <h3 className="font-bold text-gray-900 text-sm" style={{ fontFamily: '"Times New Roman", serif' }}>
+                          {cert.name}
+                        </h3>
+                        {cert.issuer && (
+                          <p className="text-gray-600 text-xs" style={{ fontFamily: '"Times New Roman", serif' }}>
+                            {cert.issuer}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500 text-right">
+                        {cert.date && <p>{cert.date}</p>}
+                        {cert.expirationDate && (
+                          <p className="italic">Expires {cert.expirationDate}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+              </section>
+            )}
           </div>
         </div>
       );
@@ -621,6 +716,37 @@ export default function ResumePreview({
                       ))}
                     </div>
                   )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Certifications */}
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="mb-5">
+              <h2 className="text-base font-bold text-gray-900 mb-2" style={{ fontFamily: '"Arial", sans-serif' }}>
+                Certifications
+              </h2>
+              {resumeData.certifications.map((cert, index) => (
+                <div key={index} className="mb-2">
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm" style={{ fontFamily: '"Arial", sans-serif' }}>
+                        {cert.name}
+                      </h3>
+                      {cert.issuer && (
+                        <p className="text-gray-600 text-xs" style={{ fontFamily: '"Arial", sans-serif' }}>
+                          {cert.issuer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 text-right">
+                      {cert.date && <p>{cert.date}</p>}
+                      {cert.expirationDate && (
+                        <p className="italic">Expires {cert.expirationDate}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </section>
@@ -760,6 +886,37 @@ export default function ResumePreview({
               ))}
             </section>
           )}
+
+          {/* Certifications */}
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-base font-bold text-slate-900 mb-4 uppercase tracking-widest pb-2 border-b-2 border-teal-300" style={{ fontFamily: '"Segoe UI", "Roboto", sans-serif', fontSize: '0.9rem', letterSpacing: '0.15em' }}>
+                Certifications
+              </h2>
+              {resumeData.certifications.map((cert, index) => (
+                <div key={index} className="mb-3 pb-2 border-b border-gray-200 last:border-0">
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-sm" style={{ fontFamily: '"Segoe UI", "Roboto", sans-serif' }}>
+                        {cert.name}
+                      </h3>
+                      {cert.issuer && (
+                        <p className="text-gray-600 text-xs" style={{ fontFamily: '"Segoe UI", "Roboto", sans-serif' }}>
+                          {cert.issuer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 text-right">
+                      {cert.date && <p>{cert.date}</p>}
+                      {cert.expirationDate && (
+                        <p className="italic">Expires {cert.expirationDate}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
         </div>
       );
     }
@@ -891,6 +1048,37 @@ export default function ResumePreview({
               ))}
             </section>
           )}
+
+          {/* Certifications */}
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-sm font-light text-gray-500 mb-4 uppercase tracking-wider" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, letterSpacing: '0.15em' }}>
+                Certifications
+              </h2>
+              {resumeData.certifications.map((cert, index) => (
+                <div key={index} className="mb-3 pb-3 border-b border-gray-200 last:border-0">
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <h3 className="font-normal text-gray-900 text-sm" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 400 }}>
+                        {cert.name}
+                      </h3>
+                      {cert.issuer && (
+                        <p className="text-gray-600 text-xs" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300 }}>
+                          {cert.issuer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 text-right">
+                      {cert.date && <p>{cert.date}</p>}
+                      {cert.expirationDate && (
+                        <p className="italic">Expires {cert.expirationDate}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
         </div>
       );
     }
@@ -1018,6 +1206,37 @@ export default function ResumePreview({
                       ))}
                     </div>
                   )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Certifications */}
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="mb-10">
+              <h2 className="text-xs font-light text-gray-400 mb-6 uppercase tracking-widest" style={{ fontFamily: '"Lora", serif', letterSpacing: '0.2em' }}>
+                Certifications
+              </h2>
+              {resumeData.certifications.map((cert, index) => (
+                <div key={index} className="mb-4 pb-4 border-b border-gray-100 last:border-0">
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <h3 className="font-normal text-gray-900 text-sm" style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400 }}>
+                        {cert.name}
+                      </h3>
+                      {cert.issuer && (
+                        <p className="text-gray-600 text-xs" style={{ fontFamily: '"Lora", serif' }}>
+                          {cert.issuer}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 text-right">
+                      {cert.date && <p>{cert.date}</p>}
+                      {cert.expirationDate && (
+                        <p className="italic">Expires {cert.expirationDate}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </section>
@@ -1279,6 +1498,31 @@ export default function ResumePreview({
                     ))}
                   </div>
                 )}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {/* Certifications */}
+        {resumeData.certifications && resumeData.certifications.length > 0 && (
+          <section className="mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-3">Certifications</h2>
+            {resumeData.certifications.map((cert, index) => (
+              <div key={index} className="mb-3">
+                <div className="flex justify-between items-baseline">
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">{cert.name}</h3>
+                    {cert.issuer && (
+                      <p className="text-gray-600 text-xs">{cert.issuer}</p>
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-500 text-right">
+                    {cert.date && <p>{cert.date}</p>}
+                    {cert.expirationDate && (
+                      <p className="italic">Expires {cert.expirationDate}</p>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </section>

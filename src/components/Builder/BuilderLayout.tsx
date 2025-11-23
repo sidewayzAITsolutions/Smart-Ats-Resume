@@ -584,6 +584,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     breakdown: { keywords: number; formatting: number; content: number; impact: number };
     suggestions: string[];
     risks: string[];
+    metricInsights?: import('@/lib/ats-analyzer').ATSAnalysis['metricInsights'];
   } | null>(null);
 
   const { resumeData, updateResumeData, saveResume } = useResumeStore();
@@ -698,7 +699,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
             experience: combined.experience || [],
             education: combined.education || [],
             skills: (combined.skills || []).map((s: any) => s.name),
-            targetKeywords: [],
+            targetKeywords: combined.keywords || [],
           });
 
           setAtsScore({
@@ -706,6 +707,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
             breakdown: ats.breakdown,
             suggestions: ats.suggestions,
             risks: ats.risks,
+            metricInsights: ats.metricInsights,
           });
         } catch (atsErr) {
           console.error('Failed to calculate ATS score from imported resume:', atsErr);
@@ -773,7 +775,8 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           experience: resumeData.experience || [],
           education: resumeData.education || [],
           skills: (resumeData.skills || []).map((s: any) => s.name),
-          targetKeywords: [],
+          targetKeywords: resumeData.keywords || [],
+          jobDescription: resumeData.jobDescription || '',
         },
       );
 
@@ -782,6 +785,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         breakdown: ats.breakdown,
         suggestions: ats.suggestions,
         risks: ats.risks,
+        metricInsights: ats.metricInsights,
       });
     } catch (error) {
       console.error('Failed to calculate ATS score:', error);
@@ -880,6 +884,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           breakdown={atsScore.breakdown}
           issues={atsScore.risks}
           suggestions={atsScore.suggestions}
+          metricInsights={atsScore.metricInsights}
         />
       )}
     </div>
