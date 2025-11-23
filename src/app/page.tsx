@@ -184,17 +184,17 @@ const Page: React.FC = () => {
 
         {/* Hero Section */}
         <section className="relative pt-24 pb-20 px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-transparent to-amber-600/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-teal-900/30 text-teal-300 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-teal-700/50">
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-900/30 to-orange-900/30 text-orange-300 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-orange-700/50">
                 <Sparkles className="w-5 h-5" />
                 AI-Powered ATS Optimization
               </div>
 
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
                 Beat the ATS with
-                <span className="block bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-teal-400 via-amber-400 to-orange-400 bg-clip-text text-transparent">
                   Smart ATS Resume
                 </span>
               </h1>
@@ -208,7 +208,7 @@ const Page: React.FC = () => {
               <div className="flex flex-wrap gap-4 justify-center">
                 <button
                   onClick={() => router.push('/login')}
-                  className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                  className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-teal-600 via-amber-600 to-orange-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-200"
                 >
                   <Zap className="w-6 h-6" />
                   Build Your Resume Free
@@ -217,7 +217,7 @@ const Page: React.FC = () => {
 
                 <button
                   onClick={() => setShowDemoModal(true)}
-                  className="inline-flex items-center gap-3 px-10 py-4 bg-gray-800 text-white font-bold text-lg rounded-xl border-2 border-gray-700 hover:border-teal-500 transition-all duration-200"
+                  className="inline-flex items-center gap-3 px-10 py-4 bg-gray-800 text-white font-bold text-lg rounded-xl border-2 border-gray-700 hover:border-orange-500 hover:shadow-xl hover:shadow-orange-500/30 transition-all duration-200"
                 >
                   <BarChart2 className="w-6 h-6" />
                   See ATS Analysis Demo
@@ -405,9 +405,9 @@ const Page: React.FC = () => {
                 // Handle regular features
                 const Icon = feature.icon as React.ElementType;
                 return (
-                  <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300 group">
+                  <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-amber-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 via-amber-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-white">{feature.title}</h3>
@@ -442,10 +442,10 @@ const Page: React.FC = () => {
           </div>
 
           {/* Right side - Key Stats */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-3xl p-8">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-700/30 rounded-3xl p-8">
             <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS Wins</h3>
             <div className="space-y-6">
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30 hover:border-green-500/50 transition-colors">
                 <div>
                   <div className="text-2xl font-bold text-green-400">98.4%</div>
                   <div className="text-sm text-gray-300">ATS Pass Rate</div>
@@ -453,23 +453,23 @@ const Page: React.FC = () => {
                 <TrendingUp className="w-8 h-8 text-green-400" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl border border-blue-700/30">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-900/30 to-amber-900/30 rounded-xl border border-orange-700/30 hover:border-orange-500/50 transition-colors">
                 <div>
-                  <div className="text-2xl font-bold text-blue-400">75%</div>
+                  <div className="text-2xl font-bold text-orange-400">75%</div>
                   <div className="text-sm text-gray-300">Resumes Fail ATS</div>
                 </div>
-                <Target className="w-8 h-8 text-blue-400" />
+                <Target className="w-8 h-8 text-orange-400" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-900/30 to-violet-900/30 rounded-xl border border-purple-700/30">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-teal-900/30 to-cyan-900/30 rounded-xl border border-teal-700/30 hover:border-teal-500/50 transition-colors">
                 <div>
-                  <div className="text-2xl font-bold text-purple-400">10 min</div>
+                  <div className="text-2xl font-bold text-teal-400">10 min</div>
                   <div className="text-sm text-gray-300">Build Time</div>
                 </div>
-                <Clock className="w-8 h-8 text-purple-400" />
+                <Clock className="w-8 h-8 text-teal-400" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-700/30">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-700/30 hover:border-amber-500/50 transition-colors">
                 <div>
                   <div className="text-2xl font-bold text-amber-400">8+</div>
                   <div className="text-sm text-gray-300">Pro Templates</div>
@@ -481,7 +481,7 @@ const Page: React.FC = () => {
         </div>
 
           {/* Comparison Table Section */}
-        <section className="py-20 px-6 bg-gradient-to-br from-gray-900 via-teal-900/10 to-gray-900">
+        <section className="py-20 px-6 bg-gradient-to-br from-gray-900 via-orange-900/10 to-gray-900">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -615,10 +615,10 @@ const Page: React.FC = () => {
             </div>
 
             <div className="mt-12 text-center">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-900/30 to-green-800/30 border border-green-700/50 rounded-xl">
-                <Sparkles className="w-7 h-7 text-green-400" />
-                <p className="text-green-300 font-medium">
-                  SmartATS SAVES you TIME and DOLLARS while giving you the BEST Quality! <span className="text-green-400 font-bold">30% more</span> than competitors
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl">
+                <Sparkles className="w-7 h-7 text-orange-400" />
+                <p className="text-orange-300 font-medium">
+                  SmartATS SAVES you TIME and DOLLARS while giving you the BEST Quality! <span className="text-orange-400 font-bold">30% more</span> than competitors
                 </p>
               </div>
             </div>
@@ -635,7 +635,7 @@ const Page: React.FC = () => {
 
             <div className="grid lg:grid-cols-2 gap-8 mb-12">
               {WhyChooseSmartATS.features.map((feature, idx) => (
-                <div key={idx} className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8 hover:border-teal-500/50 transition-all duration-300">
+                <div key={idx} className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8 hover:border-orange-500/50 transition-all duration-300">
                   <div className="flex items-center gap-4 mb-6">
                     <div className="text-4xl">{feature.icon}</div>
                     <h3 className="text-2xl font-bold text-white">{feature.title}</h3>
@@ -662,7 +662,7 @@ const Page: React.FC = () => {
             </div>
 
            {/* Summary */}
-            <div className="bg-gradient-to-r from-teal-900/30 to-amber-900/30 border border-teal-500/30 rounded-2xl p-8 text-center">
+            <div className="bg-gradient-to-r from-teal-900/30 via-amber-900/30 to-orange-900/30 border border-orange-500/30 rounded-2xl p-8 text-center">
               <p className="text-lg text-gray-200 leading-relaxed max-w-4xl mx-auto">
                 {WhyChooseSmartATS.summary}
               </p>
@@ -670,246 +670,7 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Export & Features Highlight Section */}
-        <section className="py-20 px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Everything You Need to Get Hired
-              </h2>
-              <p className="text-xl text-gray-300">
-                Professional features designed for ATS success
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-teal-900/20 to-amber-900/20 border-2 border-teal-500 rounded-3xl p-8 md:p-12 shadow-2xl shadow-teal-500/20">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-6">
-                  <Award className="w-4 h-4" />
-                  PROFESSIONAL FEATURES
-                </div>
-
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-5xl md:text-6xl font-bold text-white">Free</span>
-                  <span className="text-gray-300 text-xl">to start</span>
-                </div>
-                <p className="text-teal-200">Upgrade anytime for unlimited access</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div>
-                  <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500" />
-                    Export Options
-                  </h4>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>PDF format (ATS-optimized)</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>DOCX format (editable)</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>Plain text option</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>Multiple download formats</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500" />
-                    Smart Features
-                  </h4>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>Real-time ATS scoring</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>AI keyword optimization</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>8+ professional templates</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-gray-300">
-                      <ChevronRight className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                      <span>10-minute quick builder</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <button
-                onClick={() => router.push('/login')}
-                className="w-full px-8 py-4 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                Get Started with SmartATS
-                <ArrowRight className="w-5 h-5" />
-              </button>
-
-              <p className="text-center text-gray-400 text-sm mt-6">
-                No credit card required • 3 free downloads • Upgrade anytime
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Integrations & Features */}
-        <section className="py-20 px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Powerful Features & Export Options
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Everything you need to create ATS-optimized resumes that get results
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {/* Smart Keyword Matching */}
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-amber-500 rounded-xl flex items-center justify-center mb-4">
-                  <Target className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Smart Keyword Matching</h3>
-                <p className="text-gray-300 mb-4">AI analyzes job descriptions and optimizes your resume</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Job description analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Keyword density tracking</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Industry-specific terms</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Real-time optimization</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Multiple Export Formats */}
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-amber-500 rounded-xl flex items-center justify-center mb-4">
-                  <FileText className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Multiple Export Formats</h3>
-                <p className="text-gray-300 mb-4">Download in any format the job requires</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>PDF format (ATS-optimized)</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>DOCX format (editable)</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Plain text option</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>ATS-friendly files</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Real-Time ATS Scoring */}
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-amber-500 rounded-xl flex items-center justify-center mb-4">
-                  <BarChart2 className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Real-Time ATS Scoring</h3>
-                <p className="text-gray-300 mb-4">See your score instantly and improve it</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Live score updates</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Actionable improvements</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Section-by-section analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Benchmark comparisons</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Professional Templates */}
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-amber-500 rounded-xl flex items-center justify-center mb-4">
-                  <Award className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Professional Templates</h3>
-                <p className="text-gray-300 mb-4">Industry-specific templates that work</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>8+ professional templates</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>ATS-proof formatting</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Industry-specific designs</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-400">
-                    <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span>Customizable layouts</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Image Feature - SmartATS Mascot */}
-              <div className="md:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300 group">
-                <div className="flex items-center justify-center h-full">
-                  <img
-                    src="/donkey3.jpeg"
-                    alt="SmartATS - Your Resume Success Partner"
-                    className="w-full h-auto rounded-xl shadow-lg max-h-[400px] object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center mt-12">
-              <p className="text-gray-400 mb-4">Ready to beat the ATS?</p>
-              <button
-                onClick={() => router.push('/login')}
-                className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 font-medium"
-              >
-                Start building your resume
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
+       {/* CTA Section */}
         <section className="py-20 px-6 bg-orange-600">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -960,27 +721,27 @@ const Page: React.FC = () => {
               <div>
                 <h4 className="font-semibold text-white mb-4">Product</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/templates" className="hover:text-teal-400 transition-colors">Templates</a></li>
-                  <li><a href="/builder" className="hover:text-teal-400 transition-colors">Resume Builder</a></li>
-                  <li><a href="/ats-guide" className="hover:text-teal-400 transition-colors">ATS Guide</a></li>
+                  <li><a href="/templates" className="hover:text-orange-400 transition-colors">Templates</a></li>
+                  <li><a href="/builder" className="hover:text-orange-400 transition-colors">Resume Builder</a></li>
+                  <li><a href="/ats-guide" className="hover:text-orange-400 transition-colors">ATS Guide</a></li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="font-semibold text-white mb-4">Company</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/about" className="hover:text-teal-400 transition-colors">About</a></li>
-                  <li><a href="/pricing" className="hover:text-teal-400 transition-colors">Pricing</a></li>
-                  <li><a href="/blog" className="hover:text-teal-400 transition-colors">Blog</a></li>
+                  <li><a href="/about" className="hover:text-orange-400 transition-colors">About</a></li>
+                  <li><a href="/pricing" className="hover:text-orange-400 transition-colors">Pricing</a></li>
+                  <li><a href="/blog" className="hover:text-orange-400 transition-colors">Blog</a></li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="font-semibold text-white mb-4">Support</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/contact" className="hover:text-teal-400 transition-colors">Contact</a></li>
-                  <li><a href="/privacypolicy" className="hover:text-teal-400 transition-colors">Privacy Policy</a></li>
-                  <li><a href="/termsofservice" className="hover:text-teal-400 transition-colors">Terms of Service</a></li>
+                  <li><a href="/contact" className="hover:text-orange-400 transition-colors">Contact</a></li>
+                  <li><a href="/privacypolicy" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
+                  <li><a href="/termsofservice" className="hover:text-orange-400 transition-colors">Terms of Service</a></li>
 
                 </ul>
               </div>
