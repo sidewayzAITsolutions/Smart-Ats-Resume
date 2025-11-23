@@ -1056,7 +1056,7 @@ const Page: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
               {/* Smart Keyword Matching */}
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300">
                 <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-amber-500 rounded-xl flex items-center justify-center mb-4">
@@ -1166,7 +1166,7 @@ const Page: React.FC = () => {
               </div>
 
               {/* Image Feature - SmartATS Mascot */}
-              <div className="md:col-span-2 lg:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300 group">
+              <div className="md:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300 group">
                 <div className="flex items-center justify-center h-full">
                   <img
                     src="/donkey3.jpeg"
