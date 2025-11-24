@@ -8,6 +8,7 @@ import {
   CheckCircle,
   FileText,
   Target,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -34,8 +35,9 @@ const ATSGuidePage = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Complete ATS Guide
           </h1>
-          <p className="text-xl text-gray-400">
-            Everything you need to know to dominate Applicant Tracking Systems
+          <p className="text-gray-300 text-lg leading-relaxed mb-6">
+            An Applicant Tracking System (ATS) is sophisticated software that organizations use to manage, filter, and rank applications. 
+            With 98% of Fortune 500 companies implementing ATS technology, mastering these systems is essential for career advancement.
           </p>
         </div>
 
@@ -53,15 +55,15 @@ const ATSGuidePage = () => {
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-gray-800 rounded-xl p-6">
                 <div className="text-2xl font-bold text-red-400 mb-2">75%</div>
-                <p className="text-gray-400">of resumes are rejected by ATS before human review</p>
+                <p className="text-gray-400">of resumes are filtered before human review</p>
               </div>
               <div className="bg-gray-800 rounded-xl p-6">
                 <div className="text-2xl font-bold text-yellow-400 mb-2">6 sec</div>
-                <p className="text-gray-400">average time ATS spends scanning each resume</p>
+                <p className="text-gray-400">average ATS processing time per resume</p>
               </div>
               <div className="bg-gray-800 rounded-xl p-6">
                 <div className="text-2xl font-bold text-green-400 mb-2">94%</div>
-                <p className="text-gray-400">of recruiters rely on ATS for initial screening</p>
+                <p className="text-gray-400">of recruiters depend on ATS for initial screening</p>
               </div>
             </div>
           </div>
@@ -148,9 +150,9 @@ const ATSGuidePage = () => {
         {/* CTA Section */}
         <section className="text-center">
           <div className="bg-gradient-to-r from-teal-600 to-amber-600 rounded-2xl p-8">
-            <h2 className="text-3xl font-bold mb-4">Ready to Dominate the ATS?</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Optimize Your Resume?</h2>
             <p className="text-xl mb-6 opacity-90">
-              Use our AI-powered resume builder to create an ATS-optimized resume that gets results in minutes.
+              Utilize our AI-powered builder to create an ATS-optimized resume efficiently.
             </p>
             <Link href="/templates" className="inline-block bg-white text-teal-600 px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
               Start Building Your Resume

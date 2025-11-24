@@ -53,7 +53,7 @@ const PremiumUpgradeBanner = () => (
       <div className="flex items-center justify-center gap-3 mb-4">
         <Crown className="w-10 h-10 animate-bounce text-yellow-300" />
         <h3 className="text-2xl md:text-3xl font-bold">
-          Unlock ALL Premium Templates!
+          Access All Premium Templates
         </h3>
         <Crown
           className="w-10 h-10 animate-bounce text-yellow-300"
@@ -61,13 +61,10 @@ const PremiumUpgradeBanner = () => (
         />
       </div>
       <p className="mb-2 text-pink-100 text-lg">
-        🚀 <strong>3x More Interviews</strong> • 🎯{" "}
-        <strong>98% ATS Pass Rate</strong> • ⚡{" "}
-        <strong>AI-Powered Optimization</strong>
+        🚀 <strong>3x Interview Rate</strong> • 🎯 <strong>98% ATS Success</strong> • ⚡ <strong>AI-Powered Optimization</strong>
       </p>
       <p className="mb-6 text-pink-200 text-sm">
-        Join 50,000+ job seekers who landed their dream jobs with our premium
-        templates that deliver results
+        Join 50,000+ professionals who secured positions with our premium templates
       </p>
       <Link href="/pricing">
         <button className="px-8 py-4 bg-white text-pink-600 font-bold rounded-xl hover:bg-pink-50 transform hover:scale-105 transition-all cursor-pointer shadow-lg text-lg">
@@ -1213,7 +1210,7 @@ const EnhancedTemplatesPage = () => {
           </div>
 
           <h1 className="text-7xl font-bold text-purple-200 mb-4">
-            Choose Your Perfect
+            Select Your Professional
             <span className="block mt-2 text-gradient-primary from-teal-400 to-amber-400 bg-transparent">
               LaTeX Resume Template
             </span>
@@ -1229,9 +1226,10 @@ const EnhancedTemplatesPage = () => {
             </div>
           </div>
 
-          <p className="font-bold text-4xl text-yellow-100">Simplified LaTeX Resume Designs That Deliver Results!<br />
-            At Smart ATS We Prioritize Getting You<br />
-            <span className="font-bold text-6xl text-pink-600">HIRED</span>
+          <p className="font-bold text-4xl text-yellow-100">
+            Refined LaTeX Designs That Deliver Results<br />
+            SmartATS Prioritizes Your<br />
+            <span className="font-bold text-6xl text-pink-600">SUCCESS</span>
           </p>
 
           <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
@@ -1531,11 +1529,10 @@ const EnhancedTemplatesPage = () => {
       <section className="py-16 px-6 bg-gradient-to-br from-teal-900/20 to-amber-900/20">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Can't Find the Perfect Template?
+            Need a Custom Solution?
           </h2>
           <p className="text-xl text-gray-300 mb-6">
-            Start with our smart builder and create a custom ATS-optimized
-            resume that gets results
+            Utilize our intelligent builder to create a personalized ATS-optimized resume
           </p>
           <button
             onClick={() => (window.location.href = "/builder")}

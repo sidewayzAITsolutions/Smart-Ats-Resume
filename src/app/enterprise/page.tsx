@@ -16,10 +16,42 @@ import {
   Target,
   TrendingUp,
   Zap,
+  X,
+  CheckCircle,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import GlobalNavigation from '@/components/GlobalNavigation';
+
+const WhyChooseSmartATS = {
+  title: "Why SmartATS Leads the Industry",
+  subtitle: "Two breakthrough features that set the standard",
+  features: [
+    {
+      title: "Advanced ATS Analytics",
+      description: "Our proprietary scoring algorithm evaluates your resume against enterprise-grade ATS systems. Receive immediate insights on keyword optimization, format compatibility, and structural alignment to ensure seamless automated screening.",
+      icon: "📊",
+      highlights: [
+        "Real-time compatibility assessment",
+        "Strategic keyword analysis",
+        "Format optimization guidance",
+        "Industry-specific insights"
+      ]
+    },
+    {
+      title: "AI-Enhanced Content Creation",
+      description: "Leverage advanced artificial intelligence to develop compelling resume content that resonates with both ATS systems and hiring managers. Our AI understands market dynamics, role requirements, and recruiter preferences.",
+      icon: "🤖",
+      highlights: [
+        "Intelligent content generation",
+        "Industry-tailored language",
+        "Quantifiable achievement suggestions",
+        "Personalized recommendations"
+      ]
+    }
+  ],
+  summary: "SmartATS delivers measurable results. Our ATS analytics ensure your resume passes automated filters, while our AI creates content that captures recruiter attention. Focus on what matters—getting interviewed."
+};
 
 const EnterprisePage = () => {
   const router = useRouter();
@@ -96,15 +128,15 @@ const EnterprisePage = () => {
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              Scale Your Hiring with
+              Scale Your Recruitment with
               <span className="block bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
                 SmartATS Enterprise
               </span>
             </h1>
 
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-              Empower your HR team with AI-powered resume optimization, advanced analytics,
-              and seamless collaboration tools built for high-volume recruitment success.
+              Empower your talent acquisition team with AI-driven resume optimization, comprehensive analytics,
+              and seamless collaboration tools designed for high-volume recruitment excellence.
             </p>
 
             <div className="flex justify-center">
@@ -136,7 +168,7 @@ const EnterprisePage = () => {
 
         {/* Right side - ROI Stats */}
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-3xl p-8">
-          <h3 className="text-2xl font-bold text-white mb-8 text-center">Projected Enterprise ROI Impact</h3>
+          <h3 className="text-2xl font-bold text-white mb-8 text-center">Enterprise ROI Metrics</h3>
           <div className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30">
               <div>
@@ -272,10 +304,10 @@ const EnterprisePage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Everything You Need to Scale
+              Comprehensive Enterprise Features
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Powerful features built for teams and recruitment agencies that deliver results
+              Advanced capabilities designed for organizations that prioritize recruitment excellence
             </p>
           </div>
 
@@ -351,10 +383,10 @@ const EnterprisePage = () => {
       <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Transform Your Hiring Process?
+            Ready to Transform Your Talent Acquisition?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Join the organizations already dominating with SmartATS Enterprise
+            Join leading organizations optimizing their recruitment with SmartATS Enterprise
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">

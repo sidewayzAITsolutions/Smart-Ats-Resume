@@ -82,7 +82,7 @@ const PricingPage = () => {
       price: 0,
       period: 'forever',
       mascotImage: '/Donkey1.png',
-      description: 'Perfect for getting started',
+      description: 'Essential tools to get started',
       features: [
         'Basic resume builder',
         'ATS score checker',
@@ -99,7 +99,7 @@ const PricingPage = () => {
       price: 22,
       period: 'month',
       mascotImage: '/Donkey2.png',
-      description: 'Most popular for job seekers',
+      description: 'Comprehensive features for active job seekers',
       features: [
         'Everything in Free',
         'All premium templates',
