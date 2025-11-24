@@ -562,10 +562,28 @@ const Page: React.FC = () => {
                   <DollarSign className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Free Plan</h3>
-                <div className="text-center my-6">
+                <div className="text-center my-4">
                   <div className="text-5xl font-bold text-white mb-2">$0</div>
                   <div className="text-gray-400">Forever Free</div>
                 </div>
+                <ul className="space-y-3 mt-6">
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>1 ATS-optimized resume</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Basic templates</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>PDF export</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Email support</span>
+                  </li>
+                </ul>
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
@@ -573,10 +591,32 @@ const Page: React.FC = () => {
                   <DollarSign className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Monthly Plan</h3>
-                <div className="text-center my-6">
+                <div className="text-center my-4">
                   <div className="text-5xl font-bold text-white mb-2">$22</div>
                   <div className="text-gray-400">per month</div>
                 </div>
+                <ul className="space-y-3 mt-6">
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Unlimited resumes</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Premium templates</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>AI-powered optimization</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Priority support</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Cancel anytime</span>
+                  </li>
+                </ul>
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
@@ -584,10 +624,33 @@ const Page: React.FC = () => {
                   <DollarSign className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Yearly Plan</h3>
-                <div className="text-center my-6">
+                <div className="text-center my-4">
                   <div className="text-5xl font-bold text-white mb-2">$200</div>
-                  <div className="text-gray-400">per year</div>
+                  <div className="text-gray-400 mb-1">per year</div>
+                  <div className="text-teal-400 text-sm font-semibold">Save $64/year</div>
                 </div>
+                <ul className="space-y-3 mt-6">
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Everything in Monthly</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>2 months free</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Advanced analytics</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Custom branding</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Dedicated support</span>
+                  </li>
+                </ul>
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
@@ -629,7 +692,7 @@ const Page: React.FC = () => {
         <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Beat the Bots. Land the Job...
+              Change Yoour Life Today...
             </h2>
             <p className="text-xl text-white/90 mb-8">
               75% of resumes fail ATS. You won't be one of them.
