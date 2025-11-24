@@ -29,7 +29,7 @@ import toast from 'react-hot-toast';
  * @param format The desired export format ('pdf', 'docx', 'json').
  * @param fileName The desired file name (without extension).
  */
-export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 'json', fileName: string = 'resume') {
+export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 'json' | 'txt', fileName: string = 'resume') {
   try {
     switch (format) {
       case 'json':
@@ -103,9 +103,30 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
         }
         break;
 
+      case 'txt':
+        // Plain text export
+        try {
+          const textContent = generatePlainTextResume(resumeData);
+          const txtBlob = new Blob([textContent], { type: 'text/plain' });
+          const txtUrl = URL.createObjectURL(txtBlob);
+          const txtLink = document.createElement('a');
+          txtLink.href = txtUrl;
+          txtLink.download = `${fileName}.txt`;
+          document.body.appendChild(txtLink);
+          txtLink.click();
+          document.body.removeChild(txtLink);
+          URL.revokeObjectURL(txtUrl);
+          toast.success('Text file exported successfully!');
+          console.log('Resume exported as TXT.');
+        } catch (error) {
+          console.error('TXT export failed:', error);
+          toast.error('Failed to export as text file.');
+        }
+        break;
+
       case 'docx':
         // DOCX generation (requires server-side processing for best results)
-        toast.error('DOCX export is coming soon! For now, please use PDF export.');
+        toast.error('DOCX export is coming soon! For now, please use PDF or TXT export.');
         console.warn('DOCX export initiated (placeholder). Server-side generation required for production.');
         break;
 
@@ -118,4 +139,136 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
     console.error('Error during resume export:', error);
     toast.error('Failed to export resume. Please try again.');
   }
+}
+
+/**
+ * Generates a plain text version of the resume
+ */
+function generatePlainTextResume(resumeData: Resume): string {
+  const lines: string[] = [];
+  
+  // Personal Information
+  if (resumeData.personalInfo) {
+    const info = resumeData.personalInfo;
+    if (info.fullName) lines.push(info.fullName.toUpperCase());
+    if (info.title) lines.push(info.title);
+    lines.push('');
+    
+    // Contact Information
+    if (info.email || info.phone || info.location) {
+      if (info.email) lines.push(`Email: ${info.email}`);
+      if (info.phone) lines.push(`Phone: ${info.phone}`);
+      if (info.location) lines.push(`Location: ${info.location}`);
+      if (info.linkedin) lines.push(`LinkedIn: ${info.linkedin}`);
+      if (info.portfolio) lines.push(`Portfolio: ${info.portfolio}`);
+      lines.push('');
+    }
+  }
+  
+  // Professional Summary
+  if (resumeData.summary) {
+    lines.push('PROFESSIONAL SUMMARY');
+    lines.push('-'.repeat(50));
+    lines.push(resumeData.summary);
+    lines.push('');
+  }
+  
+  // Experience
+  if (resumeData.experience && resumeData.experience.length > 0) {
+    lines.push('PROFESSIONAL EXPERIENCE');
+    lines.push('-'.repeat(50));
+    
+    resumeData.experience.forEach((exp, index) => {
+      if (index > 0) lines.push('');
+      
+      lines.push(`${exp.position || 'Position'} | ${exp.company || 'Company'}`);
+      if (exp.startDate || exp.endDate) {
+        lines.push(`${exp.startDate || ''} - ${exp.current ? 'Present' : exp.endDate || ''}`);
+      }
+      
+      if (exp.description) {
+        lines.push('');
+        lines.push(exp.description);
+      }
+      
+      if (exp.achievements && exp.achievements.length > 0) {
+        lines.push('');
+        exp.achievements.forEach(achievement => {
+          lines.push(`• ${achievement}`);
+        });
+      }
+    });
+    lines.push('');
+  }
+  
+  // Education
+  if (resumeData.education && resumeData.education.length > 0) {
+    lines.push('EDUCATION');
+    lines.push('-'.repeat(50));
+    
+    resumeData.education.forEach((edu, index) => {
+      if (index > 0) lines.push('');
+      
+      if (edu.degree) lines.push(edu.degree);
+      if (edu.field) lines.push(edu.field);
+      if (edu.institution) lines.push(edu.institution);
+      if (edu.graduationDate) lines.push(`Graduated: ${edu.graduationDate}`);
+      if (edu.gpa) lines.push(`GPA: ${edu.gpa}`);
+    });
+    lines.push('');
+  }
+  
+  // Skills
+  if (resumeData.skills && resumeData.skills.length > 0) {
+    lines.push('SKILLS');
+    lines.push('-'.repeat(50));
+    
+    const skillsList = resumeData.skills.map(skill => skill.name).join(', ');
+    lines.push(skillsList);
+    lines.push('');
+  }
+  
+  // Projects
+  if (resumeData.projects && resumeData.projects.length > 0) {
+    lines.push('PROJECTS');
+    lines.push('-'.repeat(50));
+    
+    resumeData.projects.forEach((project, index) => {
+      if (index > 0) lines.push('');
+      
+      lines.push(project.name || 'Untitled Project');
+      if (project.description) {
+        lines.push(project.description);
+      }
+      if (project.technologies && project.technologies.length > 0) {
+        lines.push(`Technologies: ${project.technologies.join(', ')}`);
+      }
+    });
+    lines.push('');
+  }
+  
+  // Certifications
+  if (resumeData.certifications && resumeData.certifications.length > 0) {
+    lines.push('CERTIFICATIONS');
+    lines.push('-'.repeat(50));
+    
+    resumeData.certifications.forEach((cert, index) => {
+      if (index > 0) lines.push('');
+      
+      lines.push(cert.name || 'Certification');
+      if (cert.issuer) lines.push(`Issuer: ${cert.issuer}`);
+      if (cert.date) lines.push(`Date: ${cert.date}`);
+    });
+    lines.push('');
+  }
+  
+  // Keywords (if any)
+  if (resumeData.keywords && resumeData.keywords.length > 0) {
+    lines.push('KEYWORDS');
+    lines.push('-'.repeat(50));
+    lines.push(resumeData.keywords.join(', '));
+    lines.push('');
+  }
+  
+  return lines.join('\n');
 }

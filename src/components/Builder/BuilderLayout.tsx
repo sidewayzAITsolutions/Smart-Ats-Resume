@@ -721,9 +721,9 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     }
   };
 
-  const handleExport = useCallback(async () => {
+  const handleExport = useCallback(async (format: 'pdf' | 'docx' | 'txt' | 'json' = 'pdf') => {
     const { exportResume } = await import('@/lib/export-resume');
-    await exportResume(resumeData as any, 'pdf');
+    await exportResume(resumeData as any, format as any);
   }, [resumeData]);
 
   // Keyboard shortcuts (Cmd/Ctrl+S/P/E)

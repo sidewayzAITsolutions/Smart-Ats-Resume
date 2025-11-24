@@ -21,7 +21,7 @@ const cn = (...classes: Array<string | false | null | undefined>) => classes.fil
 
 interface BuilderToolbarProps {
   onSave: () => Promise<void>;
-  onExport: () => Promise<void>;
+  onExport: (format: 'pdf' | 'docx' | 'txt' | 'json') => Promise<void>;
   onImport: () => void;
   onImportLinkedIn: () => void;
   onCheckATS: () => void;
@@ -43,12 +43,12 @@ export default function BuilderToolbar({
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleExport = async (format: 'pdf' | 'docx' | 'txt') => {
+  const handleExport = async (format: 'pdf' | 'docx' | 'txt' | 'json') => {
     setIsExporting(true);
     setExportMenuOpen(false);
     try {
       // Export logic will be handled by parent component
-      await onExport();
+      await onExport(format);
     } finally {
       setIsExporting(false);
     }
@@ -190,7 +190,7 @@ export default function BuilderToolbar({
 
             {/* Dropdown Menu */}
             {exportMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 py-1 z-50">
                 <button
                   onClick={() => handleExport('pdf')}
                   className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
@@ -211,6 +211,13 @@ export default function BuilderToolbar({
                 >
                   <FileText className="h-4 w-4" />
                   Export as TXT
+                </button>
+                <button
+                  onClick={() => handleExport('json')}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                >
+                  <FileText className="h-4 w-4" />
+                  Export as JSON
                 </button>
               </div>
             )}
