@@ -189,9 +189,9 @@ const Page: React.FC = () => {
         />
 
         {/* Hero Section */}
-        <section className="relative pt-20 pb-16 px-6 overflow-hidden">
+        <section className="fit pt-20 pb-16 px-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
-          <div className="max-w-7xl mx-auto relative z-10">
+          <div className="max-w-4xl mx-auto relative z-10">
             <div className="flex items-center justify-center">
               <video
                 autoPlay
