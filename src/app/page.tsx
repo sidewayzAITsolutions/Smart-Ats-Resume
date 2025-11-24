@@ -194,7 +194,7 @@ const Page: React.FC = () => {
                 playsInline
                 className="w-full max-w-5xl rounded-2xl shadow-2xl border border-gray-700"
               >
-                <source src="/smart.MP4" type="video/mp4" />
+                <source src="/smart2.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
