@@ -194,7 +194,7 @@ const Page: React.FC = () => {
                 playsInline
                 className="w-full max-w-5xl rounded-2xl shadow-2xl border border-gray-700"
               >
-                <source src="/smart.mp4" type="video/mp4" />
+                <source src="/smart.MP4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -648,19 +648,19 @@ const Page: React.FC = () => {
         </section>
 
        {/* CTA Section */}
-        <section className="py-20 px-6 bg-orange-600">
+        <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Ready to Join the Top 25%?
             </h2>
-            <p className="text-xl text-white mb-8">
+            <p className="text-xl text-white/90 mb-8">
               75% of resumes fail ATS. Don't be one of them.
             </p>
 
-            <div className="flex flex-wrap gap-4 justify-center mb-6">
+            <div className="flex flex-wrap gap-4 justify-center">
               <button
                 onClick={() => router.push('/login')}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-orange-600 font-bold rounded-xl hover:shadow-2xl transition-all duration-200"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-amber-600 font-bold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
                 <Zap className="w-5 h-5" />
                 Start Building Free
@@ -668,14 +668,14 @@ const Page: React.FC = () => {
 
               <button
                 onClick={() => router.push('/pricing')}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-orange-700 text-white font-bold rounded-xl hover:bg-orange-800 transition-all duration-200"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-amber-700 text-white font-bold rounded-xl hover:bg-amber-800 transition-all duration-200"
               >
                 View Pricing
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-white text-sm">
+            <p className="text-white/80 text-sm mt-6">
               No credit card required • 5 minute setup
             </p>
           </div>
