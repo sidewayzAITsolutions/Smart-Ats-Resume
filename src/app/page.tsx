@@ -10,9 +10,12 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
+  DollarSign,
   FileText,
   Headphones,
+  Mail,
   Palette,
+  Phone,
   Shield,
   Sparkles,
   Star,
@@ -556,106 +559,57 @@ const Page: React.FC = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
                 <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Palette className="w-7 h-7 text-white" />
+                  <DollarSign className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Custom Branding</h3>
-                <p className="text-gray-300 mb-6">Make it yours with custom branding, logos, and color schemes</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Upload your company logo</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Custom color schemes</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Branded resume templates</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>White-label experience</span>
-                  </li>
-                </ul>
+                <h3 className="text-2xl font-bold text-white mb-3">Free Plan</h3>
+                <div className="text-center my-6">
+                  <div className="text-5xl font-bold text-white mb-2">$0</div>
+                  <div className="text-gray-400">Forever Free</div>
+                </div>
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
                 <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <FileText className="w-7 h-7 text-white" />
+                  <DollarSign className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Bulk Resume Creation</h3>
-                <p className="text-gray-300 mb-6">Generate hundreds of ATS-optimized resumes simultaneously</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Batch upload via CSV</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Template automation</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Bulk export options</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Progress tracking</span>
-                  </li>
-                </ul>
+                <h3 className="text-2xl font-bold text-white mb-3">Monthly Plan</h3>
+                <div className="text-center my-6">
+                  <div className="text-5xl font-bold text-white mb-2">$22</div>
+                  <div className="text-gray-400">per month</div>
+                </div>
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
                 <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <BarChart3 className="w-7 h-7 text-white" />
+                  <DollarSign className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Advanced Analytics</h3>
-                <p className="text-gray-300 mb-6">Comprehensive insights into resume performance and team productivity</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Performance dashboards</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Team activity reports</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>ATS success metrics</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Export analytics data</span>
-                  </li>
-                </ul>
+                <h3 className="text-2xl font-bold text-white mb-3">Yearly Plan</h3>
+                <div className="text-center my-6">
+                  <div className="text-5xl font-bold text-white mb-2">$200</div>
+                  <div className="text-gray-400">per year</div>
+                </div>
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
                 <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Headphones className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Dedicated Support</h3>
-                <p className="text-gray-300 mb-6">Get personalized assistance with a dedicated account manager</p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Dedicated account manager</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Priority email support</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Onboarding assistance</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Regular check-ins</span>
-                  </li>
-                </ul>
+                <h3 className="text-2xl font-bold text-white mb-3">Contact Us</h3>
+                <p className="text-gray-300 mb-6">Get in touch with our team</p>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-gray-300">
+                    <Mail className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                    <a href="mailto:contact@smartatsresume.com" className="hover:text-amber-400 transition-colors">
+                      contact@smartatsresume.com
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-300">
+                    <Phone className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                    <a href="tel:+12253019908" className="hover:text-amber-400 transition-colors">
+                      225-301-9908
+                    </a>
+                  </div>
+                </div>
               </div>
 
               <div className="md:col-span-2 lg:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
