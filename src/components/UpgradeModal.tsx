@@ -107,14 +107,14 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
           Upgrade to Pro
         </h2>
         <p className="text-gray-700 mb-6 text-center dark:text-gray-300">
-          Unlock all powerful AI features and advanced templates!
+          Unlock all powerful AI features and advanced templates that deliver results!
         </p>
 
         <div className="space-y-6">
           <div className="border border-blue-200 rounded-lg p-4 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
             <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-200">Pro Plan</h3>
             <p className="text-gray-700 dark:text-gray-300">
-              Access to unlimited AI suggestions, premium templates, and advanced analytics.
+              Access to unlimited AI suggestions, premium templates, and advanced analytics that get you hired.
             </p>
             <p className="text-2xl font-bold text-blue-600 mt-2 dark:text-blue-400">$22 / month</p>
             <Button

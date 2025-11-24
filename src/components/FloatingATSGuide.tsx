@@ -93,7 +93,7 @@ const FloatingATSGuide = () => {
                 </div>
                 <div>
                   <div className="font-bold text-white">ATS Optimization Guide</div>
-                  <div className="text-xs text-white/90">Beat the bots, land interviews</div>
+                  <div className="text-xs text-white/90">Dominate the bots, land interviews</div>
                 </div>
               </div>
               <button
@@ -139,7 +139,7 @@ const FloatingATSGuide = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium text-white">Need more help?</div>
-                  <div className="text-xs text-gray-400">Get personalized feedback</div>
+                  <div className="text-xs text-gray-400">Get personalized feedback that works</div>
                 </div>
                 <button className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />

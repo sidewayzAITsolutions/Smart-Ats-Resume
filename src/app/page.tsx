@@ -38,12 +38,12 @@ const Page: React.FC = () => {
 
 
   const WhyChooseSmartATS = {
-    title: "Why Choose SmartATS?",
-    subtitle: "Two game-changing features that set us apart from the competition",
+    title: "Why SmartATS Dominates",
+    subtitle: "Two game-changing features that crush the competition",
     features: [
       {
         title: "Advanced ATS Scorecard",
-        description: "Our proprietary ATS scoring algorithm analyzes your resume against real ATS systems used by Fortune 500 companies. Get instant feedback on keyword optimization, formatting compatibility, and section structure to ensure your resume passes through automated screening systems.",
+        description: "Our proprietary ATS scoring algorithm analyzes your resume against real ATS systems used by Fortune 500 companies. You get instant feedback on keyword optimization, formatting compatibility, and section structure that guarantees your resume passes through automated screening systems.",
         icon: "📊",
         highlights: [
           "Real-time ATS compatibility scoring",
@@ -54,7 +54,7 @@ const Page: React.FC = () => {
       },
       {
         title: "AI-Powered Content Generation",
-        description: "Leverage cutting-edge artificial intelligence to craft compelling resume content that resonates with both ATS systems and human recruiters. Our AI understands industry trends, job requirements, and recruiter preferences to help you stand out.",
+        description: "We leverage cutting-edge artificial intelligence to craft compelling resume content that dominates both ATS systems and human recruiters. Our AI understands industry trends, job requirements, and recruiter preferences to make you stand out.",
         icon: "🤖",
         highlights: [
           "Intelligent bullet point generation",
@@ -64,7 +64,7 @@ const Page: React.FC = () => {
         ]
       }
     ],
-    summary: "While other resume builders focus on templates, SmartATS focuses on results. Our ATS scorecard ensures your resume gets past automated filters, while our AI implementation helps you create content that impresses human recruiters. It's not just about looking good—it's about getting hired."
+    summary: "While other resume builders waste your time with templates, SmartATS delivers results. Our ATS scorecard guarantees your resume gets past automated filters, while our AI implementation creates content that impresses human recruiters. This isn't about looking good—it's about getting hired."
   };
 
   const ATSDemoModal = ({ open, onClose }: ATSDemoModalProps) => {
@@ -133,7 +133,7 @@ const Page: React.FC = () => {
                 <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
                 <div>
                   <p className="font-medium text-green-300">Resume Optimized!</p>
-                  <p className="text-sm text-green-400 mt-1">Your resume scored above the 75% threshold - ready for submission!</p>
+                  <p className="text-sm text-green-400 mt-1">Your resume scored above the 75% threshold - you're ready to dominate submissions!</p>
                 </div>
               </div>
             </div>
@@ -146,7 +146,7 @@ const Page: React.FC = () => {
               } }
               className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold py-4 px-8 rounded-xl hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
             >
-              Start Building Your ATS-Optimized Resume
+              Start Building Your ATS-Dominating Resume
               <ArrowRight className="inline-block ml-2 w-5 h-5" />
             </button>
           </div>
@@ -243,13 +243,13 @@ const Page: React.FC = () => {
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <X className="w-3 h-3 text-red-400" />
                       </div>
-                      <span className="text-gray-300">75% of qualified candidates rejected by keyword mismatches</span>
+                      <span className="text-gray-300">75% of qualified candidates get rejected by keyword mismatches</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <X className="w-3 h-3 text-red-400" />
                       </div>
-                      <span className="text-gray-300">70% of resumes auto-rejected before human review</span>
+                      <span className="text-gray-300">70% of resumes get auto-rejected before human review</span>
                     </li>
                   </ul>
                 </div>
@@ -267,19 +267,19 @@ const Page: React.FC = () => {
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span className="text-gray-300">AI analyzes job descriptions for perfect keyword match</span>
+                      <span className="text-gray-300">AI analyzes job descriptions to deliver perfect keyword matches</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span className="text-gray-300">Real-time ATS score with actionable improvements</span>
+                      <span className="text-gray-300">Real-time ATS score with actionable improvements that work</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span className="text-gray-300">Proven templates that pass all major ATS systems</span>
+                      <span className="text-gray-300">Proven templates that dominate all major ATS systems</span>
                     </li>
                   </ul>
                 </div>
@@ -306,7 +306,7 @@ const Page: React.FC = () => {
 
           {/* Right side - Key Stats */}
           <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-700/30 rounded-3xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS Wins</h3>
+            <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS Dominates</h3>
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30 hover:border-green-500/50 transition-colors">
                 <div>
@@ -348,12 +348,12 @@ const Page: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Why SmartATS Beats
+                Why SmartATS Crushes
                 <span className="block mt-2 bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
                   The Competition
                 </span>
               </h2>
-              <p className="text-xl text-gray-400 mt-4">See how we stack up against the biggest names in resume building</p>
+              <p className="text-xl text-gray-400 mt-4">See how we dominate the biggest names in resume building</p>
             </div>
 
             <div className="overflow-x-auto">
@@ -481,7 +481,7 @@ const Page: React.FC = () => {
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl">
                 <Sparkles className="w-7 h-7 text-orange-400" />
                 <p className="text-orange-300 font-medium">
-                  SmartATS SAVES you TIME and DOLLARS while giving you the BEST Quality! <span className="text-orange-400 font-bold">30% more</span> than competitors
+                  SmartATS SAVES you TIME and DOLLARS while delivering the BEST Quality! <span className="text-orange-400 font-bold">30% more</span> value than competitors
                 </p>
               </div>
             </div>
@@ -538,10 +538,10 @@ const Page: React.FC = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Everything You Need to Beat the ATS
+                Everything You Need to Dominate the ATS
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Powerful features designed to get your resume past automated filters and into human hands
+                Powerful features designed to guarantee your resume passes automated filters and lands in human hands
               </p>
             </div>
 
@@ -550,7 +550,7 @@ const Page: React.FC = () => {
                 {
                   icon: Target,
                   title: "Smart Keyword Matching",
-                  description: "AI analyzes job descriptions and optimizes your resume with the right keywords",
+                  description: "AI analyzes job descriptions and optimizes your resume with the perfect keywords",
                   details: [
                     "Job description analysis",
                     "Keyword density tracking",
@@ -561,18 +561,18 @@ const Page: React.FC = () => {
                 {
                   icon: Shield,
                   title: "ATS-Proof Formatting",
-                  description: "Clean, scannable templates that work with all major ATS systems",
+                  description: "Clean, scannable templates that dominate all major ATS systems",
                   details: [
                     "98.4% ATS compatibility",
                     "Clean, parseable structure",
-                    "No formatting errors",
+                    "Zero formatting errors",
                     "Tested with major systems"
                   ]
                 },
                 {
                   icon: Zap,
                   title: "Real-Time Scoring",
-                  description: "See your ATS score instantly and get tips to improve it",
+                  description: "See your ATS score instantly and get proven tips to improve it",
                   details: [
                     "Live ATS score updates",
                     "Actionable improvements",
@@ -594,7 +594,7 @@ const Page: React.FC = () => {
                 {
                   icon: Clock,
                   title: "Quick Builder",
-                  description: "Professional resume in under 10 minutes - beat the 60% faster ATS hiring cycle",
+                  description: "Professional resume in under 10 minutes - dominate the 60% faster ATS hiring cycle",
                   details: [
                     "10-minute setup",
                     "Pre-filled templates",
@@ -654,7 +654,7 @@ const Page: React.FC = () => {
               Ready to Join the Top 25%?
             </h2>
             <p className="text-xl text-white/90 mb-8">
-              75% of resumes fail ATS. Don't be one of them.
+              75% of resumes fail ATS. You won't be one of them.
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center">
@@ -663,7 +663,7 @@ const Page: React.FC = () => {
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-amber-600 font-bold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
                 <Zap className="w-5 h-5" />
-                Start Building Free
+                Start Building Now
               </button>
 
               <button
@@ -692,7 +692,7 @@ const Page: React.FC = () => {
                   </div>
                   <span className="text-xl font-bold text-white">SmartATS</span>
                 </div>
-                <p className="text-sm">Beat the bots. Get the job.</p>
+                <p className="text-sm">Beat the bots. Land the job.</p>
               </div>
 
               <div>

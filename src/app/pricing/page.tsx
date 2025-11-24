@@ -91,7 +91,7 @@ const PricingPage = () => {
         'Basic keyword optimization'
       ],
       highlighted: false,
-      buttonText: 'Get Started Free',
+      buttonText: 'Start Building Now',
       priceId: null
     },
     {
@@ -257,7 +257,7 @@ const PricingPage = () => {
                 Choose Your Plan
               </h1>
               <p className="text-lg md:text-xl text-gray-300">
-                Get the perfect plan for your career goals. Start free and upgrade when you're ready to unlock AI-powered optimization and premium features.
+                Get the perfect plan for your career goals. Start free and upgrade when you're ready to unlock AI-powered optimization and premium features that deliver results.
               </p>
             </div>
           </div>

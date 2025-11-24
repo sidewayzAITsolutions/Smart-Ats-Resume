@@ -67,7 +67,7 @@ const PremiumUpgradeBanner = () => (
       </p>
       <p className="mb-6 text-pink-200 text-sm">
         Join 50,000+ job seekers who landed their dream jobs with our premium
-        templates
+        templates that deliver results
       </p>
       <Link href="/pricing">
         <button className="px-8 py-4 bg-white text-pink-600 font-bold rounded-xl hover:bg-pink-50 transform hover:scale-105 transition-all cursor-pointer shadow-lg text-lg">
@@ -1229,7 +1229,7 @@ const EnhancedTemplatesPage = () => {
             </div>
           </div>
 
-          <p className="font-bold text-4xl text-yellow-100">Simplified LaTeX Resume Designs That Actually Work!<br />
+          <p className="font-bold text-4xl text-yellow-100">Simplified LaTeX Resume Designs That Deliver Results!<br />
             At Smart ATS We Prioritize Getting You<br />
             <span className="font-bold text-6xl text-pink-600">HIRED</span>
           </p>
@@ -1535,7 +1535,7 @@ const EnhancedTemplatesPage = () => {
           </h2>
           <p className="text-xl text-gray-300 mb-6">
             Start with our smart builder and create a custom ATS-optimized
-            resume
+            resume that gets results
           </p>
           <button
             onClick={() => (window.location.href = "/builder")}

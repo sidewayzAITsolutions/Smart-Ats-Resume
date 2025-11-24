@@ -36,7 +36,7 @@ export default function ContactSalesPage() {
               Contact Our Sales Team
             </h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Ready to transform your enterprise hiring process? Get in touch with our team to discuss custom solutions tailored to your organization's needs.
+              Ready to transform your enterprise hiring process? Get in touch with our team to discuss custom solutions built for your organization's success.
             </p>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function ContactSalesPage() {
                   Initial Consultation
                 </h3>
                 <p className="text-gray-300 text-sm">
-                  We'll discuss your current hiring challenges and understand your specific requirements.
+                  We'll discuss your current hiring challenges and understand your specific requirements to deliver results.
                 </p>
               </div>
               
@@ -76,7 +76,7 @@ export default function ContactSalesPage() {
                   Custom Proposal
                 </h3>
                 <p className="text-gray-300 text-sm">
-                  Receive a tailored solution proposal with pricing that fits your organization's scale.
+                  Receive a tailored solution proposal with pricing that fits your organization's scale and delivers ROI.
                 </p>
               </div>
               
@@ -88,7 +88,7 @@ export default function ContactSalesPage() {
                   Implementation
                 </h3>
                 <p className="text-gray-300 text-sm">
-                  Our team will guide you through setup and provide comprehensive training for your staff.
+                  Our team will guide you through setup and provide comprehensive training that gets your staff up to speed fast.
                 </p>
               </div>
             </div>

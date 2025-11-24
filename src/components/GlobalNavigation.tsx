@@ -187,7 +187,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
                     onClick={() => navigateTo('/signup')}
                     className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                   >
-                    Start Free
+                    Start Now
                   </button>
                 </div>
               )}
@@ -274,7 +274,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
                 onClick={() => navigateTo('/signup')}
                 className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-3 rounded-xl font-medium"
               >
-                Start Free
+                Start Now
               </button>
             </div>
           )}

@@ -35,7 +35,7 @@ const ATSGuidePage = () => {
             Complete ATS Guide
           </h1>
           <p className="text-xl text-gray-400">
-            Everything you need to know about beating Applicant Tracking Systems
+            Everything you need to know to dominate Applicant Tracking Systems
           </p>
         </div>
 
@@ -48,7 +48,7 @@ const ATSGuidePage = () => {
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
               An Applicant Tracking System (ATS) is software used by employers to collect, sort, scan, and rank job applications. 
-              Over 98% of Fortune 500 companies use ATS to filter resumes before they reach human recruiters.
+              Over 98% of Fortune 500 companies use ATS to filter resumes before they reach human recruiters. Master the ATS, and you master the job market.
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-gray-800 rounded-xl p-6">
@@ -148,9 +148,9 @@ const ATSGuidePage = () => {
         {/* CTA Section */}
         <section className="text-center">
           <div className="bg-gradient-to-r from-teal-600 to-amber-600 rounded-2xl p-8">
-            <h2 className="text-3xl font-bold mb-4">Ready to Beat the ATS?</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Dominate the ATS?</h2>
             <p className="text-xl mb-6 opacity-90">
-              Use our AI-powered resume builder to create an ATS-optimized resume in minutes.
+              Use our AI-powered resume builder to create an ATS-optimized resume that gets results in minutes.
             </p>
             <Link href="/templates" className="inline-block bg-white text-teal-600 px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
               Start Building Your Resume

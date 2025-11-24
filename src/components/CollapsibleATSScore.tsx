@@ -159,9 +159,9 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                   <h3 className="text-xl font-bold text-white">{status.text}</h3>
                 </div>
                 <p className="text-gray-300 text-sm">
-                  {score >= 80 ? 'Your resume is well-optimized for ATS!' :
-                   score >= 60 ? 'Good progress, but room for improvement.' :
-                   'Your resume needs optimization for ATS systems.'}
+                  {score >= 80 ? 'Your resume is perfectly optimized for ATS!' :
+                   score >= 60 ? 'Good progress, but you can dominate even more.' :
+                   'Your resume needs optimization to dominate ATS systems.'}
                 </p>
               </div>
             </div>

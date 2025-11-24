@@ -104,7 +104,7 @@ const EnterprisePage = () => {
 
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
               Empower your HR team with AI-powered resume optimization, advanced analytics,
-              and seamless collaboration tools designed for high-volume recruitment.
+              and seamless collaboration tools built for high-volume recruitment success.
             </p>
 
             <div className="flex justify-center">
@@ -181,7 +181,7 @@ const EnterprisePage = () => {
               Simple, Transparent Pricing
             </h2>
             <p className="text-xl text-gray-300">
-              One plan with everything you need to scale your hiring
+              One plan with everything you need to dominate your hiring
             </p>
           </div>
 
@@ -275,7 +275,7 @@ const EnterprisePage = () => {
               Everything You Need to Scale
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Powerful features designed for teams and recruitment agencies
+              Powerful features built for teams and recruitment agencies that deliver results
             </p>
           </div>
 
@@ -354,7 +354,7 @@ const EnterprisePage = () => {
             Ready to Transform Your Hiring Process?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Join and become a SmartATS Enterprise
+            Join the organizations already dominating with SmartATS Enterprise
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
