@@ -1,9 +1,9 @@
 // src/lib/export-resume.ts
 
 import { Resume } from '@/types/resume';
-
-// import jsPDF from 'jspdf'; // If you plan to use jspdf for client-side PDF generation
-// import html2canvas from 'html2canvas'; // If you plan to use html2canvas for client-side image generation
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import toast from 'react-hot-toast';
 
 /**
  * Placeholder for resume export functionality.
@@ -47,54 +47,75 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
         break;
 
       case 'pdf':
-        // Client-side PDF generation (placeholder - typically requires a more robust library)
-        // For a basic HTML to PDF, you might render the resume in a hidden div
-        // and then use html2canvas + jspdf.
-        // For better results, a server-side approach is highly recommended.
-        alert('PDF export is a premium feature and requires server-side processing for best quality. This is a placeholder.');
-        console.warn('PDF export initiated (client-side placeholder). For production, consider server-side PDF generation.');
-        // Example (requires jspdf and html2canvas):
-        /*
-        const input = document.getElementById('resume-preview-area'); // Assuming your resume is rendered here
-        if (input) {
-          const canvas = await html2canvas(input);
+        // Client-side PDF generation using html2canvas and jsPDF
+        try {
+          // Find the resume preview element
+          const input = document.querySelector('[data-resume-preview]') as HTMLElement;
+
+          if (!input) {
+            toast.error('Resume preview not found. Please ensure the preview is visible.');
+            console.error('Resume preview area not found for PDF export.');
+            return;
+          }
+
+          // Show loading toast
+          const loadingToast = toast.loading('Generating PDF...');
+
+          // Generate canvas from HTML
+          const canvas = await html2canvas(input, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+          });
+
           const imgData = canvas.toDataURL('image/png');
           const pdf = new jsPDF('p', 'mm', 'a4');
           const imgWidth = 210; // A4 width in mm
           const pageHeight = 297; // A4 height in mm
-          const imgHeight = canvas.height * imgWidth / canvas.width;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
           let heightLeft = imgHeight;
           let position = 0;
 
+          // Add first page
           pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
 
+          // Add additional pages if needed
           while (heightLeft >= 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
           }
+
+          // Save the PDF
           pdf.save(`${fileName}.pdf`);
-        } else {
-          console.error('Resume preview area not found for PDF export.');
+
+          // Dismiss loading and show success
+          toast.dismiss(loadingToast);
+          toast.success('PDF exported successfully!');
+          console.log('PDF exported successfully.');
+        } catch (error) {
+          console.error('PDF generation failed:', error);
+          toast.error('Failed to generate PDF. Please try again.');
         }
-        */
         break;
 
       case 'docx':
-        // DOCX generation (placeholder - almost always requires server-side processing)
-        alert('DOCX export is a premium feature and typically requires server-side processing. This is a placeholder.');
-        console.warn('DOCX export initiated (client-side placeholder). For production, server-side generation is required.');
+        // DOCX generation (requires server-side processing for best results)
+        toast.error('DOCX export is coming soon! For now, please use PDF export.');
+        console.warn('DOCX export initiated (placeholder). Server-side generation required for production.');
         break;
 
       default:
         console.error('Unsupported export format:', format);
-        alert('Unsupported export format.');
+        toast.error('Unsupported export format.');
         break;
     }
   } catch (error) {
     console.error('Error during resume export:', error);
-    alert('Failed to export resume. Please try again.');
+    toast.error('Failed to export resume. Please try again.');
   }
 }

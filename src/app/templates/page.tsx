@@ -1226,10 +1226,10 @@ const EnhancedTemplatesPage = () => {
             </div>
           </div>
 
-          <p className="font-bold text-4xl text-yellow-100">
-            Refined LaTeX Designs That Deliver Results<br />
-            SmartATS Prioritizes Your<br />
-            <span className="font-bold text-6xl text-pink-600">SUCCESS</span>
+          <p className="font-bold text-4xl text-yellow-100 leading-relaxed space-y-4">
+            <span className="block mb-4">Refined LaTeX Designs That Deliver Results</span>
+            <span className="block mb-4">SmartATS Prioritizes Your</span>
+            <span className="font-bold text-6xl text-pink-600 block">SUCCESS</span>
           </p>
 
           <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
