@@ -326,7 +326,7 @@ const Page: React.FC = () => {
 
           {/* Right side - Key Stats */}
           <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-700/30 rounded-3xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS is the Future</h3>
+            <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS is the New Standard</h3>
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30 hover:border-green-500/50 transition-colors">
                 <div>
@@ -629,7 +629,7 @@ const Page: React.FC = () => {
         <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Join the Top 25%?
+              Beat the Bots. Land the Job...
             </h2>
             <p className="text-xl text-white/90 mb-8">
               75% of resumes fail ATS. You won't be one of them.
