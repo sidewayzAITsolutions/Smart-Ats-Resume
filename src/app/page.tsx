@@ -184,45 +184,19 @@ const Page: React.FC = () => {
 
         {/* Hero Section */}
         <section className="relative pt-24 pb-20 px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-600/10 via-orange-600/5 to-amber-600/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
           <div className="max-w-7xl mx-auto relative z-10">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-amber-900/30 text-amber-300 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-amber-700/50">
-                <Sparkles className="w-5 h-5" />
-                AI-Powered ATS Optimization
-              </div>
-
-              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-                Beat the ATS with
-                <span className="block bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                  Smart ATS Resume
-                </span>
-              </h1>
-
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-                A Builder That Is Putting The Power Back In Human Hands!
-                Create ATS-optimized resumes in minutes with AI-powered keyword matching,
-                real-time scoring, and professional templates designed to get you hired.
-              </p>
-
-              <div className="flex flex-wrap gap-4 justify-center">
-                <button
-                  onClick={() => router.push('/login')}
-                  className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-teal-600 via-amber-600 to-orange-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-200"
-                >
-                  <Zap className="w-6 h-6" />
-                  Build Your Resume Free
-                  <ArrowRight className="w-6 h-6" />
-                </button>
-
-                <button
-                  onClick={() => setShowDemoModal(true)}
-                  className="inline-flex items-center gap-3 px-10 py-4 bg-gray-800 text-white font-bold text-lg rounded-xl border-2 border-gray-700 hover:border-orange-500 hover:shadow-xl hover:shadow-orange-500/30 transition-all duration-200"
-                >
-                  <BarChart2 className="w-6 h-6" />
-                  See ATS Analysis Demo
-                </button>
-              </div>
+            <div className="flex items-center justify-center">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full max-w-5xl rounded-2xl shadow-2xl border border-gray-700"
+              >
+                <source src="/mine.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </section>
