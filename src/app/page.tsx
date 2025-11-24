@@ -184,17 +184,17 @@ const Page: React.FC = () => {
 
         {/* Hero Section */}
         <section className="relative pt-24 pb-20 px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-600/10 via-orange-600/5 to-amber-600/10"></div>
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-900/30 to-orange-900/30 text-orange-300 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-orange-700/50">
+              <div className="inline-flex items-center gap-2 bg-amber-900/30 text-amber-300 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-amber-700/50">
                 <Sparkles className="w-5 h-5" />
                 AI-Powered ATS Optimization
               </div>
 
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
                 Beat the ATS with
-                <span className="block bg-gradient-to-r from-teal-400 via-amber-400 to-orange-400 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
                   Smart ATS Resume
                 </span>
               </h1>
@@ -315,118 +315,7 @@ const Page: React.FC = () => {
         </section>
 
         {/* Features Grid */}
-        <section className="py-20 px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Everything You Need to Beat the ATS
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Powerful features designed to get your resume past automated filters and into human hands
-              </p>
-            </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Target,
-                  title: "Smart Keyword Matching",
-                  description: "AI analyzes job descriptions and optimizes your resume with the right keywords",
-                  details: [
-                    "Job description analysis",
-                    "Keyword density tracking",
-                    "Industry-specific terms",
-                    "Real-time optimization"
-                  ]
-                },
-                {
-                  icon: Shield,
-                  title: "ATS-Proof Formatting",
-                  description: "Clean, scannable templates that work with all major ATS systems",
-                  details: [
-                    "98.4% ATS compatibility",
-                    "Clean, parseable structure",
-                    "No formatting errors",
-                    "Tested with major systems"
-                  ]
-                },
-                {
-                  icon: Zap,
-                  title: "Real-Time Scoring",
-                  description: "See your ATS score instantly and get tips to improve it",
-                  details: [
-                    "Live ATS score updates",
-                    "Actionable improvements",
-                    "Section-by-section analysis",
-                    "Benchmark comparisons"
-                  ]
-                },
-                {
-                  icon: FileText,
-                  title: "Multiple Formats",
-                  description: "Download in PDF, DOCX, or plain text - whatever the job requires",
-                  details: [
-                    "PDF export",
-                    "DOCX format",
-                    "Plain text option",
-                    "ATS-friendly files"
-                  ]
-                },
-                {
-                  icon: Clock,
-                  title: "Quick Builder",
-                  description: "Professional resume in under 10 minutes - beat the 60% faster ATS hiring cycle",
-                  details: [
-                    "10-minute setup",
-                    "Pre-filled templates",
-                    "Auto-save feature",
-                    "Quick export"
-                  ]
-                },
-                {
-                  isImage: true,
-                  imageSrc: "/Donkey1.png",
-                  imageAlt: "SmartATS Mascot"
-                }
-              ].map((feature, idx) => {
-                // Handle image feature
-                if (feature.isImage) {
-                  return (
-                    <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-teal-500/50 transition-all duration-300 group flex items-center justify-center">
-                      <img
-                        src="/2.png"
-                        alt="SmartATS Dashboard"
-                        className="w-full h-auto rounded-xl shadow-lg"
-                      />
-                    </div>
-                  );
-                }
-
-                // Handle regular features
-                const Icon = feature.icon as React.ElementType;
-                return (
-                  <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 via-amber-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="text-xl font-bold text-white">{feature.title}</h3>
-                    </div>
-                    <p className="text-gray-300 mb-4">{feature.description}</p>
-                    <ul className="space-y-2">
-                      {feature.details?.map((detail, detailIdx) => (
-                        <li key={detailIdx} className="flex items-start gap-2 text-sm text-gray-400">
-                          <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                          <span>{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
 
         {/* Image and Key Stats Section */}
         <div className="grid md:grid-cols-2 gap-10 max-w-7xl mx-auto px-6 mb-20">
@@ -666,6 +555,120 @@ const Page: React.FC = () => {
               <p className="text-lg text-gray-200 leading-relaxed max-w-4xl mx-auto">
                 {WhyChooseSmartATS.summary}
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Everything You Need to Beat the ATS */}
+        <section className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Everything You Need to Beat the ATS
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Powerful features designed to get your resume past automated filters and into human hands
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {[
+                {
+                  icon: Target,
+                  title: "Smart Keyword Matching",
+                  description: "AI analyzes job descriptions and optimizes your resume with the right keywords",
+                  details: [
+                    "Job description analysis",
+                    "Keyword density tracking",
+                    "Industry-specific terms",
+                    "Real-time optimization"
+                  ]
+                },
+                {
+                  icon: Shield,
+                  title: "ATS-Proof Formatting",
+                  description: "Clean, scannable templates that work with all major ATS systems",
+                  details: [
+                    "98.4% ATS compatibility",
+                    "Clean, parseable structure",
+                    "No formatting errors",
+                    "Tested with major systems"
+                  ]
+                },
+                {
+                  icon: Zap,
+                  title: "Real-Time Scoring",
+                  description: "See your ATS score instantly and get tips to improve it",
+                  details: [
+                    "Live ATS score updates",
+                    "Actionable improvements",
+                    "Section-by-section analysis",
+                    "Benchmark comparisons"
+                  ]
+                },
+                {
+                  icon: FileText,
+                  title: "Multiple Formats",
+                  description: "Download in PDF, DOCX, or plain text - whatever the job requires",
+                  details: [
+                    "PDF export",
+                    "DOCX format",
+                    "Plain text option",
+                    "ATS-friendly files"
+                  ]
+                },
+                {
+                  icon: Clock,
+                  title: "Quick Builder",
+                  description: "Professional resume in under 10 minutes - beat the 60% faster ATS hiring cycle",
+                  details: [
+                    "10-minute setup",
+                    "Pre-filled templates",
+                    "Auto-save feature",
+                    "Quick export"
+                  ]
+                },
+                {
+                  isImage: true,
+                  imageSrc: "/2.png",
+                  imageAlt: "SmartATS Dashboard"
+                }
+              ].map((feature, idx) => {
+                // Handle image feature
+                if (feature.isImage) {
+                  return (
+                    <div key={idx} className="md:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group flex items-center justify-center">
+                      <img
+                        src={feature.imageSrc}
+                        alt={feature.imageAlt}
+                        className="w-full h-auto rounded-xl shadow-lg"
+                      />
+                    </div>
+                  );
+                }
+
+                // Handle regular features
+                const Icon = feature.icon as React.ElementType;
+                return (
+                  <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 via-amber-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">{feature.title}</h3>
+                    </div>
+                    <p className="text-gray-300 mb-4">{feature.description}</p>
+                    <ul className="space-y-2">
+                      {feature.details?.map((detail, detailIdx) => (
+                        <li key={detailIdx} className="flex items-start gap-2 text-sm text-gray-400">
+                          <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
