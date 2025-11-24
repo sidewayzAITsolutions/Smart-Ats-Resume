@@ -44,7 +44,7 @@ const Page: React.FC = () => {
 
 
   const WhyChooseSmartATS = {
-    title: "Why SmartATS Dominates",
+    title: "Why SmartATS is the Future of Resume Building ",
     subtitle: "Two game-changing features that crush the competition",
     features: [
       {
@@ -189,7 +189,7 @@ const Page: React.FC = () => {
         />
 
         {/* Hero Section */}
-        <section className="relative pt-24 pb-20 px-6 overflow-hidden">
+        <section className="relative pt-20 pb-16 px-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="flex items-center justify-center">
@@ -326,7 +326,7 @@ const Page: React.FC = () => {
 
           {/* Right side - Key Stats */}
           <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-700/30 rounded-3xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS Dominates</h3>
+            <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS is the Future</h3>
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30 hover:border-green-500/50 transition-colors">
                 <div>
