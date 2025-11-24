@@ -5,11 +5,14 @@ import {
   ArrowRight,
   Award,
   BarChart2,
+  BarChart3,
   CheckCircle,
   CheckCircle2,
   ChevronRight,
   Clock,
   FileText,
+  Headphones,
+  Palette,
   Shield,
   Sparkles,
   Star,
@@ -198,6 +201,20 @@ const Page: React.FC = () => {
                 Your browser does not support the video tag.
               </video>
             </div>
+          </div>
+        </section>
+
+        {/* Contact Sales Button */}
+        <section className="py-8 px-6">
+          <div className="max-w-7xl mx-auto flex justify-center">
+            <button
+              onClick={() => router.push('/contact-sales')}
+              className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+            >
+              <Headphones className="w-6 h-6" />
+              Contact Sales
+              <ArrowRight className="w-6 h-6" />
+            </button>
           </div>
         </section>
 
@@ -533,116 +550,123 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Everything You Need to Beat the ATS */}
+        {/* Enterprise Features */}
         <section className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Everything You Need to Dominate the ATS
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Powerful features designed to guarantee your resume passes automated filters and lands in human hands
-              </p>
-            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Palette className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Custom Branding</h3>
+                <p className="text-gray-300 mb-6">Make it yours with custom branding, logos, and color schemes</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Upload your company logo</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Custom color schemes</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Branded resume templates</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>White-label experience</span>
+                  </li>
+                </ul>
+              </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {[
-                {
-                  icon: Target,
-                  title: "Smart Keyword Matching",
-                  description: "AI analyzes job descriptions and optimizes your resume with the perfect keywords",
-                  details: [
-                    "Job description analysis",
-                    "Keyword density tracking",
-                    "Industry-specific terms",
-                    "Real-time optimization"
-                  ]
-                },
-                {
-                  icon: Shield,
-                  title: "ATS-Proof Formatting",
-                  description: "Clean, scannable templates that dominate all major ATS systems",
-                  details: [
-                    "98.4% ATS compatibility",
-                    "Clean, parseable structure",
-                    "Zero formatting errors",
-                    "Tested with major systems"
-                  ]
-                },
-                {
-                  icon: Zap,
-                  title: "Real-Time Scoring",
-                  description: "See your ATS score instantly and get proven tips to improve it",
-                  details: [
-                    "Live ATS score updates",
-                    "Actionable improvements",
-                    "Section-by-section analysis",
-                    "Benchmark comparisons"
-                  ]
-                },
-                {
-                  icon: FileText,
-                  title: "Multiple Formats",
-                  description: "Download in PDF, DOCX, or plain text - whatever the job requires",
-                  details: [
-                    "PDF export",
-                    "DOCX format",
-                    "Plain text option",
-                    "ATS-friendly files"
-                  ]
-                },
-                {
-                  icon: Clock,
-                  title: "Quick Builder",
-                  description: "Professional resume in under 10 minutes - dominate the 60% faster ATS hiring cycle",
-                  details: [
-                    "10-minute setup",
-                    "Pre-filled templates",
-                    "Auto-save feature",
-                    "Quick export"
-                  ]
-                },
-                {
-                  isImage: true,
-                  imageSrc: "/2.png",
-                  imageAlt: "SmartATS Dashboard"
-                }
-              ].map((feature, idx) => {
-                // Handle image feature
-                if (feature.isImage) {
-                  return (
-                    <div key={idx} className="md:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group flex items-center justify-center">
-                      <img
-                        src={feature.imageSrc}
-                        alt={feature.imageAlt}
-                        className="w-full h-auto rounded-xl shadow-lg"
-                      />
-                    </div>
-                  );
-                }
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <FileText className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Bulk Resume Creation</h3>
+                <p className="text-gray-300 mb-6">Generate hundreds of ATS-optimized resumes simultaneously</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Batch upload via CSV</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Template automation</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Bulk export options</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Progress tracking</span>
+                  </li>
+                </ul>
+              </div>
 
-                // Handle regular features
-                const Icon = feature.icon as React.ElementType;
-                return (
-                  <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 via-amber-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="text-xl font-bold text-white">{feature.title}</h3>
-                    </div>
-                    <p className="text-gray-300 mb-4">{feature.description}</p>
-                    <ul className="space-y-2">
-                      {feature.details?.map((detail, detailIdx) => (
-                        <li key={detailIdx} className="flex items-start gap-2 text-sm text-gray-400">
-                          <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                          <span>{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <BarChart3 className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Advanced Analytics</h3>
+                <p className="text-gray-300 mb-6">Comprehensive insights into resume performance and team productivity</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Performance dashboards</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Team activity reports</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>ATS success metrics</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Export analytics data</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Headphones className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Dedicated Support</h3>
+                <p className="text-gray-300 mb-6">Get personalized assistance with a dedicated account manager</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Dedicated account manager</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Priority email support</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Onboarding assistance</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-400">
+                    <CheckCircle2 className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                    <span>Regular check-ins</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="md:col-span-2 lg:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
+                <div className="flex items-center justify-center h-full">
+                  <img
+                    src="/2.png"
+                    alt="SmartATS Enterprise Dashboard"
+                    className="w-full h-auto rounded-xl shadow-lg"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
