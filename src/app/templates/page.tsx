@@ -1318,6 +1318,7 @@ const EnhancedTemplatesPage = () => {
                   onClick={() => setShowPreview(template)}
                 >
                   <div className="absolute inset-0 flex items-center justify-center p-6">
+                    <div
                       className="w-full max-w-[200px] h-full bg-white rounded-lg shadow-xl transform transition-transform duration-300"
                       style={{
                         transform:
