@@ -246,21 +246,45 @@ async function exportToPDF(resumeData: Resume, fileName: string) {
 }
 
 /**
- * Export to DOCX format
+ * Export to DOCX format - Complete and professional formatting
  */
-async function exportToDOCX(resumeData: Resume, fileName: string) {
+async function exportToDOCX(resumeData: any, fileName: string) {
   const loadingToast = toast.loading('Generating DOCX...');
   
   try {
     // Dynamically import docx library
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } = await import('docx');
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, TabStopType, TabStopPosition, convertInchesToTwip } = await import('docx');
     
     const children: any[] = [];
     
-    // Personal Information Header
+    // Helper function to create a section header
+    const createSectionHeader = (title: string) => {
+      return new Paragraph({
+        children: [
+          new TextRun({
+            text: title.toUpperCase(),
+            bold: true,
+            size: 24,
+            font: 'Calibri',
+          }),
+        ],
+        spacing: { before: 240, after: 120 },
+        border: {
+          bottom: {
+            color: '2E74B5',
+            space: 1,
+            size: 12,
+            style: BorderStyle.SINGLE,
+          },
+        },
+      });
+    };
+    
+    // ===== PERSONAL INFORMATION HEADER =====
     if (resumeData.personalInfo) {
       const info = resumeData.personalInfo;
       
+      // Full Name - Large and centered
       if (info.fullName) {
         children.push(
           new Paragraph({
@@ -268,15 +292,17 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
               new TextRun({
                 text: info.fullName,
                 bold: true,
-                size: 32,
+                size: 36,
+                font: 'Calibri',
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { after: 100 },
+            spacing: { after: 80 },
           })
         );
       }
       
+      // Job Title
       if (info.title) {
         children.push(
           new Paragraph({
@@ -284,16 +310,17 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
               new TextRun({
                 text: info.title,
                 size: 24,
-                color: '666666',
+                color: '555555',
+                font: 'Calibri',
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { after: 200 },
+            spacing: { after: 160 },
           })
         );
       }
       
-      // Contact info line
+      // Contact Information Line
       const contactParts: string[] = [];
       if (info.email) contactParts.push(info.email);
       if (info.phone) contactParts.push(info.phone);
@@ -304,17 +331,18 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
           new Paragraph({
             children: [
               new TextRun({
-                text: contactParts.join(' | '),
+                text: contactParts.join('  •  '),
                 size: 20,
+                font: 'Calibri',
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { after: 100 },
+            spacing: { after: 80 },
           })
         );
       }
       
-      // Links line
+      // Links Line (LinkedIn, Portfolio)
       const linkParts: string[] = [];
       if (info.linkedin) linkParts.push(info.linkedin);
       if (info.portfolio) linkParts.push(info.portfolio);
@@ -324,41 +352,22 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
           new Paragraph({
             children: [
               new TextRun({
-                text: linkParts.join(' | '),
+                text: linkParts.join('  •  '),
                 size: 20,
-                color: '0066CC',
+                color: '0563C1',
+                font: 'Calibri',
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { after: 300 },
+            spacing: { after: 240 },
           })
         );
       }
     }
     
-    // Professional Summary
-    if (resumeData.summary) {
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: 'PROFESSIONAL SUMMARY',
-              bold: true,
-              size: 24,
-            }),
-          ],
-          heading: HeadingLevel.HEADING_2,
-          spacing: { before: 200, after: 100 },
-          border: {
-            bottom: {
-              color: '000000',
-              space: 1,
-              size: 6,
-              style: BorderStyle.SINGLE,
-            },
-          },
-        })
-      );
+    // ===== PROFESSIONAL SUMMARY =====
+    if (resumeData.summary && resumeData.summary.trim()) {
+      children.push(createSectionHeader('Professional Summary'));
       
       children.push(
         new Paragraph({
@@ -366,6 +375,7 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
             new TextRun({
               text: resumeData.summary,
               size: 22,
+              font: 'Calibri',
             }),
           ],
           spacing: { after: 200 },
@@ -373,160 +383,153 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
       );
     }
     
-    // Experience
+    // ===== PROFESSIONAL EXPERIENCE =====
     if (resumeData.experience && resumeData.experience.length > 0) {
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: 'PROFESSIONAL EXPERIENCE',
-              bold: true,
-              size: 24,
-            }),
-          ],
-          heading: HeadingLevel.HEADING_2,
-          spacing: { before: 200, after: 100 },
-          border: {
-            bottom: {
-              color: '000000',
-              space: 1,
-              size: 6,
-              style: BorderStyle.SINGLE,
-            },
-          },
-        })
-      );
+      children.push(createSectionHeader('Professional Experience'));
       
       for (const exp of resumeData.experience) {
-        // Job title and company
+        // Job Title - Bold
         children.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: exp.position || 'Position',
+                text: exp.position || exp.title || 'Position',
                 bold: true,
-                size: 22,
-              }),
-              new TextRun({
-                text: ` at ${exp.company || 'Company'}`,
-                size: 22,
+                size: 24,
+                font: 'Calibri',
               }),
             ],
-            spacing: { before: 150, after: 50 },
+            spacing: { before: 160, after: 40 },
           })
         );
         
-        // Dates and location
-        const dateText = `${exp.startDate || ''} - ${exp.current ? 'Present' : exp.endDate || ''}`;
+        // Company and Dates on same line
+        const dateText = `${exp.startDate || ''} – ${exp.current ? 'Present' : exp.endDate || ''}`;
         children.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: dateText,
+                text: exp.company || 'Company',
+                size: 22,
+                font: 'Calibri',
+              }),
+              new TextRun({
+                text: `\t${dateText}`,
+                size: 22,
                 italics: true,
-                size: 20,
                 color: '666666',
+                font: 'Calibri',
               }),
             ],
-            spacing: { after: 100 },
+            tabStops: [
+              {
+                type: TabStopType.RIGHT,
+                position: TabStopPosition.MAX,
+              },
+            ],
+            spacing: { after: 80 },
           })
         );
         
-        // Description
+        // Description - Parse line by line if it contains bullet points
         if (exp.description) {
-          children.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: exp.description,
-                  size: 22,
-                }),
-              ],
-              spacing: { after: 100 },
-            })
-          );
+          const lines = exp.description.split('\n').filter((line: string) => line.trim());
+          
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            // Check if line starts with a bullet-like character
+            const isBullet = /^[•\-\*\–]/.test(trimmedLine);
+            const cleanLine = isBullet ? trimmedLine.replace(/^[•\-\*\–]\s*/, '') : trimmedLine;
+            
+            children.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: isBullet ? `• ${cleanLine}` : cleanLine,
+                    size: 22,
+                    font: 'Calibri',
+                  }),
+                ],
+                indent: isBullet ? { left: convertInchesToTwip(0.25) } : undefined,
+                spacing: { after: 40 },
+              })
+            );
+          }
         }
         
         // Achievements as bullet points
         if (exp.achievements && exp.achievements.length > 0) {
           for (const achievement of exp.achievements) {
-            children.push(
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: `• ${achievement}`,
-                    size: 22,
-                  }),
-                ],
-                indent: { left: 360 },
-                spacing: { after: 50 },
-              })
-            );
+            if (achievement && achievement.trim()) {
+              children.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `• ${achievement}`,
+                      size: 22,
+                      font: 'Calibri',
+                    }),
+                  ],
+                  indent: { left: convertInchesToTwip(0.25) },
+                  spacing: { after: 40 },
+                })
+              );
+            }
           }
         }
       }
     }
     
-    // Education
+    // ===== EDUCATION =====
     if (resumeData.education && resumeData.education.length > 0) {
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: 'EDUCATION',
-              bold: true,
-              size: 24,
-            }),
-          ],
-          heading: HeadingLevel.HEADING_2,
-          spacing: { before: 200, after: 100 },
-          border: {
-            bottom: {
-              color: '000000',
-              space: 1,
-              size: 6,
-              style: BorderStyle.SINGLE,
-            },
-          },
-        })
-      );
+      children.push(createSectionHeader('Education'));
       
       for (const edu of resumeData.education) {
+        // Degree and Field
+        const degreeText = [edu.degree, edu.field].filter(Boolean).join(' in ');
         children.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: edu.degree || 'Degree',
+                text: degreeText || 'Degree',
                 bold: true,
-                size: 22,
+                size: 24,
+                font: 'Calibri',
               }),
-              edu.field ? new TextRun({
-                text: ` in ${edu.field}`,
-                size: 22,
-              }) : new TextRun({ text: '' }),
             ],
-            spacing: { before: 150, after: 50 },
+            spacing: { before: 160, after: 40 },
           })
         );
         
+        // Institution and Date
+        const gradDate = edu.graduationDate || edu.endDate || '';
         children.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: edu.institution || 'Institution',
+                text: edu.institution || edu.school || 'Institution',
                 size: 22,
+                font: 'Calibri',
               }),
-              edu.graduationDate ? new TextRun({
-                text: ` | ${edu.graduationDate}`,
+              gradDate ? new TextRun({
+                text: `\t${gradDate}`,
+                size: 22,
                 italics: true,
-                size: 20,
                 color: '666666',
+                font: 'Calibri',
               }) : new TextRun({ text: '' }),
             ],
-            spacing: { after: 50 },
+            tabStops: [
+              {
+                type: TabStopType.RIGHT,
+                position: TabStopPosition.MAX,
+              },
+            ],
+            spacing: { after: 40 },
           })
         );
         
+        // GPA if present
         if (edu.gpa) {
           children.push(
             new Paragraph({
@@ -534,81 +537,253 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
                 new TextRun({
                   text: `GPA: ${edu.gpa}`,
                   size: 20,
+                  font: 'Calibri',
                 }),
               ],
-              spacing: { after: 100 },
+              spacing: { after: 40 },
+            })
+          );
+        }
+        
+        // Education achievements if any
+        if (edu.achievements && edu.achievements.length > 0) {
+          for (const achievement of edu.achievements) {
+            if (achievement && achievement.trim()) {
+              children.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `• ${achievement}`,
+                      size: 22,
+                      font: 'Calibri',
+                    }),
+                  ],
+                  indent: { left: convertInchesToTwip(0.25) },
+                  spacing: { after: 40 },
+                })
+              );
+            }
+          }
+        }
+      }
+    }
+    
+    // ===== SKILLS =====
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      children.push(createSectionHeader('Skills'));
+      
+      // Group skills by category
+      const skillsByCategory = new Map<string, string[]>();
+      
+      for (const skill of resumeData.skills) {
+        const skillName = typeof skill === 'string' ? skill : skill.name;
+        const category = (typeof skill === 'object' && skill.category) ? formatCategory(skill.category) : 'Other';
+        
+        if (!skillsByCategory.has(category)) {
+          skillsByCategory.set(category, []);
+        }
+        skillsByCategory.get(category)!.push(skillName);
+      }
+      
+      // If all skills are in "Other", just list them without categories
+      if (skillsByCategory.size === 1 && skillsByCategory.has('Other')) {
+        const allSkills = skillsByCategory.get('Other')!;
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: allSkills.join(', '),
+                size: 22,
+                font: 'Calibri',
+              }),
+            ],
+            spacing: { after: 80 },
+          })
+        );
+      } else {
+        // List by category
+        for (const [category, skills] of skillsByCategory) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `${category}: `,
+                  bold: true,
+                  size: 22,
+                  font: 'Calibri',
+                }),
+                new TextRun({
+                  text: skills.join(', '),
+                  size: 22,
+                  font: 'Calibri',
+                }),
+              ],
+              spacing: { after: 80 },
             })
           );
         }
       }
     }
     
-    // Skills
-    if (resumeData.skills && resumeData.skills.length > 0) {
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: 'SKILLS',
-              bold: true,
-              size: 24,
-            }),
-          ],
-          heading: HeadingLevel.HEADING_2,
-          spacing: { before: 200, after: 100 },
-          border: {
-            bottom: {
-              color: '000000',
-              space: 1,
-              size: 6,
-              style: BorderStyle.SINGLE,
-            },
-          },
-        })
-      );
+    // ===== PROJECTS =====
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      children.push(createSectionHeader('Projects'));
       
-      // Group skills by category if available
-      const skillsByCategory = new Map<string, string[]>();
-      
-      for (const skill of resumeData.skills) {
-        const category = skill.category || 'Other';
-        if (!skillsByCategory.has(category)) {
-          skillsByCategory.set(category, []);
-        }
-        skillsByCategory.get(category)!.push(skill.name);
-      }
-      
-      for (const [category, skills] of skillsByCategory) {
+      for (const project of resumeData.projects) {
+        // Project Name
         children.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: `${category}: `,
+                text: project.name || project.title || 'Project',
                 bold: true,
-                size: 22,
-              }),
-              new TextRun({
-                text: skills.join(', '),
-                size: 22,
+                size: 24,
+                font: 'Calibri',
               }),
             ],
-            spacing: { after: 100 },
+            spacing: { before: 160, after: 40 },
           })
         );
+        
+        // Description
+        if (project.description) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: project.description,
+                  size: 22,
+                  font: 'Calibri',
+                }),
+              ],
+              spacing: { after: 60 },
+            })
+          );
+        }
+        
+        // Technologies
+        if (project.technologies && project.technologies.length > 0) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: 'Technologies: ',
+                  bold: true,
+                  size: 20,
+                  font: 'Calibri',
+                }),
+                new TextRun({
+                  text: project.technologies.join(', '),
+                  size: 20,
+                  font: 'Calibri',
+                }),
+              ],
+              spacing: { after: 40 },
+            })
+          );
+        }
+        
+        // URL if present
+        if (project.url || project.link) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: project.url || project.link,
+                  size: 20,
+                  color: '0563C1',
+                  font: 'Calibri',
+                }),
+              ],
+              spacing: { after: 40 },
+            })
+          );
+        }
       }
     }
     
-    // Create the document
+    // ===== CERTIFICATIONS =====
+    if (resumeData.certifications && resumeData.certifications.length > 0) {
+      children.push(createSectionHeader('Certifications'));
+      
+      for (const cert of resumeData.certifications) {
+        const certName = cert.name || cert.title || 'Certification';
+        const issuer = cert.issuer || cert.organization || '';
+        const date = cert.date || cert.dateObtained || '';
+        
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: certName,
+                bold: true,
+                size: 22,
+                font: 'Calibri',
+              }),
+              issuer ? new TextRun({
+                text: ` – ${issuer}`,
+                size: 22,
+                font: 'Calibri',
+              }) : new TextRun({ text: '' }),
+              date ? new TextRun({
+                text: `\t${date}`,
+                size: 22,
+                italics: true,
+                color: '666666',
+                font: 'Calibri',
+              }) : new TextRun({ text: '' }),
+            ],
+            tabStops: [
+              {
+                type: TabStopType.RIGHT,
+                position: TabStopPosition.MAX,
+              },
+            ],
+            spacing: { after: 60 },
+          })
+        );
+        
+        // Expiration date if present
+        if (cert.expirationDate) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `Expires: ${cert.expirationDate}`,
+                  size: 20,
+                  italics: true,
+                  color: '888888',
+                  font: 'Calibri',
+                }),
+              ],
+              spacing: { after: 40 },
+            })
+          );
+        }
+      }
+    }
+    
+    // Create the document with proper formatting
     const doc = new Document({
+      styles: {
+        default: {
+          document: {
+            run: {
+              font: 'Calibri',
+              size: 22,
+            },
+          },
+        },
+      },
       sections: [
         {
           properties: {
             page: {
               margin: {
-                top: 720,    // 0.5 inch
-                right: 720,
-                bottom: 720,
-                left: 720,
+                top: convertInchesToTwip(0.75),
+                right: convertInchesToTwip(0.75),
+                bottom: convertInchesToTwip(0.75),
+                left: convertInchesToTwip(0.75),
               },
             },
           },
@@ -635,6 +810,20 @@ async function exportToDOCX(resumeData: Resume, fileName: string) {
     toast.dismiss(loadingToast);
     toast.error('Failed to generate DOCX. Please try again.');
   }
+}
+
+/**
+ * Helper to format skill category names
+ */
+function formatCategory(category: string): string {
+  const categoryMap: Record<string, string> = {
+    'technical': 'Technical Skills',
+    'soft': 'Soft Skills',
+    'language': 'Languages',
+    'certification': 'Certifications',
+    'other': 'Other',
+  };
+  return categoryMap[category.toLowerCase()] || category;
 }
 
 /**
