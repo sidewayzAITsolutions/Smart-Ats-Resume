@@ -56,7 +56,7 @@ export default function BuilderToolbar({
 
 
   return (
-    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700/50 backdrop-blur-sm shadow-lg px-3 sm:px-6 py-3 sm:py-4">
+    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700/50 backdrop-blur-sm shadow-lg px-3 sm:px-6 py-3 sm:py-4 relative z-50">
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center gap-2 sm:gap-6">
@@ -169,7 +169,7 @@ export default function BuilderToolbar({
           </button>
 
           {/* Export Dropdown */}
-          <div className="relative">
+          <div className="relative z-[9999]">
             <button
               onClick={() => setExportMenuOpen(!exportMenuOpen)}
               disabled={isExporting}
