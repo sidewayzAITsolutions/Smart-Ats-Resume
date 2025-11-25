@@ -6,27 +6,9 @@ import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 
 /**
- * Placeholder for resume export functionality.
- * In a real application, this would handle generating PDF, DOCX, or JSON files.
- *
- * Options for implementation:
- * 1.  **Client-side (less robust for complex layouts):**
- * -   For PDF: Use libraries like `jspdf` or `html2canvas` to convert rendered HTML to PDF.
- * -   For DOCX: More complex, often requires server-side processing.
- * -   For JSON: Simple `JSON.stringify(resumeData)`.
- * 2.  **Server-side (recommended for robust PDF/DOCX generation):**
- * -   Send `resumeData` to a backend API.
- * -   Backend uses libraries (e.g., Puppeteer for PDF, DocxTemplater for DOCX) to generate the file.
- * -   Backend sends the generated file back as a download.
- * 3.  **Third-party API (simplest, but external dependency):**
- * -   Use a service like DocRaptor, Aspose, or similar to convert HTML/JSON to desired formats.
- */
-
-/**
  * Exports resume data to a specified format.
- * This is a client-side placeholder. For production, consider server-side generation for fidelity.
  * @param resumeData The complete resume data object.
- * @param format The desired export format ('pdf', 'docx', 'json').
+ * @param format The desired export format ('pdf', 'docx', 'json', 'txt').
  * @param fileName The desired file name (without extension).
  */
 export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 'json' | 'txt', fileName: string = 'resume') {
@@ -43,68 +25,12 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
         jsonLink.click();
         document.body.removeChild(jsonLink);
         URL.revokeObjectURL(jsonUrl);
+        toast.success('JSON exported successfully!');
         console.log('Resume exported as JSON.');
         break;
 
       case 'pdf':
-        // Client-side PDF generation using html2canvas and jsPDF
-        try {
-          // Show loading toast immediately
-          const loadingToast = toast.loading('Generating PDF...');
-
-          // Wait a moment for the preview to render if it was just shown
-          await new Promise(resolve => setTimeout(resolve, 100));
-
-          // Find the resume preview element
-          const input = document.querySelector('[data-resume-preview]') as HTMLElement;
-
-          if (!input) {
-            toast.dismiss(loadingToast);
-            toast.error('Resume preview not found. The preview will be shown automatically.');
-            console.error('Resume preview area not found for PDF export.');
-            return;
-          }
-
-          // Generate canvas from HTML
-          const canvas = await html2canvas(input, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-          });
-
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          const imgWidth = 210; // A4 width in mm
-          const pageHeight = 297; // A4 height in mm
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          let heightLeft = imgHeight;
-          let position = 0;
-
-          // Add first page
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-
-          // Add additional pages if needed
-          while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-          }
-
-          // Save the PDF
-          pdf.save(`${fileName}.pdf`);
-
-          // Dismiss loading and show success
-          toast.dismiss(loadingToast);
-          toast.success('PDF exported successfully!');
-          console.log('PDF exported successfully.');
-        } catch (error) {
-          console.error('PDF generation failed:', error);
-          toast.error('Failed to generate PDF. Please try again.');
-        }
+        await exportToPDF(resumeData, fileName);
         break;
 
       case 'txt':
@@ -129,9 +55,7 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
         break;
 
       case 'docx':
-        // DOCX generation (requires server-side processing for best results)
-        toast.error('DOCX export is coming soon! For now, please use PDF or TXT export.');
-        console.warn('DOCX export initiated (placeholder). Server-side generation required for production.');
+        await exportToDOCX(resumeData, fileName);
         break;
 
       default:
@@ -142,6 +66,574 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
   } catch (error) {
     console.error('Error during resume export:', error);
     toast.error('Failed to export resume. Please try again.');
+  }
+}
+
+/**
+ * Export to PDF with proper page break handling
+ */
+async function exportToPDF(resumeData: Resume, fileName: string) {
+  const loadingToast = toast.loading('Generating PDF...');
+  
+  try {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const input = document.querySelector('[data-resume-preview]') as HTMLElement;
+    
+    if (!input) {
+      toast.dismiss(loadingToast);
+      toast.error('Resume preview not found. Please ensure the preview is visible.');
+      return;
+    }
+
+    // Get the sections within the resume preview for proper page breaking
+    const sections = input.querySelectorAll('[data-section]');
+    
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = 210; // A4 width in mm
+    const pageHeight = 297; // A4 height in mm
+    const margin = 10; // margin in mm
+    const contentWidth = pageWidth - (margin * 2);
+    const contentHeight = pageHeight - (margin * 2);
+    
+    // If we have distinct sections, process them individually for better page breaks
+    if (sections.length > 0) {
+      let currentY = margin;
+      let isFirstSection = true;
+      
+      for (const section of Array.from(sections)) {
+        const sectionElement = section as HTMLElement;
+        
+        // Render section to canvas
+        const canvas = await html2canvas(sectionElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = contentWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Check if section fits on current page
+        if (!isFirstSection && currentY + imgHeight > pageHeight - margin) {
+          // Section doesn't fit, add new page
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        // If section is taller than a full page, we need to split it carefully
+        if (imgHeight > contentHeight) {
+          // For very tall sections, split them but try to avoid cutting mid-line
+          let remainingHeight = imgHeight;
+          let sourceY = 0;
+          
+          while (remainingHeight > 0) {
+            const heightToDraw = Math.min(remainingHeight, contentHeight - (currentY - margin));
+            
+            if (heightToDraw < 20 && currentY > margin) {
+              // Not enough space, start new page
+              pdf.addPage();
+              currentY = margin;
+              continue;
+            }
+            
+            // Calculate source coordinates for cropping
+            const sourceHeight = (heightToDraw / imgHeight) * canvas.height;
+            
+            // Create a temporary canvas for the portion we want to draw
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = sourceHeight;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            if (tempCtx) {
+              tempCtx.drawImage(
+                canvas,
+                0, sourceY,                    // source x, y
+                canvas.width, sourceHeight,    // source width, height
+                0, 0,                          // dest x, y
+                canvas.width, sourceHeight     // dest width, height
+              );
+              
+              const tempImgData = tempCanvas.toDataURL('image/png');
+              pdf.addImage(tempImgData, 'PNG', margin, currentY, imgWidth, heightToDraw);
+            }
+            
+            sourceY += sourceHeight;
+            remainingHeight -= heightToDraw;
+            
+            if (remainingHeight > 0) {
+              pdf.addPage();
+              currentY = margin;
+            } else {
+              currentY += heightToDraw + 5; // Add some spacing between sections
+            }
+          }
+        } else {
+          // Section fits, add it
+          pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
+          currentY += imgHeight + 5; // Add spacing between sections
+        }
+        
+        isFirstSection = false;
+      }
+    } else {
+      // Fallback: render entire preview and split by height with smarter breaks
+      const canvas = await html2canvas(input, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = contentWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      if (imgHeight <= contentHeight) {
+        // Fits on one page
+        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+      } else {
+        // Need multiple pages - split carefully
+        const totalPages = Math.ceil(imgHeight / contentHeight);
+        
+        for (let page = 0; page < totalPages; page++) {
+          if (page > 0) {
+            pdf.addPage();
+          }
+          
+          const sourceY = page * (canvas.height / totalPages);
+          const sourceHeight = canvas.height / totalPages;
+          
+          // Create temporary canvas for this page portion
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = canvas.width;
+          tempCanvas.height = sourceHeight;
+          const tempCtx = tempCanvas.getContext('2d');
+          
+          if (tempCtx) {
+            // Fill with white background first
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            tempCtx.drawImage(
+              canvas,
+              0, sourceY,
+              canvas.width, sourceHeight,
+              0, 0,
+              canvas.width, sourceHeight
+            );
+            
+            const pageImgData = tempCanvas.toDataURL('image/png');
+            pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidth, contentHeight);
+          }
+        }
+      }
+    }
+    
+    pdf.save(`${fileName}.pdf`);
+    toast.dismiss(loadingToast);
+    toast.success('PDF exported successfully!');
+  } catch (error) {
+    console.error('PDF generation failed:', error);
+    toast.dismiss(loadingToast);
+    toast.error('Failed to generate PDF. Please try again.');
+  }
+}
+
+/**
+ * Export to DOCX format
+ */
+async function exportToDOCX(resumeData: Resume, fileName: string) {
+  const loadingToast = toast.loading('Generating DOCX...');
+  
+  try {
+    // Dynamically import docx library
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } = await import('docx');
+    
+    const children: any[] = [];
+    
+    // Personal Information Header
+    if (resumeData.personalInfo) {
+      const info = resumeData.personalInfo;
+      
+      if (info.fullName) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: info.fullName,
+                bold: true,
+                size: 32,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 100 },
+          })
+        );
+      }
+      
+      if (info.title) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: info.title,
+                size: 24,
+                color: '666666',
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 200 },
+          })
+        );
+      }
+      
+      // Contact info line
+      const contactParts: string[] = [];
+      if (info.email) contactParts.push(info.email);
+      if (info.phone) contactParts.push(info.phone);
+      if (info.location) contactParts.push(info.location);
+      
+      if (contactParts.length > 0) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: contactParts.join(' | '),
+                size: 20,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 100 },
+          })
+        );
+      }
+      
+      // Links line
+      const linkParts: string[] = [];
+      if (info.linkedin) linkParts.push(info.linkedin);
+      if (info.portfolio) linkParts.push(info.portfolio);
+      
+      if (linkParts.length > 0) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: linkParts.join(' | '),
+                size: 20,
+                color: '0066CC',
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 300 },
+          })
+        );
+      }
+    }
+    
+    // Professional Summary
+    if (resumeData.summary) {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: 'PROFESSIONAL SUMMARY',
+              bold: true,
+              size: 24,
+            }),
+          ],
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 200, after: 100 },
+          border: {
+            bottom: {
+              color: '000000',
+              space: 1,
+              size: 6,
+              style: BorderStyle.SINGLE,
+            },
+          },
+        })
+      );
+      
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: resumeData.summary,
+              size: 22,
+            }),
+          ],
+          spacing: { after: 200 },
+        })
+      );
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: 'PROFESSIONAL EXPERIENCE',
+              bold: true,
+              size: 24,
+            }),
+          ],
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 200, after: 100 },
+          border: {
+            bottom: {
+              color: '000000',
+              space: 1,
+              size: 6,
+              style: BorderStyle.SINGLE,
+            },
+          },
+        })
+      );
+      
+      for (const exp of resumeData.experience) {
+        // Job title and company
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: exp.position || 'Position',
+                bold: true,
+                size: 22,
+              }),
+              new TextRun({
+                text: ` at ${exp.company || 'Company'}`,
+                size: 22,
+              }),
+            ],
+            spacing: { before: 150, after: 50 },
+          })
+        );
+        
+        // Dates and location
+        const dateText = `${exp.startDate || ''} - ${exp.current ? 'Present' : exp.endDate || ''}`;
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: dateText,
+                italics: true,
+                size: 20,
+                color: '666666',
+              }),
+            ],
+            spacing: { after: 100 },
+          })
+        );
+        
+        // Description
+        if (exp.description) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: exp.description,
+                  size: 22,
+                }),
+              ],
+              spacing: { after: 100 },
+            })
+          );
+        }
+        
+        // Achievements as bullet points
+        if (exp.achievements && exp.achievements.length > 0) {
+          for (const achievement of exp.achievements) {
+            children.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `• ${achievement}`,
+                    size: 22,
+                  }),
+                ],
+                indent: { left: 360 },
+                spacing: { after: 50 },
+              })
+            );
+          }
+        }
+      }
+    }
+    
+    // Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: 'EDUCATION',
+              bold: true,
+              size: 24,
+            }),
+          ],
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 200, after: 100 },
+          border: {
+            bottom: {
+              color: '000000',
+              space: 1,
+              size: 6,
+              style: BorderStyle.SINGLE,
+            },
+          },
+        })
+      );
+      
+      for (const edu of resumeData.education) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: edu.degree || 'Degree',
+                bold: true,
+                size: 22,
+              }),
+              edu.field ? new TextRun({
+                text: ` in ${edu.field}`,
+                size: 22,
+              }) : new TextRun({ text: '' }),
+            ],
+            spacing: { before: 150, after: 50 },
+          })
+        );
+        
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: edu.institution || 'Institution',
+                size: 22,
+              }),
+              edu.graduationDate ? new TextRun({
+                text: ` | ${edu.graduationDate}`,
+                italics: true,
+                size: 20,
+                color: '666666',
+              }) : new TextRun({ text: '' }),
+            ],
+            spacing: { after: 50 },
+          })
+        );
+        
+        if (edu.gpa) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `GPA: ${edu.gpa}`,
+                  size: 20,
+                }),
+              ],
+              spacing: { after: 100 },
+            })
+          );
+        }
+      }
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: 'SKILLS',
+              bold: true,
+              size: 24,
+            }),
+          ],
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 200, after: 100 },
+          border: {
+            bottom: {
+              color: '000000',
+              space: 1,
+              size: 6,
+              style: BorderStyle.SINGLE,
+            },
+          },
+        })
+      );
+      
+      // Group skills by category if available
+      const skillsByCategory = new Map<string, string[]>();
+      
+      for (const skill of resumeData.skills) {
+        const category = skill.category || 'Other';
+        if (!skillsByCategory.has(category)) {
+          skillsByCategory.set(category, []);
+        }
+        skillsByCategory.get(category)!.push(skill.name);
+      }
+      
+      for (const [category, skills] of skillsByCategory) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `${category}: `,
+                bold: true,
+                size: 22,
+              }),
+              new TextRun({
+                text: skills.join(', '),
+                size: 22,
+              }),
+            ],
+            spacing: { after: 100 },
+          })
+        );
+      }
+    }
+    
+    // Create the document
+    const doc = new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 720,    // 0.5 inch
+                right: 720,
+                bottom: 720,
+                left: 720,
+              },
+            },
+          },
+          children: children,
+        },
+      ],
+    });
+    
+    // Generate and download
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName}.docx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.dismiss(loadingToast);
+    toast.success('DOCX exported successfully!');
+  } catch (error) {
+    console.error('DOCX generation failed:', error);
+    toast.dismiss(loadingToast);
+    toast.error('Failed to generate DOCX. Please try again.');
   }
 }
 

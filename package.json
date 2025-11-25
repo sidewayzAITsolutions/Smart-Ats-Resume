@@ -22,6 +22,7 @@
           "@vercel/analytics": "^1.5.0",
           "@vercel/speed-insights": "^1.2.0",
           "ai": "^5.0.1",
+          "docx": "^9.5.1",
           "dompurify": "^3.2.6",
           "fileinput": "^0.2.0",
           "formidable": "^3.5.4",

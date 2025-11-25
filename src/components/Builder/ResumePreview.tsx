@@ -117,7 +117,7 @@ export default function ResumePreview({
         <div className="bg-white p-8 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Inter", "Roboto", sans-serif' }}>
           {/* Header */}
           {resumeData.personalInfo && (
-            <header className="mb-6 pb-6 border-b border-gray-200">
+            <header data-section="header" className="mb-6 pb-6 border-b border-gray-200">
               <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700 }}>
                 {resumeData.personalInfo.fullName || 'Your Name'}
               </h1>
@@ -140,7 +140,7 @@ export default function ResumePreview({
 
           {/* Summary */}
           {resumeData.summary && (
-            <section className="mb-6">
+            <section data-section="summary" className="mb-6">
               <h2 className="text-lg font-bold mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em', color: getHeadingTextColor(formatting.colors) }}>
                 Professional Summary
               </h2>
@@ -152,12 +152,12 @@ export default function ResumePreview({
 
           {/* Experience */}
           {resumeData.experience && resumeData.experience.length > 0 && (
-            <section className="mb-6">
+            <section data-section="experience" className="mb-6">
               <h2 className="text-lg font-bold mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em', color: getHeadingTextColor(formatting.colors) }}>
                 Work Experience
               </h2>
               {resumeData.experience.map((exp, index) => (
-                <div key={index} className="mb-4">
+                <div key={index} className="mb-4" data-section={`experience-${index}`} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
                   <div className="flex justify-between items-start mb-1">
                     <div>
                       <h3 className="font-semibold text-base" style={{ fontFamily: '"Inter", sans-serif', color: getHeadingTextColor(formatting.colors) }}>
@@ -197,7 +197,7 @@ export default function ResumePreview({
 
           {/* Education */}
           {resumeData.education && resumeData.education.length > 0 && (
-            <section className="mb-6">
+            <section data-section="education" className="mb-6" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Education
               </h2>
@@ -224,7 +224,7 @@ export default function ResumePreview({
 
           {/* Skills */}
           {resumeData.skills && resumeData.skills.length > 0 && (
-            <section className="mb-6">
+            <section data-section="skills" className="mb-6" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Skills
               </h2>
@@ -244,7 +244,7 @@ export default function ResumePreview({
 
           {/* Projects */}
           {resumeData.projects && resumeData.projects.length > 0 && (
-            <section className="mb-6">
+            <section data-section="projects" className="mb-6">
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Projects
               </h2>
@@ -274,7 +274,7 @@ export default function ResumePreview({
 
           {/* Certifications */}
           {resumeData.certifications && resumeData.certifications.length > 0 && (
-            <section className="mb-6">
+            <section data-section="certifications" className="mb-6" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Certifications
               </h2>
