@@ -591,7 +591,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   const [userId, setUserId] = useState<string | null>(null);
   const [resumeCount, setResumeCount] = useState(0);
 
-  const { resumeData, updateResumeData, saveResume } = useResumeStore();
+  const { resumeData, updateResumeData, saveResume, resetResumeData } = useResumeStore();
   const savingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Fetch user premium status and resume count
@@ -644,6 +644,12 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       }
     };
   }, []);
+
+  // Clear resume handler
+  const handleClear = useCallback(() => {
+    resetResumeData();
+    toast.success('Resume cleared! Starting fresh.');
+  }, [resetResumeData]);
 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
@@ -872,6 +878,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           onImport={handleImport}
           onImportLinkedIn={handleImportLinkedIn}
           onCheckATS={handleCheckATS}
+          onClear={handleClear}
           isSaving={isSaving}
           showPreview={showPreview}
           onTogglePreview={() => setShowPreview(!showPreview)}

@@ -15,6 +15,7 @@ import {
   Save,
   Share2,
   Zap,
+  Trash2,
 } from 'lucide-react';
 
 const cn = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(' ');
@@ -25,6 +26,7 @@ interface BuilderToolbarProps {
   onImport: () => void;
   onImportLinkedIn: () => void;
   onCheckATS: () => void;
+  onClear: () => void;
   isSaving: boolean;
   showPreview: boolean;
   onTogglePreview: () => void;
@@ -36,12 +38,14 @@ export default function BuilderToolbar({
   onImport,
   onImportLinkedIn,
   onCheckATS,
+  onClear,
   isSaving,
   showPreview,
   onTogglePreview,
 }: BuilderToolbarProps) {
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const handleExport = async (format: 'pdf' | 'docx' | 'txt' | 'json') => {
     setIsExporting(true);
@@ -52,6 +56,11 @@ export default function BuilderToolbar({
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const handleClear = () => {
+    setShowClearConfirm(false);
+    onClear();
   };
 
 
@@ -133,6 +142,16 @@ export default function BuilderToolbar({
           >
             <FileText className="h-4 w-4" />
             Import Resume
+          </button>
+
+          {/* Clear Resume Button */}
+          <button type="button"
+            onClick={() => setShowClearConfirm(true)}
+            className="hidden md:flex px-4 py-2 text-sm font-medium text-red-300 bg-red-900/30 border border-red-700/50 rounded-lg hover:bg-red-800/40 hover:border-red-600 transition-all duration-200 items-center gap-2 backdrop-blur-sm"
+            title="Clear resume and start fresh"
+          >
+            <Trash2 className="h-4 w-4" />
+            Clear
           </button>
 
           {/* Preview Toggle */}
@@ -233,6 +252,32 @@ export default function BuilderToolbar({
           </button>
         </div>
       </div>
+
+      {/* Clear Confirmation Modal */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-6 max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-white mb-2">Clear Resume?</h3>
+            <p className="text-gray-400 mb-6">
+              This will erase all your resume content and start with a blank slate. This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleClear}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-500 transition-all duration-200"
+              >
+                Clear Resume
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
