@@ -183,7 +183,7 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold text-white">Email Us</h3>
                   <a href="mailto:support@smartatsresume.com" className="text-amber-300 hover:text-amber-200 transition-colors">
-                    support@smartatsresume.com
+                    contact@smartatsresume.com
                   </a>
                   <p className="text-sm text-gray-400 mt-1">We respond within 24 hours</p>
                 </div>
@@ -206,7 +206,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-white">Location</h3>
-                  <p className="text-gray-300">United States</p>
+                  <p className="text-gray-300">New Orleans, LA</p>
                   <p className="text-sm text-gray-400 mt-1">Remote-first company</p>
                 </div>
               </div>
@@ -224,9 +224,9 @@ export default function ContactPage() {
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                   <span className="ml-2">View Pricing Plans</span>
                 </Link>
-                <Link href="/enterprise" className="flex items-center text-amber-300 hover:text-amber-200 transition-colors group">
+                <Link href="/about" className="flex items-center text-amber-300 hover:text-amber-200 transition-colors group">
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  <span className="ml-2">Enterprise Solutions</span>
+                  <span className="ml-2">About Smart ATS Resume</span>
                 </Link>
               </div>
             </div>
