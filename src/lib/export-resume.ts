@@ -227,41 +227,11 @@ function generatePlainTextResume(resumeData: Resume): string {
     lines.push(skillsList);
     lines.push('');
   }
-  
-  // Projects
-  if (resumeData.projects && resumeData.projects.length > 0) {
-    lines.push('PROJECTS');
-    lines.push('-'.repeat(50));
-    
-    resumeData.projects.forEach((project, index) => {
-      if (index > 0) lines.push('');
-      
-      lines.push(project.name || 'Untitled Project');
-      if (project.description) {
-        lines.push(project.description);
-      }
-      if (project.technologies && project.technologies.length > 0) {
-        lines.push(`Technologies: ${project.technologies.join(', ')}`);
-      }
-    });
-    lines.push('');
-  }
-  
-  // Certifications
-  if (resumeData.certifications && resumeData.certifications.length > 0) {
-    lines.push('CERTIFICATIONS');
-    lines.push('-'.repeat(50));
-    
-    resumeData.certifications.forEach((cert, index) => {
-      if (index > 0) lines.push('');
-      
-      lines.push(cert.name || 'Certification');
-      if (cert.issuer) lines.push(`Issuer: ${cert.issuer}`);
-      if (cert.date) lines.push(`Date: ${cert.date}`);
-    });
-    lines.push('');
-  }
-  
+
+  // Note: Projects and Certifications are not part of the Resume type
+  // They are part of ResumeData type used in the builder
+
+
   // Keywords (if any)
   if (resumeData.keywords && resumeData.keywords.length > 0) {
     lines.push('KEYWORDS');
