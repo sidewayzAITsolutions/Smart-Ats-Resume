@@ -208,15 +208,15 @@ const Page: React.FC = () => {
         </section>
 
         {/* Contact Sales Button */}
-        <section className="py-8 px-6">
+        <section className="py-8 px-6 animate-fade-in-up stagger-1">
           <div className="max-w-7xl mx-auto flex justify-center">
             <button
               onClick={() => router.push('/contact-sales')}
-              className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+              className="group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-amber-500/25 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 btn-shine"
             >
-              <Headphones className="w-6 h-6" />
+              <Headphones className="w-6 h-6 group-hover:animate-bounce" />
               Contact Sales
-              <ArrowRight className="w-6 h-6" />
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
           </div>
         </section>
@@ -225,16 +225,16 @@ const Page: React.FC = () => {
         <section className="py-12 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap items-center justify-center gap-8 text-md text-gray-400">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-green-400" />
+              <div className="flex items-center gap-2 hover-scale cursor-default animate-fade-in-up stagger-1">
+                <TrendingUp className="w-6 h-6 text-green-400 animate-bounce-gentle" />
                 <span><strong className="text-gray-300">60%</strong> faster hiring with ATS optimization</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Award className="w-6 h-6 text-amber-400" />
+              <div className="flex items-center gap-2 hover-scale cursor-default animate-fade-in-up stagger-2">
+                <Award className="w-6 h-6 text-amber-400 hover:rotate-12 transition-transform duration-300" />
                 <span><strong className="text-gray-300">94%</strong> of recruiters rely on ATS</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-6 h-6 text-teal-400" />
+              <div className="flex items-center gap-2 hover-scale cursor-default animate-fade-in-up stagger-3">
+                <Shield className="w-6 h-6 text-teal-400 hover:scale-110 transition-transform duration-300" />
                 <span><strong className="text-gray-300">98.4%</strong> ATS pass rate</span>
               </div>
             </div>
@@ -245,27 +245,27 @@ const Page: React.FC = () => {
         <section className="py-20 px-6 relative">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-900/30 to-orange-900/30 rounded-3xl transform rotate-3"></div>
-                <div className="relative bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-xl">
-                  <div className="w-16 h-16 bg-red-900/50 rounded-2xl flex items-center justify-center mb-6">
-                    <X className="w-8 h-8 text-red-400" />
+              <div className="relative group animate-fade-in-up stagger-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-900/30 to-orange-900/30 rounded-3xl transform rotate-3 group-hover:rotate-6 transition-transform duration-500"></div>
+                <div className="relative bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-xl hover-card group-hover:border-red-700/50 transition-all duration-300">
+                  <div className="w-16 h-16 bg-red-900/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-red-800/60 transition-all duration-300">
+                    <X className="w-8 h-8 text-red-400 group-hover:rotate-90 transition-transform duration-500" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-4">The Brutal Truth</h3>
                   <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
+                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <X className="w-3 h-3 text-red-400" />
                       </div>
                       <span className="text-gray-300">98.4% of Fortune 500 companies use ATS filters</span>
                     </li>
-                    <li className="flex items-start gap-3">
+                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <X className="w-3 h-3 text-red-400" />
                       </div>
                       <span className="text-gray-300">75% of qualified candidates get rejected by keyword mismatches</span>
                     </li>
-                    <li className="flex items-start gap-3">
+                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <X className="w-3 h-3 text-red-400" />
                       </div>
@@ -275,27 +275,27 @@ const Page: React.FC = () => {
                 </div>
               </div>
 
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-900/30 to-teal-900/30 rounded-3xl transform -rotate-3"></div>
-                <div className="relative bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-xl">
-                  <div className="w-16 h-16 bg-green-900/50 rounded-2xl flex items-center justify-center mb-6">
-                    <CheckCircle className="w-8 h-8 text-green-400" />
+              <div className="relative group animate-fade-in-up stagger-2">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-900/30 to-teal-900/30 rounded-3xl transform -rotate-3 group-hover:-rotate-6 transition-transform duration-500"></div>
+                <div className="relative bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-xl hover-card group-hover:border-green-700/50 transition-all duration-300">
+                  <div className="w-16 h-16 bg-green-900/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-green-800/60 transition-all duration-300">
+                    <CheckCircle className="w-8 h-8 text-green-400 group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-4">Your Secret Weapon</h3>
                   <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
+                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
                       <span className="text-gray-300">AI analyzes job descriptions to deliver perfect keyword matches</span>
                     </li>
-                    <li className="flex items-start gap-3">
+                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
                       <span className="text-gray-300">Real-time ATS score with actionable improvements that work</span>
                     </li>
-                    <li className="flex items-start gap-3">
+                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
@@ -314,50 +314,51 @@ const Page: React.FC = () => {
         {/* Image and Key Stats Section */}
         <div className="grid md:grid-cols-2 gap-10 max-w-7xl mx-auto px-6 mb-20">
           {/* Left side - Image */}
-          <div className="flex items-center justify-center">
-            <div className="relative">
+          <div className="flex items-center justify-center animate-fade-in-up stagger-1">
+            <div className="relative img-zoom rounded-2xl overflow-hidden group">
               <img
                 src="/4.png"
                 alt="SmartATS Resume Builder Dashboard"
-                className="w-full h-auto rounded-2xl shadow-2xl border border-gray-700"
+                className="w-full h-auto rounded-2xl shadow-2xl border border-gray-700 group-hover:border-teal-500/50 transition-all duration-500"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-teal-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
           </div>
 
           {/* Right side - Key Stats */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-700/30 rounded-3xl p-8">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-700/30 rounded-3xl p-8 animate-fade-in-up stagger-2 hover:border-orange-500/40 transition-all duration-300">
             <h3 className="text-2xl font-bold text-white mb-8 text-center">Why SmartATS is the New Standard</h3>
             <div className="space-y-6">
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30 hover:border-green-500/50 transition-colors">
+              <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30 hover:border-green-500/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 cursor-default">
                 <div>
-                  <div className="text-2xl font-bold text-green-400">98.4%</div>
+                  <div className="text-2xl font-bold text-green-400 group-hover:scale-110 transition-transform duration-300 inline-block">98.4%</div>
                   <div className="text-sm text-gray-300">ATS Pass Rate</div>
                 </div>
-                <TrendingUp className="w-8 h-8 text-green-400" />
+                <TrendingUp className="w-8 h-8 text-green-400 group-hover:animate-bounce" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-900/30 to-amber-900/30 rounded-xl border border-orange-700/30 hover:border-orange-500/50 transition-colors">
+              <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-orange-900/30 to-amber-900/30 rounded-xl border border-orange-700/30 hover:border-orange-500/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 cursor-default">
                 <div>
-                  <div className="text-2xl font-bold text-orange-400">75%</div>
+                  <div className="text-2xl font-bold text-orange-400 group-hover:scale-110 transition-transform duration-300 inline-block">75%</div>
                   <div className="text-sm text-gray-300">Resumes Fail ATS</div>
                 </div>
-                <Target className="w-8 h-8 text-orange-400" />
+                <Target className="w-8 h-8 text-orange-400 group-hover:rotate-180 transition-transform duration-500" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-teal-900/30 to-cyan-900/30 rounded-xl border border-teal-700/30 hover:border-teal-500/50 transition-colors">
+              <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-teal-900/30 to-cyan-900/30 rounded-xl border border-teal-700/30 hover:border-teal-500/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 cursor-default">
                 <div>
-                  <div className="text-2xl font-bold text-teal-400">10 min</div>
+                  <div className="text-2xl font-bold text-teal-400 group-hover:scale-110 transition-transform duration-300 inline-block">10 min</div>
                   <div className="text-sm text-gray-300">Build Time</div>
                 </div>
-                <Clock className="w-8 h-8 text-teal-400" />
+                <Clock className="w-8 h-8 text-teal-400 group-hover:animate-spin" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-700/30 hover:border-amber-500/50 transition-colors">
+              <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-700/30 hover:border-amber-500/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-300 cursor-default">
                 <div>
-                  <div className="text-2xl font-bold text-amber-400">8+</div>
+                  <div className="text-2xl font-bold text-amber-400 group-hover:scale-110 transition-transform duration-300 inline-block">8+</div>
                   <div className="text-sm text-gray-300">Pro Templates</div>
                 </div>
-                <Sparkles className="w-8 h-8 text-amber-400" />
+                <Sparkles className="w-8 h-8 text-amber-400 group-hover:animate-pulse" />
               </div>
             </div>
           </div>
@@ -366,24 +367,24 @@ const Page: React.FC = () => {
           {/* Comparison Table Section */}
         <section className="py-20 px-6 bg-gradient-to-br from-gray-900 via-orange-900/10 to-gray-900">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
+            <div className="text-center mb-16 animate-fade-in-up">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Why SmartATS Crushes
-                <span className="block mt-2 bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+                <span className="block mt-2 bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent animated-gradient-text">
                   The Competition
                 </span>
               </h2>
               <p className="text-xl text-gray-400 mt-4">See how we dominate the biggest names in resume building</p>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full bg-gray-900 rounded-2xl shadow-2xl border border-gray-800">
+            <div className="overflow-x-auto animate-fade-in-up stagger-2">
+              <table className="w-full bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 hover:border-gray-700 transition-colors duration-300">
                 <thead>
                   <tr className="border-b border-gray-800">
                     <th className="text-left p-6 text-gray-400 font-medium">Features</th>
                     <th className="text-center p-6">
                       <div className="flex flex-col items-center gap-2">
-                        <div className="bg-black p-2 rounded-lg">
+                        <div className="bg-black p-2 rounded-lg hover:scale-110 transition-transform duration-300">
                           <img src="/horse-logo.png" alt="SmartATS Logo" className="w-12 h-12 object-contain" />
                         </div>
                         <span className="text-white font-bold">SmartATS</span>
@@ -497,9 +498,9 @@ const Page: React.FC = () => {
               </table>
             </div>
 
-            <div className="mt-12 text-center">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl">
-                <Sparkles className="w-7 h-7 text-orange-400" />
+            <div className="mt-12 text-center animate-fade-in-up">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl hover:border-orange-500/70 hover:scale-105 transition-all duration-300 cursor-default">
+                <Sparkles className="w-7 h-7 text-orange-400 animate-pulse" />
                 <p className="text-orange-300 font-medium">
                   SmartATS SAVES you TIME and DOLLARS while delivering the BEST Quality! <span className="text-orange-400 font-bold">30% more</span> value than competitors
                 </p>
@@ -511,16 +512,16 @@ const Page: React.FC = () => {
         {/* Why Choose SmartATS */}
         <section className="py-20 px-6 bg-gradient-to-br from-gray-900 to-black">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
+            <div className="text-center mb-16 animate-fade-in-up">
               <h2 className="text-4xl font-bold text-white mb-4">{WhyChooseSmartATS.title}</h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto">{WhyChooseSmartATS.subtitle}</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 mb-12">
               {WhyChooseSmartATS.features.map((feature, idx) => (
-                <div key={idx} className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8 hover:border-orange-500/50 transition-all duration-300">
+                <div key={idx} className="group bg-gray-800/50 border border-gray-700 rounded-2xl p-8 hover:border-orange-500/50 hover-card transition-all duration-300 animate-fade-in-up" style={{ animationDelay: `${idx * 0.15}s` }}>
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="text-4xl">{feature.icon}</div>
+                    <div className="text-4xl group-hover:scale-125 transition-transform duration-300">{feature.icon}</div>
                     <h3 className="text-2xl font-bold text-white">{feature.title}</h3>
                   </div>
 
@@ -528,8 +529,8 @@ const Page: React.FC = () => {
 
                   <ul className="space-y-3">
                     {feature.highlights.map((highlight, highlightIdx) => (
-                      <li key={highlightIdx} className="flex items-center gap-3 text-gray-300">
-                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                      <li key={highlightIdx} className="flex items-center gap-3 text-gray-300 hover:translate-x-2 transition-transform duration-300">
+                        <div className="w-2 h-2 bg-teal-400 rounded-full group-hover:scale-150 transition-transform duration-300"></div>
                         <span>{highlight}</span>
                       </li>
                     ))}
@@ -545,7 +546,7 @@ const Page: React.FC = () => {
             </div>
 
            {/* Summary */}
-            <div className="bg-gradient-to-r from-teal-900/30 via-amber-900/30 to-orange-900/30 border border-orange-500/30 rounded-2xl p-8 text-center">
+            <div className="bg-gradient-to-r from-teal-900/30 via-amber-900/30 to-orange-900/30 border border-orange-500/30 rounded-2xl p-8 text-center animate-fade-in-up hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
               <p className="text-lg text-gray-200 leading-relaxed max-w-4xl mx-auto">
                 {WhyChooseSmartATS.summary}
               </p>
@@ -675,34 +676,39 @@ const Page: React.FC = () => {
         </section>
 
        {/* CTA Section */}
-        <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600 relative overflow-hidden">
+          {/* Animated background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_transparent_50%,_rgba(0,0,0,0.3)_100%)]"></div>
+          </div>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in-up">
               Change Your Life Today...
             </h2>
-            <p className="text-xl text-white/90 mb-8">
+            <p className="text-xl text-white/90 mb-8 animate-fade-in-up stagger-1">
               75% of resumes fail ATS. You won't be one of them.
             </p>
 
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap gap-4 justify-center animate-fade-in-up stagger-2">
               <button
                 onClick={() => router.push('/login')}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-amber-600 font-bold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-amber-600 font-bold rounded-xl hover:shadow-2xl hover:shadow-white/25 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 btn-shine"
               >
-                <Zap className="w-5 h-5" />
+                <Zap className="w-5 h-5 group-hover:animate-pulse" />
                 Start Building Now
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
               </button>
 
               <button
                 onClick={() => router.push('/pricing')}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-amber-700 text-white font-bold rounded-xl hover:bg-amber-800 transition-all duration-200"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-amber-700 text-white font-bold rounded-xl hover:bg-amber-800 hover:shadow-lg transition-all duration-300"
               >
                 View Pricing
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
               </button>
             </div>
 
-            <p className="text-white/80 text-sm mt-6">
+            <p className="text-white/80 text-sm mt-6 animate-fade-in-up stagger-3">
               No credit card required • 5 minute setup
             </p>
           </div>
@@ -713,8 +719,8 @@ const Page: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-4 gap-8 mb-8">
               <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8">
+                <div className="flex items-center gap-2 mb-4 group">
+                  <div className="w-8 h-8 group-hover:scale-110 transition-transform duration-300">
                     <img src="/horse-logo.png" alt="SmartATS Logo" className="w-full h-full object-contain" />
                   </div>
                   <span className="text-xl font-bold text-white">SmartATS</span>
@@ -725,27 +731,27 @@ const Page: React.FC = () => {
               <div>
                 <h4 className="font-semibold text-white mb-4">Product</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/templates" className="hover:text-orange-400 transition-colors">Templates</a></li>
-                  <li><a href="/builder" className="hover:text-orange-400 transition-colors">Resume Builder</a></li>
-                  <li><a href="/ats-guide" className="hover:text-orange-400 transition-colors">ATS Guide</a></li>
+                  <li><a href="/templates" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Templates</a></li>
+                  <li><a href="/builder" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Resume Builder</a></li>
+                  <li><a href="/ats-guide" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">ATS Guide</a></li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="font-semibold text-white mb-4">Company</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/about" className="hover:text-orange-400 transition-colors">About</a></li>
-                  <li><a href="/pricing" className="hover:text-orange-400 transition-colors">Pricing</a></li>
-                  <li><a href="/blog" className="hover:text-orange-400 transition-colors">Blog</a></li>
+                  <li><a href="/about" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">About</a></li>
+                  <li><a href="/pricing" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Pricing</a></li>
+                  <li><a href="/blog" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Blog</a></li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="font-semibold text-white mb-4">Support</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/contact" className="hover:text-orange-400 transition-colors">Contact</a></li>
-                  <li><a href="/privacypolicy" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
-                  <li><a href="/termsofservice" className="hover:text-orange-400 transition-colors">Terms of Service</a></li>
+                  <li><a href="/contact" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Contact</a></li>
+                  <li><a href="/privacypolicy" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Privacy Policy</a></li>
+                  <li><a href="/termsofservice" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Terms of Service</a></li>
 
                 </ul>
               </div>

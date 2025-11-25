@@ -248,12 +248,12 @@ const PricingPage = () => {
                 src="/donkey3.jpeg"
                 alt="Smart ATS Resume Mascot"
                 fill
-                className="object-contain drop-shadow-2xl"
+                className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
                 priority
               />
             </div>
-            <div className="flex-1 max-w-2xl">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
+            <div className="flex-1 max-w-2xl animate-fade-in-up">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent animated-gradient-text">
                 Choose Your Plan
               </h1>
               <p className="text-lg md:text-xl text-gray-300">
@@ -336,20 +336,21 @@ const PricingPage = () => {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
-          {pricingTiers.map((tier) => {
+          {pricingTiers.map((tier, tierIndex) => {
             const isHighlighted = tier.highlighted;
             return (
               <div
                 key={tier.name}
-                className={`relative rounded-2xl p-8 ${
+                className={`relative rounded-2xl p-8 hover-card group animate-fade-in-up ${
                   isHighlighted
-                    ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500'
-                    : 'bg-gray-900 border border-gray-800'
-                }`}
+                    ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500 hover:border-blue-400 hover:shadow-blue-500/20'
+                    : 'bg-gray-900 border border-gray-800 hover:border-gray-600'
+                } transition-all duration-300`}
+                style={{ animationDelay: `${tierIndex * 0.15}s` }}
               >
                 {isHighlighted && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold animate-pulse">
                       Most Popular
                     </div>
                   </div>
@@ -357,27 +358,27 @@ const PricingPage = () => {
 
                 {tier.savings && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-full text-sm font-bold animate-bounce-gentle">
                       {tier.savings}
                     </div>
                   </div>
                 )}
 
                 <div className="text-center mb-8">
-                  <div className="inline-flex items-center justify-center w-24 h-24 mb-4">
+                  <div className="inline-flex items-center justify-center w-24 h-24 mb-4 group-hover:scale-110 transition-transform duration-300">
                     <Image
                       src={tier.mascotImage}
                       alt={`${tier.name} mascot`}
                       width={96}
                       height={96}
-                      className="object-contain"
+                      className="object-contain group-hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300"
                     />
                   </div>
                   <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
                   <p className="text-gray-400 mb-6">{tier.description}</p>
 
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                    <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)] group-hover:scale-110 transition-transform duration-300">
                       ${tier.price}
                     </span>
                     <span className="text-gray-400">/{tier.period}</span>
@@ -388,12 +389,12 @@ const PricingPage = () => {
                   type="button"
                   onClick={() => handlePlanSelect(tier.name, tier.priceId || null)}
                   disabled={loading && selectedPlan === tier.name}
-                  className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
+                  className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 mb-8 btn-shine ${
                     isHighlighted
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:scale-105'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105'
                       : tier.price === 0
-                      ? 'bg-white text-gray-900 hover:bg-gray-100'
-                      : 'bg-gray-700 text-white hover:bg-gray-600'
+                      ? 'bg-white text-gray-900 hover:bg-gray-100 hover:scale-105'
+                      : 'bg-gray-700 text-white hover:bg-gray-600 hover:scale-105'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {loading && selectedPlan === tier.name ? (
@@ -404,7 +405,7 @@ const PricingPage = () => {
                   ) : (
                     <>
                       <span>{tier.buttonText}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                     </>
                   )}
                 </button>
@@ -412,7 +413,7 @@ const PricingPage = () => {
                 {/* Features List */}
                 <div className="space-y-4">
                   {tier.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
+                    <div key={index} className="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300">
                       <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                       <span className="text-gray-300 text-sm">{feature}</span>
                     </div>

@@ -1275,27 +1275,28 @@ const EnhancedTemplatesPage = () => {
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredTemplates.map((template) => (
+            {filteredTemplates.map((template, templateIndex) => (
               <div
                 key={template.id}
-                className={`group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden ${
+                className={`group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover-card animate-fade-in-up ${
                   template.isPremium
                     ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-2 border-gradient-to-r from-amber-400 to-orange-400 hover:border-amber-300 hover:shadow-amber-400/20"
-                    : "bg-gray-900 border border-gray-800"
+                    : "bg-gray-900 border border-gray-800 hover:border-gray-600"
                 }`}
+                style={{ animationDelay: `${templateIndex * 0.1}s` }}
                 onMouseEnter={() => setHoveredTemplate(template.id)}
                 onMouseLeave={() => setHoveredTemplate(null)}
               >
                 {/* Premium Glow Effect */}
                 {template.isPremium && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 via-orange-400/5 to-amber-400/10 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 via-orange-400/5 to-amber-400/10 pointer-events-none group-hover:from-amber-400/20 group-hover:to-amber-400/20 transition-all duration-300"></div>
                 )}
 
                 {/* Premium Badge */}
                 {template.isPremium && (
                   <div className="absolute top-4 right-4 z-10">
-                    <div className="bg-gradient-to-r from-amber-400 to-orange-400 text-gray-900 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg">
-                      <Crown className="w-4 h-4" />
+                    <div className="bg-gradient-to-r from-amber-400 to-orange-400 text-gray-900 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                      <Crown className="w-4 h-4 group-hover:animate-bounce" />
                       PREMIUM
                     </div>
                   </div>
@@ -1304,7 +1305,7 @@ const EnhancedTemplatesPage = () => {
                 {/* Popularity Badge */}
                 {template.popularityRank <= 3 && (
                   <div className="absolute top-4 left-4 z-10">
-                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
                       <TrendingUp className="w-3 h-3" />
                       Popular
                     </div>
@@ -1313,11 +1314,10 @@ const EnhancedTemplatesPage = () => {
 
                 {/* Template Preview */}
                 <div
-                  className="h-64 relative overflow-hidden cursor-pointer bg-gray-800"
+                  className="h-64 relative overflow-hidden cursor-pointer bg-gray-800 img-zoom"
                   onClick={() => setShowPreview(template)}
                 >
                   <div className="absolute inset-0 flex items-center justify-center p-6">
-                    <div
                       className="w-full max-w-[200px] h-full bg-white rounded-lg shadow-xl transform transition-transform duration-300"
                       style={{
                         transform:
