@@ -735,7 +735,7 @@ const Page: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-black border-t border-gray-900 text-gray-400 py-12 px-6">
+        <footer className="relative z-20 bg-black border-t border-gray-900 text-gray-400 py-12 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-4 gap-8 mb-8">
               <div>
