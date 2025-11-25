@@ -654,29 +654,11 @@ const Page: React.FC = () => {
               </div>
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Headphones className="w-7 h-7 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Contact Us</h3>
-                <p className="text-gray-300 mb-6">Get in touch with our team</p>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-gray-300">
-                    <Mail className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                    <a href="mailto:contact@smartatsresume.com" className="hover:text-amber-400 transition-colors">
-                      contact@smartatsresume.com
-                    </a>
-                  </div>
-                  <div className="flex items-center gap-3 text-gray-300">
-                    <Phone className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                    <a href="tel:+12253019908" className="hover:text-amber-400 transition-colors">
-                      225-301-9908
-                      Beat the
-                      BOTS
-                      Land the 
-                      JOB
-                    </a>
-                  </div>
-                </div>
+                <img
+                  src="/new.png"
+                  alt="Contact Information"
+                  className="w-full h-auto rounded-lg"
+                />
               </div>
 
               <div className="md:col-span-2 lg:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
