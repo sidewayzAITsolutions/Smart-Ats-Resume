@@ -190,7 +190,7 @@ export default function BuilderToolbar({
 
             {/* Dropdown Menu */}
             {exportMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 py-1 z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 py-1 z-[9999]">
                 <button
                   onClick={() => handleExport('pdf')}
                   className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"

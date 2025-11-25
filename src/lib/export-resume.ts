@@ -49,17 +49,21 @@ export async function exportResume(resumeData: Resume, format: 'pdf' | 'docx' | 
       case 'pdf':
         // Client-side PDF generation using html2canvas and jsPDF
         try {
+          // Show loading toast immediately
+          const loadingToast = toast.loading('Generating PDF...');
+
+          // Wait a moment for the preview to render if it was just shown
+          await new Promise(resolve => setTimeout(resolve, 100));
+
           // Find the resume preview element
           const input = document.querySelector('[data-resume-preview]') as HTMLElement;
 
           if (!input) {
-            toast.error('Resume preview not found. Please ensure the preview is visible.');
+            toast.dismiss(loadingToast);
+            toast.error('Resume preview not found. The preview will be shown automatically.');
             console.error('Resume preview area not found for PDF export.');
             return;
           }
-
-          // Show loading toast
-          const loadingToast = toast.loading('Generating PDF...');
 
           // Generate canvas from HTML
           const canvas = await html2canvas(input, {

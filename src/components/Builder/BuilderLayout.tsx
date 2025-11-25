@@ -722,9 +722,27 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   };
 
   const handleExport = useCallback(async (format: 'pdf' | 'docx' | 'txt' | 'json' = 'pdf') => {
-    const { exportResume } = await import('@/lib/export-resume');
-    await exportResume(resumeData as any, format as any);
-  }, [resumeData]);
+    // For PDF export, we need the preview to be visible
+    // Temporarily show it if it's hidden
+    const wasPreviewHidden = !showPreview;
+
+    if (format === 'pdf' && wasPreviewHidden) {
+      setShowPreview(true);
+      // Wait for the preview to render
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    try {
+      const { exportResume } = await import('@/lib/export-resume');
+      await exportResume(resumeData as any, format as any);
+    } finally {
+      // Hide the preview again if it was hidden before
+      if (format === 'pdf' && wasPreviewHidden) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setShowPreview(false);
+      }
+    }
+  }, [resumeData, showPreview]);
 
   // Keyboard shortcuts (Cmd/Ctrl+S/P/E)
   useEffect(() => {
