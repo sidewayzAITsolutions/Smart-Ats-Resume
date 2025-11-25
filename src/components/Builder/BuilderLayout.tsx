@@ -865,7 +865,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       </div>
 
       {/* Toolbar */}
-      <div className="relative z-10">
+      <div className="relative z-[100]">
         <BuilderToolbar
           onSave={handleSave}
           onExport={handleExport}
