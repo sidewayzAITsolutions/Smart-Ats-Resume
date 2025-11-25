@@ -558,116 +558,135 @@ const Page: React.FC = () => {
         <section className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <DollarSign className="w-7 h-7 text-white" />
+              {/* Free Plan Card */}
+              <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up relative overflow-hidden">
+                {/* Animated gradient background on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-orange-500/10 group-hover:to-amber-500/5 transition-all duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
+                    <DollarSign className="w-7 h-7 text-white group-hover:animate-pulse" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors duration-300">Free Plan</h3>
+                  <div className="text-center my-4">
+                    <div className="text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">$0</div>
+                    <div className="text-gray-400">Forever Free</div>
+                  </div>
+                  <ul className="space-y-3 mt-6">
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[0ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>1 ATS-optimized resume</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[50ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Basic templates</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[100ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>PDF export</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[150ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Email support</span>
+                    </li>
+                  </ul>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Free Plan</h3>
-                <div className="text-center my-4">
-                  <div className="text-5xl font-bold text-white mb-2">$0</div>
-                  <div className="text-gray-400">Forever Free</div>
-                </div>
-                <ul className="space-y-3 mt-6">
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>1 ATS-optimized resume</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Basic templates</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>PDF export</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Email support</span>
-                  </li>
-                </ul>
               </div>
 
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <DollarSign className="w-7 h-7 text-white" />
+              {/* Monthly Plan Card */}
+              <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up stagger-1 relative overflow-hidden">
+                {/* Animated gradient background on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-orange-500/10 group-hover:to-amber-500/5 transition-all duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
+                    <DollarSign className="w-7 h-7 text-white group-hover:animate-pulse" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors duration-300">Monthly Plan</h3>
+                  <div className="text-center my-4">
+                    <div className="text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">$22</div>
+                    <div className="text-gray-400">per month</div>
+                  </div>
+                  <ul className="space-y-3 mt-6">
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[0ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Unlimited resumes</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[50ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Premium templates</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[100ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>AI-powered optimization</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[150ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Priority support</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[200ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Cancel anytime</span>
+                    </li>
+                  </ul>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Monthly Plan</h3>
-                <div className="text-center my-4">
-                  <div className="text-5xl font-bold text-white mb-2">$22</div>
-                  <div className="text-gray-400">per month</div>
-                </div>
-                <ul className="space-y-3 mt-6">
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Unlimited resumes</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Premium templates</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>AI-powered optimization</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Priority support</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Cancel anytime</span>
-                  </li>
-                </ul>
               </div>
 
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <DollarSign className="w-7 h-7 text-white" />
+              {/* Yearly Plan Card */}
+              <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up stagger-2 relative overflow-hidden">
+                {/* Animated gradient background on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-orange-500/10 group-hover:to-amber-500/5 transition-all duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
+                    <DollarSign className="w-7 h-7 text-white group-hover:animate-pulse" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors duration-300">Yearly Plan</h3>
+                  <div className="text-center my-4">
+                    <div className="text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">$200</div>
+                    <div className="text-gray-400 mb-1">per year</div>
+                    <div className="text-teal-400 text-sm font-semibold animate-pulse">Save $64/year</div>
+                  </div>
+                  <ul className="space-y-3 mt-6">
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[0ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Everything in Monthly</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[50ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>2 months free</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[100ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Advanced analytics</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[150ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Custom branding</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[200ms]">
+                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
+                      <span>Dedicated support</span>
+                    </li>
+                  </ul>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Yearly Plan</h3>
-                <div className="text-center my-4">
-                  <div className="text-5xl font-bold text-white mb-2">$200</div>
-                  <div className="text-gray-400 mb-1">per year</div>
-                  <div className="text-teal-400 text-sm font-semibold">Save $64/year</div>
-                </div>
-                <ul className="space-y-3 mt-6">
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Everything in Monthly</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>2 months free</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Advanced analytics</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Custom branding</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
-                    <span>Dedicated support</span>
-                  </li>
-                </ul>
               </div>
 
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
-                <img
-                  src="/new1.png"
-                  alt="Contact Information"
-                  className="w-full h-auto rounded-lg"
-                />
+              {/* Contact Card */}
+              <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up stagger-3 overflow-hidden">
+                <div className="img-zoom rounded-lg overflow-hidden">
+                  <img
+                    src="/new1.png"
+                    alt="Contact Information"
+                    className="w-full h-auto rounded-lg group-hover:brightness-110 transition-all duration-500"
+                  />
+                </div>
               </div>
 
-              <div className="md:col-span-2 lg:col-span-2 bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
-                <div className="flex items-center justify-center h-full">
+              {/* Dashboard Image Card */}
+              <div className="md:col-span-2 lg:col-span-2 group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up stagger-4 overflow-hidden">
+                <div className="flex items-center justify-center h-full img-zoom rounded-xl overflow-hidden">
                   <img
                     src="/2.png"
                     alt="SmartATS Enterprise Dashboard"
-                    className="w-full h-auto rounded-xl shadow-lg"
+                    className="w-full h-auto rounded-xl shadow-lg group-hover:shadow-2xl group-hover:shadow-amber-500/20 transition-all duration-500"
                   />
                 </div>
               </div>
