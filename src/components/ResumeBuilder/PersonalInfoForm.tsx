@@ -37,14 +37,14 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
           <label className="block text-sm font-medium text-white mb-2">
             Full Name *
           </label>
-<input
-  type="text"
-  value={formData.fullName}
-  onChange={(e) => handleChange('fullName', e.target.value)}
-  className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
-  placeholder="John Doe"
-  required
-/>
+          <input
+            type="text"
+            value={formData.fullName}
+            onChange={(e) => handleChange('fullName', e.target.value)}
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+            placeholder="John Doe"
+            required
+          />
         </div>
 
         <div>
@@ -55,7 +55,7 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             type="email"
             value={formData.email}
             onChange={(e) => handleChange('email', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             placeholder="john@example.com"
             required
           />
@@ -69,7 +69,7 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             type="text"
             value={formData.title || ''}
             onChange={(e) => handleChange('title', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             placeholder="e.g., Software Engineer, Marketing Manager"
           />
           <p className="mt-1 text-xs text-gray-400">Required for AI-powered summary generation</p>
@@ -83,7 +83,7 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             type="tel"
             value={formData.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             placeholder="(555) 123-4567"
           />
         </div>
@@ -96,7 +96,7 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             type="text"
             value={formData.location}
             onChange={(e) => handleChange('location', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             placeholder="New York, NY"
           />
         </div>
@@ -109,7 +109,7 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             type="url"
             value={formData.linkedin || ''}
             onChange={(e) => handleChange('linkedin', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             placeholder="https://linkedin.com/in/johndoe"
           />
         </div>
@@ -122,7 +122,7 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
             type="url"
             value={formData.portfolio || ''}
             onChange={(e) => handleChange('portfolio', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-100 text-gray-900 caret-pink-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent sleek-input placeholder-gray-500"
+            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             placeholder="https://johndoe.com"
           />
         </div>

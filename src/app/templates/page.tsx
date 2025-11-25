@@ -1219,7 +1219,7 @@ const EnhancedTemplatesPage = () => {
           <div className="flex items-center justify-center">
             <div className="relative">
               <img
-                alt="SmartATS Enterprise Dashboard"
+                alt="SmartATS Dashboard"
                 className="w-80 h-85 rounded-2xl shadow-2xl border border-gray-700"
                 src="/Donkey.png"
               />

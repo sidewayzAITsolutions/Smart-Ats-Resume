@@ -122,7 +122,7 @@ export default function ContactPage() {
                     <option value="general">General Inquiry</option>
                     <option value="support">Technical Support</option>
                     <option value="billing">Billing Question</option>
-                    <option value="enterprise">Enterprise Plans</option>
+                    <option value="premium">Premium Plans</option>
                     <option value="feedback">Feedback</option>
                     <option value="partnership">Partnership Opportunity</option>
                   </select>
@@ -171,7 +171,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold text-white mb-6">Get in Touch</h2>
               <p className="text-gray-300 mb-8">
                 Whether you have questions about our features, pricing, need help with your resume, 
-                or want to explore enterprise solutions, our team is ready to assist you.
+                or want to explore premium options, our team is ready to assist you.
               </p>
             </div>
             

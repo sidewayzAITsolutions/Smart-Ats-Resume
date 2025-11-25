@@ -1,8 +1,9 @@
-/* Tailwind CSS directives */
+/* 
+  The @tailwind directives below require Tailwind CSS and a build tool (like PostCSS) to process them.
+  If you see "Unknown at rule @tailwind", make sure your build tool is running and Tailwind is installed.
+*/
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
 
 /* CSS Custom Properties */

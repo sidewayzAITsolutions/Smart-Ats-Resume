@@ -555,7 +555,7 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Enterprise Features */}
+        {/* Pricing Plans */}
         <section className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
@@ -686,7 +686,7 @@ const Page: React.FC = () => {
                 <div className="flex items-center justify-center h-full img-zoom rounded-xl overflow-hidden">
                   <img
                     src="/2.png"
-                    alt="SmartATS Enterprise Dashboard"
+                    alt="SmartATS Dashboard"
                     className="w-full h-auto rounded-xl shadow-lg group-hover:shadow-2xl group-hover:shadow-amber-500/20 transition-all duration-500"
                   />
                 </div>
