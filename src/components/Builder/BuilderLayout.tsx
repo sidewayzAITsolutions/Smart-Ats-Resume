@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 
 import toast from 'react-hot-toast';
 import { useResumeStore } from '@/store/resumeStore';
@@ -857,7 +857,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   }, [resumeData]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 relative overflow-hidden">
+    <div className="h-[100dvh] flex flex-col bg-gray-900 relative overflow-hidden">
       {/* Background gradient effects matching site theme */}
       <div className="fixed inset-0 bg-gradient-to-br from-teal-900/20 via-amber-900/20 to-pink-900/20 opacity-50 pointer-events-none z-0"></div>
 
@@ -866,7 +866,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         <img
           src="/Donkey.png"
           alt="Smart ATS Donkey"
-          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300"
+          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300 hidden lg:block"
         />
       </div>
 
@@ -895,7 +895,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden relative z-10">
+      <div className="flex-1 flex overflow-hidden relative z-10 min-h-0">
         {/* Sidebar Navigation */}
         <BuilderSidebar
           activeSection={activeSection}
@@ -910,8 +910,9 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         />
 
         {/* Editor */}
-        <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6">
+        <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm min-h-0">
+          {/* Add padding-bottom on mobile for bottom nav, extra in landscape */}
+          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6 pb-28 lg:pb-8">
             <ResumeEditor
               activeSection={activeSection}
               resumeData={resumeData}
@@ -938,7 +939,17 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       {/* Mobile Preview Modal - Full screen on mobile when preview is toggled */}
       {showPreview && (
         <div className="lg:hidden fixed inset-0 z-50 bg-gray-900">
-          <div className="h-full overflow-y-auto">
+          {/* Mobile preview header with close button */}
+          <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-white">Resume Preview</h2>
+            <button
+              onClick={() => setShowPreview(false)}
+              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="h-[calc(100vh-60px)] overflow-y-auto pb-20">
             <ResumePreview
               resumeData={resumeData}
               onTemplateChange={(templateId) => {
