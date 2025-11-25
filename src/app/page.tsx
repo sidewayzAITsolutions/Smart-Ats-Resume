@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import {
   ArrowRight,
@@ -750,34 +751,31 @@ const Page: React.FC = () => {
               <div>
                 <h4 className="font-semibold text-white mb-4">Product</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/templates" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Templates</a></li>
-                  <li><a href="/builder" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Resume Builder</a></li>
-                  <li><a href="/ats-guide" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">ATS Guide</a></li>
+                  <li><Link href="/pricing" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Pricing</Link></li>
+                  <li><Link href="/ats-guide" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">ATS Guide</Link></li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="font-semibold text-white mb-4">Company</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/about" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">About</a></li>
-                  <li><a href="/pricing" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Pricing</a></li>
-                  <li><a href="/blog" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Blog</a></li>
+                  <li><Link href="/about" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">About</Link></li>
+                  <li><Link href="/blog" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Blog</Link></li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="font-semibold text-white mb-4">Support</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/contact" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Contact</a></li>
-                  <li><a href="/privacypolicy" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Privacy Policy</a></li>
-                  <li><a href="/termsofservice" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Terms of Service</a></li>
-
+                  <li><Link href="/contact" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Contact</Link></li>
+                  <li><Link href="/privacypolicy" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Privacy Policy</Link></li>
+                  <li><Link href="/termsofservice" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Terms of Service</Link></li>
                 </ul>
               </div>
             </div>
 
             <div className="border-t border-gray-900 pt-8 text-center text-sm">
-              <p>&copy; 2024 SmartATS. All rights reserved.</p>
+              <p>&copy; 2025 SmartATS. All rights reserved.</p>
             </div>
           </div>
         </footer>
