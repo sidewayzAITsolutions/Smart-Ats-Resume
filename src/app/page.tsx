@@ -670,6 +670,10 @@ const Page: React.FC = () => {
                     <Phone className="w-5 h-5 text-amber-500 flex-shrink-0" />
                     <a href="tel:+12253019908" className="hover:text-amber-400 transition-colors">
                       225-301-9908
+                      Beat the
+                      BOTS
+                      Land the 
+                      JOB
                     </a>
                   </div>
                 </div>
@@ -692,7 +696,7 @@ const Page: React.FC = () => {
         <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Change Yoour Life Today...
+              Change Your Life Today...
             </h2>
             <p className="text-xl text-white/90 mb-8">
               75% of resumes fail ATS. You won't be one of them.
