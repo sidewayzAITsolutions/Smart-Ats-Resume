@@ -655,7 +655,7 @@ const Page: React.FC = () => {
 
               <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 transition-all duration-300 group">
                 <img
-                  src="/new.png"
+                  src="/new1.png"
                   alt="Contact Information"
                   className="w-full h-auto rounded-lg"
                 />
