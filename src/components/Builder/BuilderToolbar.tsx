@@ -56,18 +56,18 @@ export default function BuilderToolbar({
 
 
   return (
-    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700/50 backdrop-blur-sm shadow-lg px-6 py-4">
+    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700/50 backdrop-blur-sm shadow-lg px-3 sm:px-6 py-3 sm:py-4">
       <div className="flex items-center justify-between">
         {/* Left Section */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 sm:gap-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <img 
-              src="/horse-logo.png" 
-              alt="SmartATS Logo" 
-              className="h-10 w-10 rounded-lg transition-transform group-hover:scale-110 object-contain"
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
+            <img
+              src="/horse-logo.png"
+              alt="SmartATS Logo"
+              className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg transition-transform group-hover:scale-110 object-contain"
             />
-            <div className="flex flex-col">
+            <div className="hidden sm:flex flex-col">
               <h1 className="text-lg font-bold text-white tracking-tight">
                 SmartATS
               </h1>
@@ -75,11 +75,11 @@ export default function BuilderToolbar({
             </div>
           </Link>
 
-          {/* Divider */}
-          <div className="h-8 w-px bg-gray-700"></div>
+          {/* Divider - Hidden on mobile */}
+          <div className="hidden md:block h-8 w-px bg-gray-700"></div>
 
-          {/* Navigation shortcuts */}
-          <div className="flex items-center gap-2">
+          {/* Navigation shortcuts - Hidden on mobile */}
+          <div className="hidden md:flex items-center gap-2">
             <Link
               href="/"
               className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 hover:border-teal-500/50 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
@@ -96,9 +96,9 @@ export default function BuilderToolbar({
             </Link>
           </div>
 
-          {/* Save Status - Only show when actively saving */}
+          {/* Save Status - Only show when actively saving on desktop */}
           {isSaving && (
-            <div className="flex items-center gap-2 text-sm text-gray-400 ml-4">
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-400 ml-4">
               <Loader2 className="h-4 w-4 animate-spin text-teal-400" />
               <span>Saving...</span>
             </div>
@@ -106,29 +106,30 @@ export default function BuilderToolbar({
         </div>
 
   {/* Right Section */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1 sm:gap-3">
           {/* ATS Score Button */}
           <button type="button"
             onClick={onCheckATS}
-            className="px-4 py-2 text-sm font-semibold text-teal-300 bg-gradient-to-r from-teal-900/60 to-teal-800/60 border border-teal-600/50 rounded-lg hover:from-teal-800/80 hover:to-teal-700/80 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-teal-900/20 backdrop-blur-sm"
+            className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-teal-300 bg-gradient-to-r from-teal-900/60 to-teal-800/60 border border-teal-600/50 rounded-lg hover:from-teal-800/80 hover:to-teal-700/80 transition-all duration-200 flex items-center gap-1 sm:gap-2 shadow-lg shadow-teal-900/20 backdrop-blur-sm"
           >
             <Zap className="h-4 w-4" />
-            Check ATS Score
+            <span className="hidden sm:inline">Check ATS Score</span>
+            <span className="sm:hidden">ATS</span>
           </button>
 
-          {/* Import from LinkedIn */}
+          {/* Import from LinkedIn - Hidden on mobile */}
           <button type="button"
             onClick={onImportLinkedIn}
-            className="px-4 py-2 text-sm font-medium text-amber-300 bg-gradient-to-r from-amber-900/60 to-amber-800/60 border border-amber-700/50 rounded-lg hover:from-amber-800/80 hover:to-amber-700/80 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+            className="hidden md:flex px-4 py-2 text-sm font-medium text-amber-300 bg-gradient-to-r from-amber-900/60 to-amber-800/60 border border-amber-700/50 rounded-lg hover:from-amber-800/80 hover:to-amber-700/80 transition-all duration-200 items-center gap-2 backdrop-blur-sm"
           >
             <FileText className="h-4 w-4" />
             Import LinkedIn PDF
           </button>
 
-          {/* Import Resume (file) */}
+          {/* Import Resume (file) - Hidden on mobile */}
           <button type="button"
             onClick={onImport}
-            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 hover:border-gray-600 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+            className="hidden md:flex px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 hover:border-gray-600 transition-all duration-200 items-center gap-2 backdrop-blur-sm"
           >
             <FileText className="h-4 w-4" />
             Import Resume
@@ -138,7 +139,7 @@ export default function BuilderToolbar({
           <button
             onClick={onTogglePreview}
             className={cn(
-              'px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 backdrop-blur-sm',
+              'px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1 sm:gap-2 backdrop-blur-sm',
               showPreview
                 ? 'text-gray-300 bg-gray-800/50 border border-gray-700/50 hover:bg-gray-700/50'
                 : 'text-gray-400 bg-gray-800/30 border border-gray-700/30 hover:bg-gray-700/30'
@@ -147,21 +148,21 @@ export default function BuilderToolbar({
             {showPreview ? (
               <>
                 <EyeOff className="h-4 w-4" />
-                Hide Preview
+                <span className="hidden sm:inline">Hide Preview</span>
               </>
             ) : (
               <>
                 <Eye className="h-4 w-4" />
-                Show Preview
+                <span className="hidden sm:inline">Show Preview</span>
               </>
             )}
           </button>
 
-          {/* Save Button */}
+          {/* Save Button - Hidden on mobile (auto-save) */}
           <button
             onClick={onSave}
             disabled={isSaving}
-            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm"
+            className="hidden sm:flex px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 transition-all duration-200 items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm"
           >
             <Save className="h-4 w-4" />
             Save
@@ -172,17 +173,17 @@ export default function BuilderToolbar({
             <button
               onClick={() => setExportMenuOpen(!exportMenuOpen)}
               disabled={isExporting}
-              className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-teal-600 via-teal-500 to-amber-600 rounded-lg hover:from-teal-500 hover:via-teal-400 hover:to-amber-500 transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-900/30"
+              className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-teal-600 via-teal-500 to-amber-600 rounded-lg hover:from-teal-500 hover:via-teal-400 hover:to-amber-500 transition-all duration-200 flex items-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-900/30"
             >
               {isExporting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Exporting...
+                  <span className="hidden sm:inline">Exporting...</span>
                 </>
               ) : (
                 <>
                   <Download className="h-4 w-4" />
-                  Export
+                  <span className="hidden sm:inline">Export</span>
                   <ChevronDown className="h-4 w-4" />
                 </>
               )}
@@ -223,9 +224,9 @@ export default function BuilderToolbar({
             )}
           </div>
 
-          {/* Share Button */}
+          {/* Share Button - Hidden on mobile */}
           <button
-            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+            className="hidden md:flex px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 border border-gray-700/50 rounded-lg hover:bg-gray-700/50 transition-all duration-200 items-center gap-2 backdrop-blur-sm"
           >
             <Share2 className="h-4 w-4" />
             Share

@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { useResumeStore } from '@/store/resumeStore';
 import { ResumeData } from '@/types/resume';
 import CollapsibleATSScore from '@/components/CollapsibleATSScore';
+import { createClient } from '@/lib/supabase/client';
 
 import BuilderSidebar from './BuilderSidebar';
 import BuilderToolbar from './BuilderToolbar';
@@ -586,9 +587,47 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     risks: string[];
     metricInsights?: import('@/lib/ats-analyzer').ATSAnalysis['metricInsights'];
   } | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [resumeCount, setResumeCount] = useState(0);
 
   const { resumeData, updateResumeData, saveResume } = useResumeStore();
   const savingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch user premium status and resume count
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return;
+
+        setUserId(user.id);
+
+        // Get premium status
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_premium')
+          .eq('id', user.id)
+          .single();
+
+        setIsPremium(profile?.is_premium || false);
+
+        // Get resume count
+        const { count } = await supabase
+          .from('resumes')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+
+        setResumeCount(count || 0);
+      } catch (error) {
+        console.error('Error fetching user status:', error);
+      }
+    };
+
+    fetchUserStatus();
+  }, []);
 
   // Initialize with existing data if provided
   useEffect(() => {
@@ -865,27 +904,44 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
         {/* Editor */}
         <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto py-8 px-6">
+          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6">
             <ResumeEditor
               activeSection={activeSection}
               resumeData={resumeData}
               onUpdate={updateResumeData}
+              isPremium={isPremium}
             />
           </div>
         </div>
 
-        {/* Preview Panel */}
+        {/* Preview Panel - Responsive */}
         {showPreview && (
-          <div className="w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
-            <ResumePreview 
-              resumeData={resumeData} 
+          <div className="hidden lg:block lg:w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
+            <ResumePreview
+              resumeData={resumeData}
               onTemplateChange={(templateId) => {
                 updateResumeData({ templateId });
               }}
+              isPremium={isPremium}
             />
           </div>
         )}
       </div>
+
+      {/* Mobile Preview Modal - Full screen on mobile when preview is toggled */}
+      {showPreview && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-gray-900">
+          <div className="h-full overflow-y-auto">
+            <ResumePreview
+              resumeData={resumeData}
+              onTemplateChange={(templateId) => {
+                updateResumeData({ templateId });
+              }}
+              isPremium={isPremium}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Auto-save indicator */}
       {isSaving && (

@@ -1,7 +1,7 @@
 // src/components/Builder/BuilderSidebar.tsx
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Award,
@@ -15,6 +15,8 @@ import {
   Tag,
   User,
   Type,
+  X,
+  Menu,
 } from 'lucide-react';
 
 const cn = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(' ');
@@ -50,6 +52,8 @@ export default function BuilderSidebar({
   onSectionChange,
   completionStatus,
 }: BuilderSidebarProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const getCompletionPercentage = () => {
     const requiredSections = sections.filter(s => s.required);
     const completedRequired = requiredSections.filter(
@@ -60,8 +64,40 @@ export default function BuilderSidebar({
 
   const completionPercentage = getCompletionPercentage();
 
+  const handleSectionChange = (section: string) => {
+    onSectionChange(section);
+    setIsMobileMenuOpen(false); // Close mobile menu after selection
+  };
+
   return (
-    <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+    <>
+      {/* Mobile Menu Button - Only visible on mobile */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-20 left-4 z-50 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
+        aria-label="Toggle menu"
+      >
+        {isMobileMenuOpen ? (
+          <X className="h-6 w-6 text-gray-300" />
+        ) : (
+          <Menu className="h-6 w-6 text-gray-300" />
+        )}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Responsive */}
+      <div className={cn(
+        "w-64 bg-gray-800 border-r border-gray-700 flex flex-col",
+        "fixed lg:relative inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out",
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
       {/* Progress Indicator */}
       <div className="p-6 border-b border-gray-700">
         <div className="mb-2 flex items-center justify-between">
@@ -91,7 +127,7 @@ export default function BuilderSidebar({
           return (
             <button
               key={section.id}
-              onClick={() => onSectionChange(section.id)}
+              onClick={() => handleSectionChange(section.id)}
               className={cn(
                 'w-full px-6 py-3 flex items-center gap-3 text-left transition-colors',
                 'hover:bg-gray-700/50',
@@ -124,8 +160,8 @@ export default function BuilderSidebar({
         })}
       </nav>
 
-      {/* Smart Ass Donkey Section */}
-      <div className="p-6 border-t border-gray-700">
+      {/* Smart Ass Donkey Section - Hidden on mobile */}
+      <div className="hidden lg:block p-6 border-t border-gray-700">
         <div className="flex justify-center mb-4">
           <img
             src="/logo.png"
@@ -145,5 +181,6 @@ export default function BuilderSidebar({
         </div>
       </div>
     </div>
+    </>
   );
 }

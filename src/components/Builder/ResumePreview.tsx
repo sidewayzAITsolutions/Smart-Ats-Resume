@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 
 import {
+  Crown,
+  Lock,
   Maximize2,
   Minimize2,
   Palette,
@@ -19,6 +21,7 @@ interface ResumePreviewProps {
   resumeData: ResumeData;
   template?: string;
   onTemplateChange?: (templateId: string) => void;
+  isPremium?: boolean;
 }
 
 const templates: Record<string, string> = {
@@ -80,9 +83,15 @@ const getAccentColor = (colors?: FormattingOptions['colors']) => {
 export default function ResumePreview({
   resumeData,
   template = 'modern',
-  onTemplateChange
+  onTemplateChange,
+  isPremium = false
 }: ResumePreviewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Free users can only use 'modern' template
+  const availableTemplates = isPremium
+    ? templates
+    : { modern: 'Modern' };
   const [selectedTemplate, setSelectedTemplate] = useState(resumeData?.templateId || template);
   const [showTemplateMenu, setShowTemplateMenu] = useState(false);
 
@@ -1736,11 +1745,15 @@ export default function ResumePreview({
             </button>
             
             {showTemplateMenu && (
-              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
-                {Object.entries(templates).map(([key, label]) => (
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10 min-w-[200px]">
+                {Object.entries(availableTemplates).map(([key, label]) => (
                   <button
                     key={key}
                     onClick={() => {
+                      if (!isPremium && key !== 'modern') {
+                        window.location.href = '/pricing';
+                        return;
+                      }
                       setSelectedTemplate(key);
                       setShowTemplateMenu(false);
                       // Update resume data with new template
@@ -1749,11 +1762,27 @@ export default function ResumePreview({
                       }
                     }}
                     className={cn(
-                      "w-full px-4 py-2 text-sm text-left hover:bg-gray-50",
+                      "w-full px-4 py-2 text-sm text-left hover:bg-gray-50 flex items-center justify-between",
                       selectedTemplate === key && "bg-indigo-50 text-indigo-600"
                     )}
                   >
-                    {label}
+                    <span>{label}</span>
+                  </button>
+                ))}
+
+                {/* Show locked premium templates for free users */}
+                {!isPremium && Object.entries(templates).filter(([key]) => key !== 'modern').map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => window.location.href = '/pricing'}
+                    className="w-full px-4 py-2 text-sm text-left hover:bg-gray-50 flex items-center justify-between text-gray-400 cursor-pointer"
+                    title="Premium template - Upgrade to unlock"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      {label}
+                    </span>
+                    <Crown className="w-3 h-3 text-amber-500" />
                   </button>
                 ))}
               </div>

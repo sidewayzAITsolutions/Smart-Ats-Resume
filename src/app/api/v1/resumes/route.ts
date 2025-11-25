@@ -129,6 +129,27 @@ async function createResume(resumeData: Partial<SavedResume>, userId: string): P
   try {
     const supabase = createSupabaseClient();
 
+    // Check if user is premium
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_premium')
+      .eq('id', userId)
+      .single();
+
+    const isPremium = profile?.is_premium || false;
+
+    // If not premium, check resume count
+    if (!isPremium) {
+      const { count } = await supabase
+        .from('resumes')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
+      if (count && count >= 1) {
+        throw new Error('FREE_LIMIT_REACHED');
+      }
+    }
+
     const newResume: Omit<SavedResume, 'id'> = {
       name: resumeData.name || 'Untitled Resume',
       data: resumeData.data || {} as ResumeData,
@@ -253,8 +274,19 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ resume }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in POST /api/v1/resumes:', error);
+
+    if (error.message === 'FREE_LIMIT_REACHED') {
+      return NextResponse.json(
+        {
+          error: 'Free users can only create 1 resume. Upgrade to Premium for unlimited resumes.',
+          code: 'FREE_LIMIT_REACHED'
+        },
+        { status: 403 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

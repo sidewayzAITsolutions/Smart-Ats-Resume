@@ -21,12 +21,14 @@ interface ResumeEditorProps {
   activeSection: string;
   resumeData: ResumeData;
   onUpdate: (data: Partial<ResumeData>) => void;
+  isPremium: boolean;
 }
 
 export default function ResumeEditor({
   activeSection,
   resumeData,
   onUpdate,
+  isPremium,
 }: ResumeEditorProps) {
   const renderSection = () => {
     switch (activeSection) {
@@ -53,6 +55,7 @@ export default function ResumeEditor({
               data={resumeData.summary || ''}
               onChange={(summary) => onUpdate({ summary })}
               jobTitle={resumeData.personalInfo?.title}
+              isPremium={isPremium}
             />
           </div>
         );
@@ -67,8 +70,8 @@ export default function ResumeEditor({
               initialData={resumeData.experience || []}
               onUpdate={(experience) => onUpdate({ experience })}
               jobDescription={(resumeData as any).jobDescription || ''}
-              isProUser={false}
-              onUpgradeClick={() => {}}
+              isProUser={isPremium}
+              onUpgradeClick={() => window.location.href = '/pricing'}
             />
           </div>
         );
@@ -105,6 +108,7 @@ export default function ResumeEditor({
             <KeywordsForm
               data={resumeData}
               onChange={onUpdate}
+              isPremium={isPremium}
             />
           </div>
         );

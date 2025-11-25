@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import {
   AlertCircle,
   Award,
+  Crown,
   GripVertical,
+  Lock,
   Plus,
   Sparkles,
   Trash2,
@@ -298,9 +300,10 @@ interface SummaryFormProps {
   data: string;
   onChange: (summary: string) => void;
   jobTitle?: string;
+  isPremium?: boolean;
 }
 
-export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
+export function SummaryForm({ data, onChange, jobTitle, isPremium = false }: SummaryFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [charCount, setCharCount] = useState(data.length);
 
@@ -310,6 +313,11 @@ export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
   };
 
   const generateAISummary = async () => {
+    if (!isPremium) {
+      window.location.href = '/pricing';
+      return;
+    }
+
     setIsGenerating(true);
     try {
       // This would call your AI API to generate a summary
@@ -318,7 +326,7 @@ export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jobTitle }),
       });
-      
+
       if (response.ok) {
         const { summary } = await response.json();
         handleChange(summary);
@@ -355,10 +363,17 @@ export function SummaryForm({ data, onChange, jobTitle }: SummaryFormProps) {
           <button
             onClick={generateAISummary}
             disabled={isGenerating || !jobTitle}
-            className="flex items-center gap-2 px-3 py-1 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className={`flex items-center gap-2 px-3 py-1 text-sm rounded-lg transition-colors relative ${
+              isPremium
+                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+            title={!isPremium ? 'Premium feature - Upgrade to use AI generation' : ''}
           >
+            {!isPremium && <Lock className="h-4 w-4" />}
             <Sparkles className="h-4 w-4" />
             {isGenerating ? 'Generating...' : 'Generate with AI'}
+            {!isPremium && <Crown className="h-3 w-3 text-amber-500 absolute -top-1 -right-1" />}
           </button>
         </div>
 
