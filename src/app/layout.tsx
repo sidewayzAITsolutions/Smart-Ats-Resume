@@ -54,21 +54,21 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://smartats.com'),
+  metadataBase: new URL('https://smartatsresume.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'SmartATS - Resume Builder That Actually Gets You Hired',
     description: 'Far too many of resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
-    url: 'https://smartats.com',
+    url: 'https://smartatsresume.com',
     siteName: 'SmartATS',
     images: [
       {
         url: '/horse-logo.png',
         width: 1200,
         height: 630,
-        alt: 'SmartATS - Beat the ATS, Get the Job',
+        alt: 'SmartATS - Beat the Bots, Get the Job',
       },
     ],
     locale: 'en_US',
