@@ -40,6 +40,7 @@ const CursorAnimation: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setCursorPos({ x: e.clientX, y: e.clientY });
       
@@ -52,7 +53,7 @@ const CursorAnimation: React.FC = () => {
       // Check if hovering over interactive elements
       const target = e.target as HTMLElement;
       const computedStyle = window.getComputedStyle(target);
-      const isInteractive = 
+      const isInteractive = Boolean(
         target.tagName === 'BUTTON' ||
         target.tagName === 'A' ||
         target.closest('button') ||
@@ -62,7 +63,8 @@ const CursorAnimation: React.FC = () => {
         target.closest('[onClick]') ||
         computedStyle.cursor === 'pointer' ||
         target.classList.contains('cursor-pointer') ||
-        target.hasAttribute('href');
+        target.hasAttribute('href')
+      );
       
       setIsHovering(isInteractive);
 
