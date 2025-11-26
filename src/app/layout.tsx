@@ -44,7 +44,7 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: 'SmartATS - Resume Builder That Actually Gets You Hired',
-  description: '95% of resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
+  description: 'Far too many resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
   keywords: ['resume builder', 'ATS optimization', 'job search', 'career', 'AI resume'],
   authors: [{ name: 'SmartATS Team' }],
   creator: 'SmartATS',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'SmartATS - Resume Builder That Actually Gets You Hired',
-    description: '95% of resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
+    description: 'Far too many of resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
     url: 'https://smartats.com',
     siteName: 'SmartATS',
     images: [
