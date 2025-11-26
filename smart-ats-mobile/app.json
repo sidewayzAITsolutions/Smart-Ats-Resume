@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "SmartATS",
+    "slug": "smart-ats-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "smartats",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#050505"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.smartats.resume",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#050505"
+      },
+      "package": "com.smartats.resume",
+      "edgeToEdgeEnabled": true,
+      "versionCode": 1
+    },
+    "plugins": [
+      "expo-linear-gradient",
+      "expo-blur"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "smartats-mobile-placeholder"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

@@ -2,8 +2,7 @@
 'use client';
 
 import React from 'react';
-import { GripVertical, Plus, Trash2, Mic } from 'lucide-react';
-import { VoiceInputButton } from '@/components/ui/VoiceInput';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 
 interface Project {
   id: string;
@@ -57,18 +56,13 @@ export default function ProjectsForm({ projects, onChange }: ProjectsFormProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={project.name}
-                  onChange={(e) => updateProject(project.id, { name: e.target.value })}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="e.g., E-commerce Platform"
-                />
-                <VoiceInputButton
-                  onTranscript={(text) => updateProject(project.id, { name: text })}
-                />
-              </div>
+              <input
+                type="text"
+                value={project.name}
+                onChange={(e) => updateProject(project.id, { name: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="e.g., E-commerce Platform"
+              />
             </div>
 
             <div>
@@ -84,21 +78,13 @@ export default function ProjectsForm({ projects, onChange }: ProjectsFormProps) 
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <div className="flex gap-2">
-                <textarea
-                  value={project.description}
-                  onChange={(e) => updateProject(project.id, { description: e.target.value })}
-                  rows={3}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Describe the project, your role, and key achievements..."
-                />
-                <VoiceInputButton
-                  onTranscript={(text) => {
-                    const current = project.description;
-                    updateProject(project.id, { description: current ? `${current} ${text}` : text });
-                  }}
-                />
-              </div>
+              <textarea
+                value={project.description}
+                onChange={(e) => updateProject(project.id, { description: e.target.value })}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Describe the project, your role, and key achievements..."
+              />
             </div>
 
             <div className="md:col-span-2">

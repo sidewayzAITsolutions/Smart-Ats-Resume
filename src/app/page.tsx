@@ -7,6 +7,7 @@ import {
   Award,
   BarChart2,
   BarChart3,
+  BookOpen,
   CheckCircle,
   CheckCircle2,
   ChevronRight,
@@ -695,6 +696,82 @@ const Page: React.FC = () => {
           </div>
         </section>
 
+        {/* Career Hub Section */}
+        <section className="py-20 px-6 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Content */}
+              <div className="animate-fade-in-up">
+                <div className="inline-flex items-center gap-2 bg-teal-500/10 text-teal-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                  <BookOpen className="w-4 h-4" />
+                  Free Resources
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                  The Career Hub
+                </h2>
+                <p className="text-lg text-gray-300 mb-6">
+                  Your go-to resource center for job search success. Access expert guides,
+                  resume tips, interview strategies, and career advice — all designed to help
+                  you stand out and land your dream job.
+                </p>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    Expert resume writing guides & ATS tips
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    Interview preparation strategies
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    Career transition & job search advice
+                  </li>
+                </ul>
+                <Link
+                  href="/thecareerhub"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 hover-lift group"
+                >
+                  Explore Career Hub
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+
+              {/* Preview Cards */}
+              <div className="grid grid-cols-2 gap-4 animate-fade-in-up stagger-2">
+                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-amber-500/50 transition-all">
+                  <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3">
+                    <FileText className="w-5 h-5 text-amber-300" />
+                  </div>
+                  <h4 className="font-semibold text-white text-sm mb-1">Resume Tips</h4>
+                  <p className="text-xs text-gray-400">Beat ATS systems with proven strategies</p>
+                </div>
+                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-teal-500/50 transition-all">
+                  <div className="w-10 h-10 bg-teal-500/10 rounded-lg flex items-center justify-center mb-3">
+                    <User className="w-5 h-5 text-teal-300" />
+                  </div>
+                  <h4 className="font-semibold text-white text-sm mb-1">Interview Prep</h4>
+                  <p className="text-xs text-gray-400">Ace your interviews with confidence</p>
+                </div>
+                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-emerald-500/50 transition-all">
+                  <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-3">
+                    <Target className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <h4 className="font-semibold text-white text-sm mb-1">Job Search</h4>
+                  <p className="text-xs text-gray-400">Strategic job hunting guides</p>
+                </div>
+                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-purple-500/50 transition-all">
+                  <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center mb-3">
+                    <TrendingUp className="w-5 h-5 text-purple-300" />
+                  </div>
+                  <h4 className="font-semibold text-white text-sm mb-1">Career Advice</h4>
+                  <p className="text-xs text-gray-400">Navigate your career path</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
        {/* CTA Section */}
         <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600 relative overflow-hidden">
           {/* Animated background pattern */}
@@ -753,6 +830,7 @@ const Page: React.FC = () => {
                 <ul className="space-y-2 text-sm">
                   <li><Link href="/pricing" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Pricing</Link></li>
                   <li><Link href="/ats-guide" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">ATS Guide</Link></li>
+                  <li><Link href="/thecareerhub" className="hover:text-orange-400 hover:translate-x-1 inline-block transition-all duration-300">Career Hub</Link></li>
                 </ul>
               </div>
 

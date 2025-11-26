@@ -24,6 +24,7 @@
           "ai": "^5.0.1",
           "docx": "^9.5.1",
           "dompurify": "^3.2.6",
+          "expo-cli": "^6.3.12",
           "fileinput": "^0.2.0",
           "formidable": "^3.5.4",
           "html2canvas": "^1.4.1",

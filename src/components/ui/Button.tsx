@@ -39,50 +39,58 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       'disabled:cursor-not-allowed'
     ].join(' ');
 
-    // Variant styles
+    // Variant styles - Dark theme with amber/teal accents
     const variantStyles = {
       primary: [
-        'bg-blue-600',
+        'bg-gradient-to-r',
+        'from-teal-600',
+        'to-teal-500',
         'text-white',
-        'hover:bg-blue-700',
-        'focus:ring-blue-500',
-        'shadow-sm',
-        'hover:shadow-md'
+        'hover:from-teal-500',
+        'hover:to-teal-400',
+        'focus:ring-teal-500',
+        'focus:ring-offset-gray-900',
+        'shadow-lg',
+        'shadow-teal-900/30',
+        'hover:shadow-teal-800/40'
       ].join(' '),
       
       secondary: [
-        'bg-gray-100',
-        'text-gray-900',
-        'hover:bg-gray-200',
-        'focus:ring-gray-500',
+        'bg-gray-800',
+        'text-gray-200',
+        'hover:bg-gray-700',
+        'focus:ring-gray-600',
+        'focus:ring-offset-gray-900',
         'border',
-        'border-gray-300'
+        'border-gray-700'
       ].join(' '),
       
       outline: [
         'border',
-        'border-gray-300',
-        'bg-white',
-        'text-gray-700',
-        'hover:bg-gray-50',
-        'hover:border-gray-400',
-        'focus:ring-blue-500',
-        'shadow-sm'
+        'border-gray-600',
+        'bg-transparent',
+        'text-gray-300',
+        'hover:bg-gray-800',
+        'hover:border-gray-500',
+        'focus:ring-teal-500',
+        'focus:ring-offset-gray-900'
       ].join(' '),
       
       ghost: [
-        'text-gray-700',
-        'hover:bg-gray-100',
-        'focus:ring-gray-500'
+        'text-gray-300',
+        'hover:bg-gray-800',
+        'focus:ring-gray-600',
+        'focus:ring-offset-gray-900'
       ].join(' '),
       
       danger: [
-        'bg-red-600',
+        'bg-red-600/80',
         'text-white',
-        'hover:bg-red-700',
+        'hover:bg-red-600',
         'focus:ring-red-500',
-        'shadow-sm',
-        'hover:shadow-md'
+        'focus:ring-offset-gray-900',
+        'shadow-lg',
+        'shadow-red-900/30'
       ].join(' ')
     };
     

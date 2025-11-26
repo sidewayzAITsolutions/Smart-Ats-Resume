@@ -41,8 +41,9 @@ export default function FormattingToolbar({ options, onChange }: FormattingToolb
   return (
     <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 space-y-4">
       <div className="flex items-center gap-2 text-sm text-gray-300">
-        <Type className="w-4 h-4" />
+        <Type className="w-4 h-4 text-teal-400" />
         <span className="font-semibold">Formatting Options</span>
+        <span className="ml-auto text-xs text-teal-400/70">Changes apply instantly to preview</span>
       </div>
 
       {/* Bullet Style */}
@@ -56,8 +57,8 @@ export default function FormattingToolbar({ options, onChange }: FormattingToolb
               onClick={() => onChange({ ...options, bulletStyle: value })}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all ${
                 options.bulletStyle === value
-                  ? 'bg-blue-600 text-white border-2 border-blue-400'
-                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'
+                  ? 'bg-teal-600 text-white border-2 border-teal-400 shadow-lg shadow-teal-900/30'
+                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600 hover:border-gray-500'
               }`}
             >
               <Icon className="w-3 h-3" />
@@ -78,12 +79,12 @@ export default function FormattingToolbar({ options, onChange }: FormattingToolb
               onClick={() => onChange({ ...options, fontSize: value })}
               className={`px-3 py-2 rounded-lg text-xs transition-all ${
                 options.fontSize === value
-                  ? 'bg-blue-600 text-white border-2 border-blue-400'
-                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'
+                  ? 'bg-teal-600 text-white border-2 border-teal-400 shadow-lg shadow-teal-900/30'
+                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600 hover:border-gray-500'
               }`}
             >
               <div className="font-semibold">{label}</div>
-              <div className="text-[10px] text-gray-400">{size}</div>
+              <div className={`text-[10px] ${options.fontSize === value ? 'text-teal-200' : 'text-gray-400'}`}>{size}</div>
             </button>
           ))}
         </div>
@@ -100,12 +101,12 @@ export default function FormattingToolbar({ options, onChange }: FormattingToolb
               onClick={() => onChange({ ...options, lineSpacing: value })}
               className={`px-3 py-2 rounded-lg text-xs transition-all ${
                 options.lineSpacing === value
-                  ? 'bg-blue-600 text-white border-2 border-blue-400'
-                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'
+                  ? 'bg-teal-600 text-white border-2 border-teal-400 shadow-lg shadow-teal-900/30'
+                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600 hover:border-gray-500'
               }`}
             >
               <div className="font-semibold">{label}</div>
-              <div className="text-[10px] text-gray-400">{spacing}</div>
+              <div className={`text-[10px] ${options.lineSpacing === value ? 'text-teal-200' : 'text-gray-400'}`}>{spacing}</div>
             </button>
           ))}
         </div>

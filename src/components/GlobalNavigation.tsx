@@ -68,7 +68,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
   const mainNavItems = [
     { href: '/templates', label: 'Templates', icon: FileText },
     { href: '/pricing', label: 'Pricing', icon: CreditCard },
-    { href: '/ats-guide', label: 'ATS Guide', icon: BookOpen },
+    { href: '/thecareerhub', label: 'Career Hub', icon: BookOpen },
     { href: '/contact-sales', label: 'Contact', icon: Phone }
   ];
 

@@ -170,8 +170,13 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
+                    <p className="mt-2 text-sm" style={{ fontFamily: '"Inter", sans-serif', lineHeight: getLineSpacing(formatting.lineSpacing), color: getPrimaryTextColor(formatting.colors) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                     <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                         <li
                           key={i}
                           className="pl-5 relative"
@@ -185,7 +190,7 @@ export default function ResumePreview({
                           {formatting.bulletStyle !== 'number' && (
                             <span className="absolute left-0" style={{ color: getAccentColor(formatting.colors) }}>{getBulletChar(formatting.bulletStyle)}</span>
                           )}
-                          {line}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -370,8 +375,13 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
+                    <p className="mt-2 text-gray-700" style={{ fontFamily: '"Crimson Pro", serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                     <ul className="mt-3 space-y-1.5" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                         <li
                           key={i}
                           className="text-gray-700 pl-6 relative"
@@ -384,7 +394,7 @@ export default function ResumePreview({
                           {formatting.bulletStyle !== 'number' && (
                             <span className="absolute left-0 text-gray-400">{getBulletChar(formatting.bulletStyle)}</span>
                           )}
-                          {line}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -565,8 +575,13 @@ export default function ResumePreview({
                       </span>
                     </div>
                     {exp.description && (
+                      <p className="mt-2 text-gray-700" style={{ fontFamily: '"Times New Roman", serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                        {exp.description}
+                      </p>
+                    )}
+                    {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                       <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                        {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                        {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                           <li
                             key={i}
                             className="text-gray-700 pl-6 relative"
@@ -579,7 +594,7 @@ export default function ResumePreview({
                             {formatting.bulletStyle !== 'number' && (
                               <span className="absolute left-0 text-gray-600">{getBulletChar(formatting.bulletStyle)}</span>
                             )}
-                            {line}
+                            {achievement}
                           </li>
                         ))}
                       </ul>
@@ -744,8 +759,13 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
+                    <p className="mt-1 text-gray-700 text-xs" style={{ fontFamily: '"Arial", sans-serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                     <ul className="mt-1 space-y-0.5" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                         <li
                           key={i}
                           className="text-gray-700 pl-5 relative"
@@ -758,7 +778,7 @@ export default function ResumePreview({
                           {formatting.bulletStyle !== 'number' && (
                             <span className="absolute left-0 text-gray-500">{getBulletChar(formatting.bulletStyle)}</span>
                           )}
-                          {line}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -925,8 +945,13 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
+                    <p className="mt-2 text-gray-700 text-sm" style={{ fontFamily: '"Segoe UI", "Roboto", sans-serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                     <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                         <li
                           key={i}
                           className="text-gray-700 pl-5 relative"
@@ -939,7 +964,7 @@ export default function ResumePreview({
                           {formatting.bulletStyle !== 'number' && (
                             <span className="absolute left-0 text-teal-500">{getBulletChar(formatting.bulletStyle)}</span>
                           )}
-                          {line}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -1106,8 +1131,13 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
+                    <p className="mt-1 text-gray-600 text-xs" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                     <ul className="mt-1 space-y-0.5" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                         <li
                           key={i}
                           className="text-gray-600 pl-5 relative"
@@ -1121,7 +1151,7 @@ export default function ResumePreview({
                           {formatting.bulletStyle !== 'number' && (
                             <span className="absolute left-0 text-gray-400">{getBulletChar(formatting.bulletStyle)}</span>
                           )}
-                          {line}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -1286,8 +1316,13 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
+                    <p className="mt-2 text-gray-600 text-sm" style={{ fontFamily: '"Lora", serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                     <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                         <li
                           key={i}
                           className="text-gray-600 pl-5 relative"
@@ -1300,7 +1335,7 @@ export default function ResumePreview({
                           {formatting.bulletStyle !== 'number' && (
                             <span className="absolute left-0 text-gray-400">{getBulletChar(formatting.bulletStyle)}</span>
                           )}
-                          {line}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -1478,8 +1513,13 @@ export default function ResumePreview({
                       </span>
                     </div>
                     {exp.description && (
+                      <p className="mt-2" style={{ fontFamily: '"Open Sans", sans-serif', color: getPrimaryTextColor(formatting.colors), lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                        {exp.description}
+                      </p>
+                    )}
+                    {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                       <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                        {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                        {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                           <li
                             key={i}
                             className="pl-5 relative"
@@ -1493,7 +1533,7 @@ export default function ResumePreview({
                             {formatting.bulletStyle !== 'number' && (
                               <span className="absolute left-0" style={{ color: getAccentColor(formatting.colors) }}>{getBulletChar(formatting.bulletStyle)}</span>
                             )}
-                            {line}
+                            {achievement}
                           </li>
                         ))}
                       </ul>
@@ -1622,8 +1662,13 @@ export default function ResumePreview({
                   </span>
                 </div>
                 {exp.description && (
+                  <p className="mt-2 text-gray-700" style={{ lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                    {exp.description}
+                  </p>
+                )}
+                {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
                   <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
-                    {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
+                    {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
                       <li
                         key={i}
                         className="text-gray-700 pl-5 relative"
@@ -1635,7 +1680,7 @@ export default function ResumePreview({
                         {formatting.bulletStyle !== 'number' && (
                           <span className="absolute left-0">{getBulletChar(formatting.bulletStyle)}</span>
                         )}
-                        {line}
+                        {achievement}
                       </li>
                     ))}
                   </ul>
