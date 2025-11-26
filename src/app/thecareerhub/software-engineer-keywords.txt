@@ -1,0 +1,137 @@
+H1: 100+ ATS Keywords for Software Engineers in 2025 (Copy & Paste List)
+
+If you're applying for software engineering jobs, your resume MUST contain the right ATS keywords, or you’ll be filtered out automatically.
+
+Below is the definitive list of 2025 software engineering keywords.
+
+H2: Programming Languages
+
+Python
+
+JavaScript
+
+Java
+
+C#
+
+C++
+
+TypeScript
+
+SQL
+
+Go
+
+Rust
+
+PHP
+
+Swift
+
+Kotlin
+
+H2: Frameworks & Libraries
+Frontend
+
+React
+
+Vue
+
+Angular
+
+Next.js
+
+Svelte
+
+Backend
+
+Node.js
+
+Express
+
+Django
+
+Flask
+
+Spring Boot
+
+.NET
+
+H2: Databases
+
+PostgreSQL
+
+MySQL
+
+MongoDB
+
+Redis
+
+Oracle
+
+DynamoDB
+
+H2: DevOps & Cloud
+
+AWS
+
+Azure
+
+Google Cloud
+
+Docker
+
+Kubernetes
+
+Terraform
+
+Jenkins
+
+GitHub Actions
+
+H2: Tools
+
+Git
+
+Jira
+
+Linux
+
+CI/CD
+
+REST APIs
+
+GraphQL
+
+H2: Soft Skills for SEs
+
+Problem Solving
+
+Collaboration
+
+System Design
+
+Debugging
+
+Performance Optimization
+
+H2: Example ATS-Optimized Resume Bullets
+
+Before:
+“Worked on backend services.”
+
+After:
+“Developed RESTful APIs using Node.js and PostgreSQL, improving request handling time by 22%.”
+
+H2: Copy/Paste Keyword Blocks
+H3: “Full Set” Block
+
+Python, SQL, Docker, AWS, React, Node.js, REST APIs, GitHub Actions, Agile, CI/CD, Kubernetes, TypeScript
+
+H2: Tailor These Keywords to Job Ads
+
+Paste any job description into:
+
+➡️ SmartATSResume.com
+
+And it extracts the exact skills you need to add.

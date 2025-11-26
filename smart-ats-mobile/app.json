@@ -6,12 +6,12 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
     "scheme": "smartats",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#050505"
+      "backgroundColor": "#030712"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -24,16 +24,12 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#050505"
+        "backgroundColor": "#030712"
       },
-      "package": "com.smartats.resume",
       "edgeToEdgeEnabled": true,
+      "package": "com.smartats.resume",
       "versionCode": 1
     },
-    "plugins": [
-      "expo-linear-gradient",
-      "expo-blur"
-    ],
     "extra": {
       "eas": {
         "projectId": "smartats-mobile-placeholder"

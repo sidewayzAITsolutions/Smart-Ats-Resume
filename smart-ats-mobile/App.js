@@ -1,6 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
+  Dimensions,
+  FlatList,
   Image,
   Linking,
   Pressable,
@@ -9,86 +11,82 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
-  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import { Feather } from '@expo/vector-icons';
 
-const heroBadges = [
-  { icon: 'shield', label: '98.4% ATS pass rate' },
-  { icon: 'clock', label: 'Build in under 10 min' },
-  { icon: 'zap', label: 'AI bullet points' },
+const heroHighlights = [
+  { icon: 'check-circle', label: '98.4% ATS pass rate' },
+  { icon: 'zap', label: 'AI bullet points in seconds' },
+  { icon: 'clock', label: 'Build-ready in 10 minutes' },
 ];
 
-const trustSignals = [
-  { icon: 'trending-up', value: '60%', label: 'Faster hiring' },
-  { icon: 'award', value: '94%', label: 'Recruiters rely on ATS' },
-  { icon: 'check-circle', value: '75%', label: 'Resumes auto-rejected' },
+const trustStats = [
+  { icon: 'shield', number: '75%', label: 'Resumes fail ATS' },
+  { icon: 'bar-chart-2', number: '60%', label: 'Faster hires' },
+  { icon: 'award', number: '94%', label: 'Recruiters use ATS' },
 ];
 
-const atsMetrics = [
-  { label: 'Keyword Match', value: '92%' },
-  { label: 'Format Score', value: '96%' },
-  { label: 'Readability', value: '94%' },
+const atsReadings = [
+  { label: 'Keyword Match', value: 92, color: '#2dd4bf' },
+  { label: 'Format Score', value: 96, color: '#fbbf24' },
+  { label: 'Readability', value: 94, color: '#fb7185' },
 ];
 
-const whySmartATS = [
+const perks = [
   {
-    title: 'Advanced ATS Scorecard',
-    description:
-      'Real-time scoring that mirrors Fortune 500 systems with keyword density analysis and formatting audits.',
-    bullets: [
-      'Live pass/fail feedback',
-      'Section-by-section insights',
-      'Industry-specific rulesets',
-      'Export-ready recommendations',
-    ],
-    icon: 'bar-chart-2',
-  },
-  {
-    title: 'AI Content Genius',
-    description:
-      'Generate quantified bullet points, STAR stories, and recruiter-ready summaries in seconds.',
-    bullets: [
-      'Role-aware tone',
-      'Achievement quantification',
-      'Auto keyword infusion',
-      'Voice consistency',
-    ],
-    icon: 'cpu',
-  },
-];
-
-const mobilePerks = [
-  {
+    icon: 'smartphone',
     title: 'Pocket Builder',
     description:
-      'Create and edit resumes anywhere. Offline drafts sync automatically once you regain service.',
-    icon: 'smartphone',
+      'Edit resumes offline, sync when you regain service, and keep drafts in your pocket.',
   },
   {
+    icon: 'share-2',
     title: 'Job Drop',
     description:
-      'Share a job post from any app and SmartATS extracts role keywords into your resume instantly.',
-    icon: 'share-2',
+      'Share any job post to the app to auto-extract keywords and refresh bullet points.',
   },
   {
+    icon: 'bell',
     title: 'Push Intelligence',
     description:
-      'Opt into weekly haptic nudges when a job perfectly matches your profile or when it is time to update.',
-    icon: 'bell',
+      'Opt into gentle haptic nudges when dream roles drop or templates need fresh data.',
   },
 ];
 
-const templateSlides = [
+const featurePillars = [
+  {
+    icon: 'cpu',
+    title: 'AI Content Genius',
+    description:
+      'Context-aware generation with role-specific tone, quantified metrics, and STAR frameworks.',
+    bullets: [
+      'Understands job descriptions instantly',
+      'Keeps voice and tense consistent',
+      'Suggests achievement metrics automatically',
+    ],
+  },
+  {
+    icon: 'activity',
+    title: 'ATS Score Engine',
+    description:
+      'Real-time benchmarking against the same systems Fortune 500 teams use today.',
+    bullets: [
+      'Live scorecard with pass/fail thresholds',
+      'Section-specific diagnostics',
+      'Best-practice formatting guardrails',
+    ],
+  },
+];
+
+const templates = [
   {
     id: 'executive',
     title: 'Executive Precision',
     image: require('./assets/2.png'),
-    tags: ['C-Level', 'ATS Safe'],
+    tags: ['VP / C-Suite', 'ATS perfect'],
   },
   {
     id: 'creative',
@@ -97,35 +95,51 @@ const templateSlides = [
     tags: ['Design', 'Portfolio ready'],
   },
   {
-    id: 'sales',
-    title: 'Revenue Driver',
+    id: 'growth',
+    title: 'Growth Driver',
     image: require('./assets/new1.png'),
     tags: ['Sales', 'Metric heavy'],
   },
+  {
+    id: 'modern',
+    title: 'Modern Minimal',
+    image: require('./assets/new.png'),
+    tags: ['Universal', 'HR favorite'],
+  },
 ];
 
-const pricingPlans = [
+const builderSteps = [
+  {
+    label: 'Import',
+    copy: 'Drop your LinkedIn or PDF resume and SmartATS parses everything automatically.',
+  },
+  {
+    label: 'Optimize',
+    copy: 'AI suggestions align every bullet with the target JD and ATS ranking factors.',
+  },
+  {
+    label: 'Export',
+    copy: 'One tap to ship ATS-clean PDFs or share the mobile-friendly view instantly.',
+  },
+];
+
+const pricing = [
   {
     name: 'Starter',
     price: 'Free',
     cadence: 'Forever',
-    highlighted: false,
-    features: [
-      '1 ATS resume',
-      'Basic templates',
-      'Email support',
-      'PDF exports',
-    ],
+    hero: false,
+    features: ['1 ATS resume', 'Basic templates', 'Email support', 'PDF export'],
   },
   {
     name: 'Pro',
     price: '$22',
     cadence: 'Monthly',
-    highlighted: true,
+    hero: true,
     features: [
       'Unlimited resumes',
       'Premium templates',
-      'AI generation',
+      'AI optimization',
       'Priority support',
       'Cancel anytime',
     ],
@@ -134,41 +148,13 @@ const pricingPlans = [
     name: 'Elite',
     price: '$200',
     cadence: 'Yearly',
-    highlighted: false,
+    hero: false,
     features: [
-      'Save $64 yearly',
+      'Everything in Pro',
       'Advanced analytics',
       'Custom branding',
       'Dedicated coach calls',
     ],
-  },
-];
-
-const comparisonRows = [
-  {
-    feature: 'Real-time ATS scoring',
-    smart: 'Included',
-    others: 'Delayed or paywalled',
-  },
-  {
-    feature: 'All templates ATS-optimized',
-    smart: '8+ battle-tested',
-    others: '4 templates at most',
-  },
-  {
-    feature: 'Keyword optimizer',
-    smart: 'AI-led + job parser',
-    others: 'Manual inputs',
-  },
-  {
-    feature: 'Free downloads',
-    smart: '3 PDF exports',
-    others: 'TXT only / locked',
-  },
-  {
-    feature: 'No hidden fees',
-    smart: 'Simple, transparent',
-    others: 'Auto-renew traps',
   },
 ];
 
@@ -182,136 +168,97 @@ const footerLinks = [
 const { width } = Dimensions.get('window');
 
 export default function App() {
-  const handleLink = useCallback((url) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  const templateWidth = useMemo(() => width * 0.72, []);
+
+  const handleLink = (url) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     Linking.openURL(url).catch(() => {});
-  }, []);
+  };
 
   return (
-    <LinearGradient
-      colors={['#050505', '#090909', '#050505']}
-      style={styles.gradient}
-    >
+    <LinearGradient colors={['#030712', '#05060a']} style={styles.root}>
       <StatusBar style="light" />
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safe}>
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={styles.scroll}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.heroCard}>
-            <Image
-              source={require('./assets/horse-logo.png')}
-              style={styles.logo}
-            />
-            <Text style={styles.eyebrow}>SmartATS Mobile</Text>
-            <Text style={styles.heroTitle}>
-              Beat the bots. Land interviews anywhere.
-            </Text>
-            <Text style={styles.heroSubtitle}>
-              The AI resume studio you love — now rebuilt for thumb-friendly,
-              on-the-go flow with the same rich visuals and ATS dominance.
-            </Text>
-
-            <View style={styles.badgeRow}>
-              {heroBadges.map((badge) => (
-                <View key={badge.label} style={styles.badge}>
-                  <Feather name={badge.icon} size={16} color="#34d399" />
-                  <Text style={styles.badgeText}>{badge.label}</Text>
-                </View>
-              ))}
-            </View>
-
-            <View style={styles.ctaRow}>
-              <CTAButton
-                label="Start Building"
-                icon="arrow-right"
-                onPress={() => handleLink('https://smartatsresume.com/login')}
-              />
-              <CTAButton
-                label="Contact Sales"
-                icon="headphones"
-                variant="secondary"
-                onPress={() =>
-                  handleLink('https://smartatsresume.com/contact-sales')
-                }
-              />
-            </View>
-          </View>
+          <HeroSection templateWidth={templateWidth} onLink={handleLink} />
 
           <View style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>Trusted Proof</Text>
-            <View style={styles.trustGrid}>
-              {trustSignals.map((signal) => (
-                <View key={signal.label} style={styles.trustItem}>
-                  <Feather name={signal.icon} size={22} color="#f59e0b" />
-                  <Text style={styles.trustValue}>{signal.value}</Text>
-                  <Text style={styles.trustLabel}>{signal.label}</Text>
+            <SectionTitle title="Proof it dominates" />
+            <View style={styles.trustRow}>
+              {trustStats.map((stat) => (
+                <View key={stat.label} style={styles.trustCard}>
+                  <Feather name={stat.icon} size={22} color="#f59e0b" />
+                  <Text style={styles.trustNumber}>{stat.number}</Text>
+                  <Text style={styles.trustLabel}>{stat.label}</Text>
                 </View>
               ))}
             </View>
           </View>
 
-          <BlurView intensity={40} tint="dark" style={styles.atsCard}>
-            <Text style={styles.sectionEyebrow}>Live ATS Demo</Text>
-            <View style={styles.scoreRow}>
-              <Text style={styles.scoreLabel}>ATS Score</Text>
-              <Text style={styles.scoreValue}>94</Text>
+          <BlurView tint="dark" intensity={40} style={styles.atsPanel}>
+            <Text style={styles.eyebrow}>Live ATS demo</Text>
+            <View style={styles.atsScoreRow}>
+              <View>
+                <Text style={styles.atsScoreLabel}>ATS Score</Text>
+                <Text style={styles.atsScoreValue}>94</Text>
+              </View>
+              <Feather name="activity" size={32} color="#34d399" />
             </View>
-            <View style={styles.metricsColumn}>
-              {atsMetrics.map((metric) => (
-                <View key={metric.label} style={styles.metricRow}>
-                  <Text style={styles.metricLabel}>{metric.label}</Text>
-                  <View style={styles.metricBarBackground}>
+            <View style={styles.readings}>
+              {atsReadings.map((reading) => (
+                <View key={reading.label} style={styles.readingRow}>
+                  <Text style={styles.readingLabel}>{reading.label}</Text>
+                  <View style={styles.readingTrack}>
                     <View
                       style={[
-                        styles.metricBarFill,
-                        { width: metric.value },
+                        styles.readingFill,
+                        { width: `${reading.value}%`, backgroundColor: reading.color },
                       ]}
                     />
                   </View>
-                  <Text style={styles.metricValue}>{metric.value}</Text>
+                  <Text style={styles.readingValue}>{reading.value}%</Text>
                 </View>
               ))}
             </View>
             <View style={styles.optimizedPill}>
-              <Feather name="check-circle" size={18} color="#34d399" />
+              <Feather name="check-circle" size={18} color="#22d3ee" />
               <Text style={styles.optimizedText}>
-                Resume is optimized — send with confidence.
+                Resume cleared ATS gates — submit confidently.
               </Text>
             </View>
           </BlurView>
 
-          <SectionHeader
+          <SectionTitle
             eyebrow="Mobile-first perks"
-            title="Made for busy pros"
-            subtitle="Powerful gestures, haptics, and offline superpowers."
+            title="Designed for thumbs and timelines"
           />
           <View style={styles.perkGrid}>
-            {mobilePerks.map((perk) => (
+            {perks.map((perk) => (
               <View key={perk.title} style={styles.perkCard}>
                 <Feather name={perk.icon} size={22} color="#f97316" />
                 <Text style={styles.perkTitle}>{perk.title}</Text>
-                <Text style={styles.perkDescription}>{perk.description}</Text>
+                <Text style={styles.perkCopy}>{perk.description}</Text>
               </View>
             ))}
           </View>
 
-          <SectionHeader
+          <SectionTitle
             eyebrow="Templates"
-            title="Swipe through elite layouts"
-            subtitle="Every template is ATS-compliant and retina-ready."
+            title="Swipeable layouts that stay ATS-clean"
           />
           <FlatList
             horizontal
-            data={templateSlides}
+            data={templates}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.templateList}
-            nestedScrollEnabled
             renderItem={({ item }) => (
-              <View style={[styles.templateCard, { width: width * 0.7 }]}>
+              <View style={[styles.templateCard, { width: templateWidth }]}>
                 <Image source={item.image} style={styles.templateImage} />
-                <View style={styles.templateContent}>
+                <View style={styles.templateMeta}>
                   <Text style={styles.templateTitle}>{item.title}</Text>
                   <View style={styles.tagRow}>
                     {item.tags.map((tag) => (
@@ -325,158 +272,214 @@ export default function App() {
             )}
           />
 
-          <SectionHeader
-            eyebrow="Why SmartATS"
-            title="Superior intelligence"
-            subtitle="Two flagship engines powering record interview rates."
+          <SectionTitle
+            eyebrow="Under the hood"
+            title="Feature pillars that move metrics"
           />
-          {whySmartATS.map((feature) => (
-            <View key={feature.title} style={styles.featureCard}>
+          {featurePillars.map((pillar) => (
+            <View key={pillar.title} style={styles.featureCard}>
               <View style={styles.featureHeader}>
-                <View style={styles.featureIcon}>
-                  <Feather name={feature.icon} size={20} color="#fcd34d" />
+                <View style={styles.iconBadge}>
+                  <Feather name={pillar.icon} size={18} color="#fde68a" />
                 </View>
-                <Text style={styles.featureTitle}>{feature.title}</Text>
+                <Text style={styles.featureTitle}>{pillar.title}</Text>
               </View>
-              <Text style={styles.featureDescription}>
-                {feature.description}
-              </Text>
-              {feature.bullets.map((bullet) => (
-                <View key={bullet} style={styles.featureBullet}>
+              <Text style={styles.featureCopy}>{pillar.description}</Text>
+              {pillar.bullets.map((bullet) => (
+                <View key={bullet} style={styles.bulletRow}>
                   <View style={styles.bulletDot} />
-                  <Text style={styles.featureBulletText}>{bullet}</Text>
+                  <Text style={styles.bulletText}>{bullet}</Text>
                 </View>
               ))}
             </View>
           ))}
 
-          <SectionHeader
-            eyebrow="Value snapshot"
-            title="SmartATS vs everyone"
-            subtitle="Side-by-side clarity before you subscribe."
+          <SectionTitle
+            eyebrow="Builder flow"
+            title="Three guided steps to hired"
           />
-          <View style={styles.comparisonCard}>
-            {comparisonRows.map((row) => (
-              <View key={row.feature} style={styles.comparisonRow}>
-                <Text style={styles.comparisonFeature}>{row.feature}</Text>
-                <View style={styles.comparisonBadgeSmart}>
-                  <Text style={styles.comparisonBadgeText}>{row.smart}</Text>
-                </View>
-                <View style={styles.comparisonBadgeOther}>
-                  <Text style={styles.comparisonBadgeOtherText}>
-                    {row.others}
-                  </Text>
-                </View>
+          <View style={styles.stepper}>
+            {builderSteps.map((step, index) => (
+              <View key={step.label} style={styles.stepCard}>
+                <LinearGradient
+                  colors={['#0f172a', '#0b1120']}
+                  style={styles.stepGradient}
+                >
+                  <Text style={styles.stepNumber}>{index + 1}</Text>
+                  <Text style={styles.stepLabel}>{step.label}</Text>
+                  <Text style={styles.stepCopy}>{step.copy}</Text>
+                </LinearGradient>
               </View>
             ))}
           </View>
 
-          <SectionHeader
+          <SectionTitle
             eyebrow="Pricing"
-            title="Flexible plans that scale with you"
-            subtitle="Transparent pricing, no renewal traps."
+            title="No games. Transparent plans."
           />
           <View style={styles.pricingGrid}>
-            {pricingPlans.map((plan) => (
+            {pricing.map((plan) => (
               <View
                 key={plan.name}
                 style={[
                   styles.pricingCard,
-                  plan.highlighted && styles.pricingCardHighlight,
+                  plan.hero && styles.pricingHero,
                 ]}
               >
-                <Text style={styles.pricingName}>{plan.name}</Text>
-                <Text style={styles.pricingValue}>{plan.price}</Text>
-                <Text style={styles.pricingCadence}>{plan.cadence}</Text>
-                {plan.highlighted && (
-                  <View style={styles.recommendedBadge}>
-                    <Text style={styles.recommendedText}>Most Popular</Text>
-                  </View>
-                )}
+                <Text style={styles.planName}>{plan.name}</Text>
+                <Text style={styles.planPrice}>{plan.price}</Text>
+                <Text style={styles.planCadence}>{plan.cadence}</Text>
                 {plan.features.map((feature) => (
-                  <View key={feature} style={styles.planFeature}>
-                    <Feather name="check-circle" size={16} color="#34d399" />
+                  <View key={feature} style={styles.planFeatureRow}>
+                    <Feather name="check" size={16} color="#34d399" />
                     <Text style={styles.planFeatureText}>{feature}</Text>
                   </View>
                 ))}
+                <CTAButton
+                  label={plan.hero ? 'Start with Pro' : 'Choose plan'}
+                  icon="arrow-right"
+                  onPress={() => handleLink('https://smartatsresume.com/pricing')}
+                  variant={plan.hero ? 'primary' : 'ghost'}
+                />
               </View>
             ))}
           </View>
 
           <LinearGradient
-            colors={['#ea580c', '#f97316']}
-            style={styles.ctaCard}
+            colors={['#f97316', '#ea580c']}
+            style={styles.ctaBanner}
           >
             <Text style={styles.ctaTitle}>Change your career math today</Text>
             <Text style={styles.ctaSubtitle}>
-              75% of resumes fail ATS. Yours will not — and now you can take the
-              power with you.
+              75% of resumes fail ATS. Yours never will again — and now, the
+              entire builder lives on your phone.
             </Text>
-            <View style={styles.ctaRow}>
+            <View style={styles.ctaActions}>
               <CTAButton
                 label="Build now"
                 icon="zap"
                 onPress={() => handleLink('https://smartatsresume.com/login')}
-                inverted
+                invert
               />
               <CTAButton
-                label="View pricing"
-                icon="dollar-sign"
+                label="Talk to sales"
+                icon="phone"
                 variant="ghost"
-                onPress={() => handleLink('https://smartatsresume.com/pricing')}
-                inverted
+                invert
+                onPress={() => handleLink('https://smartatsresume.com/contact-sales')}
               />
             </View>
-            <Text style={styles.disclaimer}>
-              No credit card required · 5 minute setup
+            <Text style={styles.ctaFooter}>
+              No credit card required • 5 minute setup
             </Text>
           </LinearGradient>
 
           <View style={styles.footer}>
-            <Text style={styles.footerTitle}>SmartATS</Text>
-            <Text style={styles.footerSubtitle}>Beat the bots. Land the job.</Text>
+            <View style={styles.footerBrand}>
+              <Image
+                source={require('./assets/horse-logo.png')}
+                style={styles.footerLogo}
+              />
+              <Text style={styles.footerName}>SmartATS</Text>
+            </View>
+            <Text style={styles.footerTagline}>Beat the bots. Land the job.</Text>
             <View style={styles.footerLinks}>
               {footerLinks.map((link) => (
                 <Pressable
                   key={link.label}
-                  onPress={() => handleLink(link.url)}
                   style={styles.footerLink}
+                  onPress={() => handleLink(link.url)}
                 >
                   <Text style={styles.footerLinkText}>{link.label}</Text>
                   <Feather name="arrow-up-right" size={14} color="#a3a3a3" />
                 </Pressable>
               ))}
             </View>
-            <Text style={styles.footerCopyright}>
+            <Text style={styles.footerCopy}>
               © {new Date().getFullYear()} SmartATS. All rights reserved.
             </Text>
-    </View>
+          </View>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
 }
 
-const CTAButton = ({ label, icon, variant = 'primary', onPress, inverted }) => {
+const HeroSection = ({ templateWidth, onLink }) => (
+  <View style={styles.hero}>
+    <Image source={require('./assets/horse-logo.png')} style={styles.logo} />
+    <Text style={styles.eyebrow}>SmartATS Mobile</Text>
+    <Text style={styles.heroTitle}>Beat the bots, now from your phone.</Text>
+    <Text style={styles.heroCopy}>
+      The same cinematic SmartATS experience recreated for thumb-friendly,
+      on-the-go workflows with haptics, gestures, and offline sync.
+    </Text>
+    <View style={styles.highlightRow}>
+      {heroHighlights.map((item) => (
+        <View key={item.label} style={styles.highlightPill}>
+          <Feather name={item.icon} size={14} color="#34d399" />
+          <Text style={styles.highlightText}>{item.label}</Text>
+        </View>
+      ))}
+    </View>
+    <View style={styles.ctaActions}>
+      <CTAButton
+        label="Start building"
+        icon="arrow-right"
+        onPress={() => onLink('https://smartatsresume.com/login')}
+      />
+      <CTAButton
+        label="See templates"
+        icon="grid"
+        variant="secondary"
+        onPress={() => onLink('https://smartatsresume.com/templates')}
+      />
+    </View>
+    <View style={[styles.templateCard, { width: templateWidth }]}>
+      <Image source={require('./assets/3.png')} style={styles.templateImage} />
+      <View style={styles.templateMeta}>
+        <Text style={styles.templateTitle}>Mobile Dashboard</Text>
+        <View style={styles.tagRow}>
+          <View style={styles.tagChip}>
+            <Text style={styles.tagText}>Live scorecard</Text>
+          </View>
+          <View style={styles.tagChip}>
+            <Text style={styles.tagText}>Realtime AI</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+);
+
+const CTAButton = ({
+  label,
+  icon,
+  onPress,
+  variant = 'primary',
+  invert = false,
+}) => {
   const isPrimary = variant === 'primary';
   const isSecondary = variant === 'secondary';
   const isGhost = variant === 'ghost';
 
-  const backgroundColor = inverted
+  const backgroundColor = invert
     ? isGhost
       ? 'transparent'
       : '#fff'
     : isPrimary
     ? '#f97316'
-    : '#1f2937';
+    : isSecondary
+    ? '#0f172a'
+    : 'transparent';
 
-  const textColor = inverted
+  const textColor = invert
     ? isGhost
       ? '#fff'
-      : '#f97316'
+      : '#ea580c'
     : isPrimary
-    ? '#0f0f0f'
-    : '#f5f5f5';
+    ? '#030712'
+    : '#e5e7eb';
 
   return (
     <Pressable
@@ -485,9 +488,9 @@ const CTAButton = ({ label, icon, variant = 'primary', onPress, inverted }) => {
         styles.ctaButton,
         {
           backgroundColor,
-          opacity: pressed ? 0.85 : 1,
-          borderColor: isGhost ? '#fff' : 'transparent',
+          borderColor: isGhost ? '#ffffff50' : 'transparent',
           borderWidth: isGhost ? 1 : 0,
+          opacity: pressed ? 0.85 : 1,
         },
       ]}
     >
@@ -497,81 +500,77 @@ const CTAButton = ({ label, icon, variant = 'primary', onPress, inverted }) => {
   );
 };
 
-const SectionHeader = ({ eyebrow, title, subtitle }) => (
+const SectionTitle = ({ eyebrow, title }) => (
   <View style={styles.sectionHeader}>
-    <Text style={styles.sectionEyebrow}>{eyebrow}</Text>
+    {eyebrow && <Text style={styles.sectionEyebrow}>{eyebrow}</Text>}
     <Text style={styles.sectionTitle}>{title}</Text>
-    <Text style={styles.sectionSubtitle}>{subtitle}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
-  gradient: {
+  root: {
     flex: 1,
   },
-  safeArea: {
+  safe: {
     flex: 1,
   },
-  scrollContent: {
+  scroll: {
     padding: 20,
     paddingBottom: 40,
     gap: 24,
   },
-  heroCard: {
-    backgroundColor: '#111827',
+  hero: {
+    backgroundColor: '#0f172a',
     borderRadius: 28,
     padding: 24,
     borderWidth: 1,
     borderColor: '#1f2937',
+    gap: 16,
   },
   logo: {
     width: 56,
     height: 56,
-    marginBottom: 12,
+    borderRadius: 28,
   },
   eyebrow: {
-    color: '#f97316',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    color: '#fbbf24',
     fontSize: 12,
-    marginBottom: 8,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   heroTitle: {
-    color: '#f5f5f5',
+    color: '#f8fafc',
     fontSize: 28,
     fontWeight: '700',
-    lineHeight: 34,
-    marginBottom: 12,
+    lineHeight: 32,
   },
-  heroSubtitle: {
-    color: '#9ca3af',
+  heroCopy: {
+    color: '#94a3b8',
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 16,
   },
-  badgeRow: {
+  highlightRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 20,
   },
-  badge: {
+  highlightPill: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#020617',
     borderRadius: 999,
     gap: 6,
   },
-  badgeText: {
-    color: '#d1d5db',
+  highlightText: {
+    color: '#cbd5f5',
     fontSize: 12,
   },
-  ctaRow: {
+  ctaActions: {
     flexDirection: 'row',
-    gap: 12,
     flexWrap: 'wrap',
+    gap: 12,
   },
   sectionCard: {
     backgroundColor: '#0f172a',
@@ -580,143 +579,138 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1f2937',
   },
+  sectionHeader: {
+    gap: 6,
+  },
+  sectionEyebrow: {
+    color: '#f97316',
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
   sectionTitle: {
-    color: '#f5f5f5',
+    color: '#f8fafc',
     fontSize: 22,
     fontWeight: '600',
-    marginBottom: 16,
   },
-  trustGrid: {
+  trustRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    marginTop: 20,
     gap: 12,
   },
-  trustItem: {
-    alignItems: 'center',
+  trustCard: {
     flex: 1,
+    alignItems: 'center',
+    borderRadius: 16,
+    padding: 16,
+    backgroundColor: '#0b1120',
+    borderWidth: 1,
+    borderColor: '#1f2937',
   },
-  trustValue: {
-    color: '#fcd34d',
-    fontSize: 20,
+  trustNumber: {
+    color: '#f8fafc',
+    fontSize: 22,
     fontWeight: '700',
-    marginTop: 6,
+    marginTop: 8,
   },
   trustLabel: {
-    color: '#9ca3af',
-    fontSize: 12,
+    color: '#94a3b8',
     textAlign: 'center',
-    marginTop: 4,
+    fontSize: 12,
   },
-  atsCard: {
+  atsPanel: {
     borderRadius: 28,
     padding: 24,
     borderWidth: 1,
     borderColor: '#1f2937',
   },
-  sectionEyebrow: {
-    color: '#fbbf24',
-    fontSize: 12,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    marginBottom: 8,
-  },
-  scoreRow: {
+  atsScoreRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
   },
-  scoreLabel: {
-    color: '#9ca3af',
-    fontSize: 16,
+  atsScoreLabel: {
+    color: '#cbd5f5',
   },
-  scoreValue: {
+  atsScoreValue: {
     color: '#34d399',
     fontSize: 48,
     fontWeight: '700',
+    lineHeight: 48,
   },
-  metricsColumn: {
+  readings: {
     gap: 12,
   },
-  metricRow: {
+  readingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
-  metricLabel: {
+  readingLabel: {
     flex: 1,
-    color: '#d1d5db',
+    color: '#e2e8f0',
   },
-  metricBarBackground: {
+  readingTrack: {
     flex: 2,
     height: 8,
     borderRadius: 999,
-    backgroundColor: '#1f2937',
+    backgroundColor: '#0b1120',
     overflow: 'hidden',
   },
-  metricBarFill: {
+  readingFill: {
     height: '100%',
     borderRadius: 999,
-    backgroundColor: '#22d3ee',
   },
-  metricValue: {
+  readingValue: {
     color: '#f97316',
     fontWeight: '600',
   },
   optimizedPill: {
     marginTop: 20,
+    padding: 14,
+    borderRadius: 18,
+    backgroundColor: 'rgba(45,212,191,0.1)',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    padding: 12,
-    borderRadius: 16,
-    backgroundColor: 'rgba(20, 83, 45, 0.4)',
+    gap: 10,
   },
   optimizedText: {
     color: '#d1fae5',
-  },
-  sectionHeader: {
-    gap: 8,
-  },
-  sectionSubtitle: {
-    color: '#9ca3af',
-    fontSize: 14,
-    lineHeight: 20,
+    flex: 1,
   },
   perkGrid: {
-    flexDirection: 'column',
     gap: 16,
   },
   perkCard: {
     borderRadius: 20,
-    padding: 20,
     borderWidth: 1,
     borderColor: '#1f2937',
-    backgroundColor: '#111827',
+    backgroundColor: '#0b1120',
+    padding: 20,
     gap: 8,
   },
   perkTitle: {
-    color: '#f5f5f5',
+    color: '#f8fafc',
     fontSize: 18,
     fontWeight: '600',
   },
-  perkDescription: {
-    color: '#9ca3af',
-    fontSize: 14,
+  perkCopy: {
+    color: '#94a3b8',
     lineHeight: 20,
   },
   templateList: {
+    paddingVertical: 4,
     gap: 16,
-    paddingVertical: 8,
   },
   templateCard: {
     borderRadius: 24,
     borderWidth: 1,
     borderColor: '#1f2937',
-    backgroundColor: '#0f172a',
-    marginRight: 16,
+    backgroundColor: '#020617',
     overflow: 'hidden',
+    marginRight: 16,
   },
   templateImage: {
     width: '100%',
@@ -724,12 +718,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
-  templateContent: {
+  templateMeta: {
     padding: 16,
-    gap: 8,
+    gap: 10,
   },
   templateTitle: {
-    color: '#f5f5f5',
+    color: '#f8fafc',
     fontSize: 18,
     fontWeight: '600',
   },
@@ -739,21 +733,21 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tagChip: {
-    backgroundColor: '#1f2937',
+    borderRadius: 999,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 999,
+    backgroundColor: '#0f172a',
   },
   tagText: {
-    color: '#d1d5db',
+    color: '#cbd5f5',
     fontSize: 12,
   },
   featureCard: {
     borderRadius: 24,
-    padding: 20,
-    backgroundColor: '#0f172a',
     borderWidth: 1,
     borderColor: '#1f2937',
+    backgroundColor: '#0b1120',
+    padding: 20,
     gap: 12,
   },
   featureHeader: {
@@ -761,27 +755,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  featureIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+  iconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 16,
     backgroundColor: '#1f2937',
     alignItems: 'center',
     justifyContent: 'center',
   },
   featureTitle: {
-    color: '#f5f5f5',
+    color: '#f8fafc',
     fontSize: 18,
     fontWeight: '600',
   },
-  featureDescription: {
-    color: '#9ca3af',
-    lineHeight: 20,
+  featureCopy: {
+    color: '#94a3b8',
   },
-  featureBullet: {
+  bulletRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
   bulletDot: {
     width: 8,
@@ -789,100 +782,80 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: '#f97316',
   },
-  featureBulletText: {
-    color: '#d1d5db',
-    fontSize: 14,
+  bulletText: {
+    color: '#cbd5f5',
   },
-  comparisonCard: {
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#1f2937',
-    backgroundColor: '#0f172a',
-  },
-  comparisonRow: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1f2937',
+  stepper: {
     gap: 12,
   },
-  comparisonFeature: {
-    color: '#f5f5f5',
-    fontSize: 16,
+  stepCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#1f2937',
+    overflow: 'hidden',
+  },
+  stepGradient: {
+    padding: 20,
+    gap: 8,
+  },
+  stepNumber: {
+    color: '#38bdf8',
+    fontSize: 32,
+    fontWeight: '700',
+  },
+  stepLabel: {
+    color: '#f8fafc',
+    fontSize: 18,
     fontWeight: '600',
   },
-  comparisonBadgeSmart: {
-    backgroundColor: 'rgba(34,197,94,0.15)',
-    padding: 10,
-    borderRadius: 12,
-  },
-  comparisonBadgeText: {
-    color: '#86efac',
-  },
-  comparisonBadgeOther: {
-    backgroundColor: 'rgba(248,113,113,0.15)',
-    padding: 10,
-    borderRadius: 12,
-  },
-  comparisonBadgeOtherText: {
-    color: '#fecaca',
+  stepCopy: {
+    color: '#94a3b8',
+    lineHeight: 20,
   },
   pricingGrid: {
     gap: 16,
   },
   pricingCard: {
     borderRadius: 24,
-    padding: 20,
     borderWidth: 1,
     borderColor: '#1f2937',
-    backgroundColor: '#111827',
+    backgroundColor: '#0b1120',
+    padding: 20,
+    gap: 12,
   },
-  pricingCardHighlight: {
+  pricingHero: {
     borderColor: '#f97316',
     shadowColor: '#f97316',
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
     shadowOffset: { width: 0, height: 8 },
   },
-  pricingName: {
-    color: '#f5f5f5',
+  planName: {
+    color: '#f8fafc',
     fontSize: 20,
     fontWeight: '600',
   },
-  pricingValue: {
+  planPrice: {
     color: '#f97316',
     fontSize: 40,
     fontWeight: '700',
-    marginVertical: 4,
   },
-  pricingCadence: {
-    color: '#9ca3af',
-    marginBottom: 12,
-  },
-  recommendedBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(249,115,22,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    marginBottom: 12,
-  },
-  recommendedText: {
-    color: '#ffedd5',
-    fontSize: 12,
-  },
-  planFeature: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  planCadence: {
+    color: '#94a3b8',
     marginBottom: 8,
   },
-  planFeatureText: {
-    color: '#d1d5db',
+  planFeatureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
-  ctaCard: {
+  planFeatureText: {
+    color: '#cbd5f5',
+  },
+  ctaBanner: {
     borderRadius: 28,
     padding: 24,
-    gap: 16,
+    gap: 14,
   },
   ctaTitle: {
     color: '#fff7ed',
@@ -890,33 +863,60 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   ctaSubtitle: {
-    color: '#fffbeb',
-    lineHeight: 22,
+    color: '#ffedd5',
+    lineHeight: 20,
   },
-  disclaimer: {
+  ctaFooter: {
     color: '#fed7aa',
     fontSize: 12,
   },
+  ctaActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  ctaButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    borderRadius: 14,
+    minWidth: 150,
+  },
+  ctaButtonText: {
+    fontWeight: '600',
+  },
   footer: {
-    paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#1f2937',
+    paddingTop: 24,
     gap: 12,
     alignItems: 'center',
   },
-  footerTitle: {
-    color: '#f5f5f5',
-    fontSize: 20,
+  footerBrand: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  footerLogo: {
+    width: 32,
+    height: 32,
+  },
+  footerName: {
+    color: '#f8fafc',
+    fontSize: 18,
     fontWeight: '700',
   },
-  footerSubtitle: {
-    color: '#9ca3af',
+  footerTagline: {
+    color: '#94a3b8',
   },
   footerLinks: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 10,
     justifyContent: 'center',
-    gap: 12,
   },
   footerLink: {
     flexDirection: 'row',
@@ -929,23 +929,10 @@ const styles = StyleSheet.create({
     borderColor: '#1f2937',
   },
   footerLinkText: {
-    color: '#d1d5db',
+    color: '#cbd5f5',
   },
-  footerCopyright: {
+  footerCopy: {
     color: '#6b7280',
     fontSize: 12,
-  },
-  ctaButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    borderRadius: 14,
-    gap: 8,
-    flexGrow: 1,
-  },
-  ctaButtonText: {
-    fontWeight: '600',
   },
 });

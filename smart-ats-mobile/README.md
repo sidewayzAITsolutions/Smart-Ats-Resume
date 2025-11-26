@@ -1,26 +1,18 @@
 ## SmartATS Mobile (Expo)
 
-This Expo application brings the Smart ATS Resume experience to iOS and Android with feature parity to the marketing site plus mobile-native perks.
+This app rebuilds the Smart ATS Resume marketing experience for native mobile with thumb-friendly sections, ATS demos, template carousels, pricing, and mobile-only perks such as offline drafts, share-sheet keyword extraction, and push guidance.
 
-### Highlights
-
-- Gradient hero, ATS demo, feature explainers, and pricing content that mirrors the web landing page.
-- Mobile-first perks: offline editing, share-sheet ingestion ("Job Drop"), and push intelligence callouts.
-- Swipeable template gallery using the same creative assets as the web product.
-- Buttons trigger subtle haptics and deep-link to existing SmartATS web flows.
-
-### Getting Started
+### Getting started
 
 ```bash
 cd smart-ats-mobile
-npm install
-npm run start   # choose iOS, Android, or Web from the Expo CLI
+npm install          # already run by create-expo-app, but safe to rerun
+npm run start        # choose iOS, Android, or Web in the Expo CLI
 ```
 
-### Ship Checklist
+### Notes
 
-- Update `app.json` `extra.eas.projectId` with the real EAS project ID before building.
-- Provide production icons/splash artwork in `assets/`.
-- Run `expo prebuild` + `eas build` when ready for App Store / Play Store submissions.
-
+- App metadata (bundle IDs, splash, scheme) lives in `app.json`. Swap the placeholder EAS `projectId` before shipping.
+- Images were copied from the web project into `assets/`.
+- If the repo root contains another `node_modules`, run Expo commands from inside `smart-ats-mobile` using `npx expo start` to ensure the correct dependency tree is used.
 

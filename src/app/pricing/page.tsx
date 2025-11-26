@@ -98,7 +98,7 @@ const PricingPage = () => {
       name: 'Pro Monthly',
       price: 22,
       period: 'month',
-      mascotImage: '/Donkey2.png',
+      mascotImage: '/3.png',
       description: 'Comprehensive features for active job seekers',
       features: [
         'Everything in Free',
