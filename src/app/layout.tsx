@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'SmartATS - Resume Builder That Actually Gets You Hired',
-    description: '95% of resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
+    description: 'Far too many resumes get rejected by ATS bots. Our AI ensures yours makes it to human eyes.',
     images: ['/horse-logo.png'],
   },
   robots: {
