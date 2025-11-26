@@ -263,75 +263,69 @@ const PricingPage = () => {
           </div>
         </div>
 
-        {/* Admin Premium Override (hidden helper for site owner) */}
+        {/* Promo Code Section */}
         <div className="max-w-xl mx-auto mb-10">
-          <details className="group bg-gray-900/60 border border-dashed border-pink-500/40 rounded-2xl p-4 text-sm text-gray-300">
-            <summary className="flex items-center justify-between cursor-pointer list-none">
-              <span className="font-semibold text-pink-400 flex items-center gap-2">
-                <Crown className="w-4 h-4" />
-                Admin Tools
-              </span>
-              <span className="text-xs text-gray-500 group-open:hidden">(for site owner testing only)</span>
-              <span className="text-xs text-gray-500 hidden group-open:inline">Hide admin tools</span>
-            </summary>
-            <div className="mt-4 space-y-3">
-              <p className="text-xs text-gray-400">
-                Enter your secret admin code to instantly unlock premium on your account without going through Stripe checkout.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="password"
-                  value={adminCode}
-                  onChange={(e) => setAdminCode(e.target.value)}
-                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/70"
-                  placeholder="Enter admin premium code"
-                />
-                <button
-                  type="button"
-                  disabled={adminLoading || !adminCode}
-                  onClick={async () => {
-                    try {
-                      setAdminLoading(true);
-                      const res = await fetch('/api/admin/upgrade-premium', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ adminCode }),
-                      });
-
-                      const data = await res.json();
-
-                      if (!res.ok) {
-                        throw new Error(data.error || 'Failed to apply admin override');
-                      }
-
-                      toast.success('Premium enabled on your account (admin override).');
-                      if (typeof window !== 'undefined') {
-                        localStorage.setItem('premium_status_updated', Date.now().toString());
-                      }
-                    } catch (error: any) {
-                      console.error('Admin override failed:', error);
-                      toast.error(error.message || 'Invalid admin code');
-                    } finally {
-                      setAdminLoading(false);
-                    }
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-                >
-                  {adminLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Activating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Activate Premium</span>
-                      <Crown className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </div>
+          <div className="bg-gradient-to-r from-teal-900/40 to-amber-900/40 border border-teal-500/30 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Crown className="w-5 h-5 text-amber-400" />
+              <span className="font-semibold text-white">Have a Promo Code?</span>
             </div>
-          </details>
+            <p className="text-sm text-gray-300 mb-4">
+              Enter your promo code to unlock Premium features instantly.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                value={adminCode}
+                onChange={(e) => setAdminCode(e.target.value.toUpperCase())}
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/70 uppercase tracking-wider"
+                placeholder="ENTER PROMO CODE"
+              />
+              <button
+                type="button"
+                disabled={adminLoading || !adminCode}
+                onClick={async () => {
+                  try {
+                    setAdminLoading(true);
+                    const res = await fetch('/api/admin/upgrade-premium', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ adminCode }),
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                      throw new Error(data.error || 'Invalid promo code');
+                    }
+
+                    toast.success('🎉 Premium unlocked! Enjoy your free access.');
+                    if (typeof window !== 'undefined') {
+                      localStorage.setItem('premium_status_updated', Date.now().toString());
+                    }
+                    setAdminCode('');
+                  } catch (error: any) {
+                    console.error('Promo code failed:', error);
+                    toast.error(error.message || 'Invalid promo code');
+                  } finally {
+                    setAdminLoading(false);
+                  }
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-lg text-sm font-semibold hover:from-teal-500 hover:to-teal-400 hover:shadow-lg hover:shadow-teal-900/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {adminLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Applying...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Apply Code</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Pricing Cards */}
