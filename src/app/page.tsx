@@ -370,12 +370,12 @@ const Page: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 animate-fade-in-up">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Why SmartATS Crushes
+                Smart ATS vs.
                 <span className="block mt-2 bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent animated-gradient-text">
                   The Competition
                 </span>
               </h2>
-              <p className="text-xl text-gray-400 mt-4">See how we dominate the biggest names in resume building</p>
+              <p className="text-xl text-gray-400 mt-4">See how we match up the biggest names in resume building</p>
             </div>
 
             <div className="overflow-x-auto animate-fade-in-up stagger-2">
