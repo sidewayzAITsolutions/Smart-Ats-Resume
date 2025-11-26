@@ -3,8 +3,9 @@
 import React from 'react';
 import { useState } from 'react';
 import { Education } from '@/types/resume';
-import { Plus, Trash2, GraduationCap, Calendar, School } from 'lucide-react';
+import { Plus, Trash2, GraduationCap, Calendar, School, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { VoiceInputButton } from '@/components/ui/VoiceInput';
 
 interface EducationFormProps {
   initialData: Education[];
@@ -135,17 +136,22 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                 <label className="block text-sm font-medium text-white mb-2" htmlFor={`institution-${index}`}>
                   Institution/School *
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <School className="h-5 w-5 text-gray-400" />
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <School className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      id={`institution-${index}`}
+                      type="text"
+                      value={edu.institution}
+                      onChange={(e) => updateEducation(index, 'institution', e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
+                      placeholder="e.g., University of California, Berkeley"
+                    />
                   </div>
-                  <input
-                    id={`institution-${index}`}
-                    type="text"
-                    value={edu.institution}
-                    onChange={(e) => updateEducation(index, 'institution', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
-                    placeholder="e.g., University of California, Berkeley"
+                  <VoiceInputButton
+                    onTranscript={(text) => updateEducation(index, 'institution', text)}
                   />
                 </div>
               </div>
@@ -172,14 +178,19 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                 <label className="block text-sm font-medium text-white mb-2">
                   Field of Study *
                 </label>
-                <input
-                  type="text"
-                  value={edu.field}
-                  onChange={(e) => updateEducation(index, 'field', e.target.value)}
-                  list={`fields-${index}`}
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400" // Apply sleek-input
-                  placeholder="e.g., Computer Science"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={edu.field}
+                    onChange={(e) => updateEducation(index, 'field', e.target.value)}
+                    list={`fields-${index}`}
+                    className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
+                    placeholder="e.g., Computer Science"
+                  />
+                  <VoiceInputButton
+                    onTranscript={(text) => updateEducation(index, 'field', text)}
+                  />
+                </div>
                 <datalist id={`fields-${index}`}>
                   {popularFields.map(field => (
                     <option key={field} value={field} />

@@ -2,9 +2,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AlertCircle, Sparkles } from 'lucide-react';
+import { AlertCircle, Sparkles, Mic } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { callAICompletion } from '@/utils/ai';
+import { VoiceInputButton } from '@/components/ui/VoiceInput';
 
 interface SummaryFormProps {
   data: string;
@@ -94,13 +95,21 @@ export default function SummaryForm({ data, onChange, jobTitle }: SummaryFormPro
           </button>
         </div>
 
-        <textarea
-          value={data}
-          onChange={(e) => handleChange(e.target.value)}
-          rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Write a brief summary of your professional background, key skills, and career objectives..."
-        />
+        <div className="flex gap-2">
+          <textarea
+            value={data}
+            onChange={(e) => handleChange(e.target.value)}
+            rows={4}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="Write a brief summary of your professional background, key skills, and career objectives..."
+          />
+          <VoiceInputButton
+            onTranscript={(text) => {
+              const newValue = data ? `${data} ${text}` : text;
+              handleChange(newValue);
+            }}
+          />
+        </div>
 
         <div className="mt-1 text-sm text-gray-500 text-right">{charCount} / 500 characters</div>
       </div>

@@ -2,6 +2,8 @@
 'use client';
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { VoiceInputButton } from '@/components/ui/VoiceInput';
+import { Mic } from 'lucide-react';
 
 // Define the PersonalInfo interface
 interface PersonalInfo {
@@ -30,21 +32,32 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
-      <h2 className="text-2xl font-bold text-pink-500 mb-6">Personal Information</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-pink-500">Personal Information</h2>
+        <div className="flex items-center gap-2 text-sm text-gray-400">
+          <Mic className="w-4 h-4 text-teal-400" />
+          <span>Voice input available</span>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-white mb-2">
             Full Name *
           </label>
-          <input
-            type="text"
-            value={formData.fullName}
-            onChange={(e) => handleChange('fullName', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-            placeholder="John Doe"
-            required
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={formData.fullName}
+              onChange={(e) => handleChange('fullName', e.target.value)}
+              className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+              placeholder="John Doe"
+              required
+            />
+            <VoiceInputButton
+              onTranscript={(text) => handleChange('fullName', text)}
+            />
+          </div>
         </div>
 
         <div>
@@ -65,13 +78,18 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
           <label className="block text-sm font-medium text-white mb-2">
             Job Title
           </label>
-          <input
-            type="text"
-            value={formData.title || ''}
-            onChange={(e) => handleChange('title', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-            placeholder="e.g., Software Engineer, Marketing Manager"
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={formData.title || ''}
+              onChange={(e) => handleChange('title', e.target.value)}
+              className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+              placeholder="e.g., Software Engineer, Marketing Manager"
+            />
+            <VoiceInputButton
+              onTranscript={(text) => handleChange('title', text)}
+            />
+          </div>
           <p className="mt-1 text-xs text-gray-400">Required for AI-powered summary generation</p>
         </div>
 
@@ -92,13 +110,18 @@ export default function PersonalInfoForm({ initialData, onUpdate }: PersonalInfo
           <label className="block text-sm font-medium text-white mb-2">
             Location
           </label>
-          <input
-            type="text"
-            value={formData.location}
-            onChange={(e) => handleChange('location', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-            placeholder="New York, NY"
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={formData.location}
+              onChange={(e) => handleChange('location', e.target.value)}
+              className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+              placeholder="New York, NY"
+            />
+            <VoiceInputButton
+              onTranscript={(text) => handleChange('location', text)}
+            />
+          </div>
         </div>
 
         <div>

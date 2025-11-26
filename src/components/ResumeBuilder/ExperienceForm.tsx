@@ -2,10 +2,11 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { Experience } from '../../types/resume';
-import { Plus, Trash2, Calendar, Building, Briefcase, Star, Lightbulb, Loader } from 'lucide-react';
+import { Plus, Trash2, Calendar, Building, Briefcase, Star, Lightbulb, Loader, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'react-hot-toast'; // Import toast
 import { callAICompletion } from '@/utils/ai';
+import { VoiceInputButton } from '@/components/ui/VoiceInput';
 
 interface ExperienceFormProps {
   initialData: Experience[];
@@ -189,13 +190,18 @@ Return only bullet points starting with "- ", one per line.`;
                 <label className="block text-sm font-medium text-white mb-2">
                   Job Title *
                 </label>
-                <input
-                  type="text"
-                  value={experience.position}
-                  onChange={(e) => updateExperience(expIndex, 'position', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
-                  placeholder="e.g., Senior Software Engineer"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={experience.position}
+                    onChange={(e) => updateExperience(expIndex, 'position', e.target.value)}
+                    className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
+                    placeholder="e.g., Senior Software Engineer"
+                  />
+                  <VoiceInputButton
+                    onTranscript={(text) => updateExperience(expIndex, 'position', text)}
+                  />
+                </div>
               </div>
 
               {/* Company */}
@@ -353,13 +359,21 @@ Return only bullet points starting with "- ", one per line.`;
               <label className="block text-sm font-medium text-white mb-2">
                 Job Description
               </label>
-              <textarea
-                value={experience.description}
-                onChange={(e) => updateExperience(expIndex, 'description', e.target.value)}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
-                placeholder="Brief description of your role and responsibilities..."
-              />
+              <div className="flex gap-2">
+                <textarea
+                  value={experience.description}
+                  onChange={(e) => updateExperience(expIndex, 'description', e.target.value)}
+                  rows={3}
+                  className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
+                  placeholder="Brief description of your role and responsibilities..."
+                />
+                <VoiceInputButton
+                  onTranscript={(text) => {
+                    const current = experience.description;
+                    updateExperience(expIndex, 'description', current ? `${current} ${text}` : text);
+                  }}
+                />
+              </div>
               <p className="mt-1 text-xs text-gray-400">
                 Keep it concise - focus on your key responsibilities and the scope of your role
               </p>
@@ -412,6 +426,12 @@ Return only bullet points starting with "- ", one per line.`;
                         placeholder="• Increased sales by 25% through strategic client relationship management and cross-selling initiatives"
                       />
                     </div>
+                    <VoiceInputButton
+                      onTranscript={(text) => {
+                        const current = achievement;
+                        updateAchievement(expIndex, achIndex, current ? `${current} ${text}` : text);
+                      }}
+                    />
                     {experience.achievements.length > 1 && (
                       <Button
                         variant="outline"
