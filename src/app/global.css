@@ -385,22 +385,33 @@ input:focus,
   background-clip: text;
 }
 
-/* Sleek form inputs */
+/* Sleek form inputs - Dark theme */
 .sleek-input {
-  background: #f8fafc;
-  border: 2px solid transparent;
+  background: #374151 !important;
+  border: 2px solid #4b5563;
+  color: white !important;
   transition: all 0.2s ease;
 }
 
+.sleek-input::placeholder {
+  color: #9ca3af;
+}
+
 .sleek-input:hover {
-  background: #f1f5f9;
-  border-color: #e2e8f0;
+  background: #4b5563 !important;
+  border-color: #6b7280;
 }
 
 .sleek-input:focus {
-  background: white;
+  background: #374151 !important;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.sleek-input:disabled {
+  background: #1f2937 !important;
+  color: #9ca3af !important;
+  border-color: #374151;
 }
 
 /* Modern button styles */

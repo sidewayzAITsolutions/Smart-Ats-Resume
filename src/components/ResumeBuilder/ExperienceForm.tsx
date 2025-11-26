@@ -193,7 +193,7 @@ Return only bullet points starting with "- ", one per line.`;
                   type="text"
                   value={experience.position}
                   onChange={(e) => updateExperience(expIndex, 'position', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                   placeholder="e.g., Senior Software Engineer"
                 />
               </div>
@@ -211,7 +211,7 @@ Return only bullet points starting with "- ", one per line.`;
                     type="text"
                     value={experience.company}
                     onChange={(e) => updateExperience(expIndex, 'company', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     placeholder="e.g., Tech Company Inc."
                   />
                 </div>
@@ -234,7 +234,7 @@ Return only bullet points starting with "- ", one per line.`;
                         const month = e.target.value;
                         updateExperience(expIndex, 'startDate', month ? `${year}-${month}` : '');
                       }}
-                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     >
                       <option value="">Month</option>
                       <option value="01">January</option>
@@ -257,7 +257,7 @@ Return only bullet points starting with "- ", one per line.`;
                         const year = e.target.value;
                         updateExperience(expIndex, 'startDate', year && month ? `${year}-${month}` : '');
                       }}
-                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     >
                       <option value="">Year</option>
                       {Array.from({ length: 50 }, (_, i) => {
@@ -292,7 +292,7 @@ Return only bullet points starting with "- ", one per line.`;
                           updateExperience(expIndex, 'endDate', month ? `${year}-${month}` : '');
                         }}
                         disabled={experience.current}
-                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input"
+                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input placeholder-gray-400"
                       >
                         <option value="">Month</option>
                         <option value="01">January</option>
@@ -316,7 +316,7 @@ Return only bullet points starting with "- ", one per line.`;
                           updateExperience(expIndex, 'endDate', year && month ? `${year}-${month}` : '');
                         }}
                         disabled={experience.current}
-                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input"
+                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input placeholder-gray-400"
                       >
                         <option value="">Year</option>
                         {Array.from({ length: 50 }, (_, i) => {
