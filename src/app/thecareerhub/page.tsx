@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, Briefcase, FileText, Users, Target, Lightbulb, ArrowRight } from 'lucide-react';
+import { ArrowLeft, BookOpen, Briefcase, FileText, Users, Target, Lightbulb, ArrowRight, Code, GraduationCap } from 'lucide-react';
 import { Metadata } from 'next';
 
 // Note: For SEO, you'd typically export metadata from a separate file or use generateMetadata
@@ -10,57 +10,30 @@ import { Metadata } from 'next';
 const articles = [
   {
     id: 1,
-    title: 'How to Beat ATS Systems in 2024',
-    description: 'Learn the proven strategies to optimize your resume for Applicant Tracking Systems and increase your chances of getting past the initial screening.',
+    title: 'The Ultimate ATS Resume Guide 2025',
+    description: 'Master Applicant Tracking Systems with our comprehensive guide. Learn exactly how ATS works, why resumes get rejected, and the proven strategies to get past the bots.',
     category: 'Resume Tips',
     categoryColor: 'amber',
     icon: FileText,
-    slug: 'beat-ats-systems-2024'
+    slug: 'ats-resume-guide-2025'
   },
   {
     id: 2,
-    title: 'Top 10 Interview Questions & How to Answer Them',
-    description: 'Master the most common interview questions with expert tips and sample answers that will help you stand out from other candidates.',
-    category: 'Interview Prep',
+    title: 'How to Write a Resume With No Experience',
+    description: 'A complete guide for students, recent graduates, and career changers. Learn how to build a compelling resume even when you have little to no work experience.',
+    category: 'Career Advice',
     categoryColor: 'teal',
-    icon: Users,
-    slug: 'top-interview-questions'
+    icon: GraduationCap,
+    slug: 'resume-no-experience-guide'
   },
   {
     id: 3,
-    title: 'The Ultimate Job Search Strategy Guide',
-    description: 'Discover a comprehensive approach to job hunting that combines networking, online applications, and personal branding for maximum results.',
-    category: 'Job Search',
+    title: '100+ ATS Keywords for Software Engineers',
+    description: 'The definitive copy & paste list of 2025 software engineering keywords. Programming languages, frameworks, DevOps tools, and more to get past ATS filters.',
+    category: 'ATS Keywords',
     categoryColor: 'emerald',
-    icon: Briefcase,
-    slug: 'job-search-strategy-guide'
-  },
-  {
-    id: 4,
-    title: 'Writing Achievement-Based Bullet Points',
-    description: 'Transform your job responsibilities into compelling achievements that quantify your impact and catch recruiters\' attention.',
-    category: 'Resume Tips',
-    categoryColor: 'amber',
-    icon: Target,
-    slug: 'achievement-bullet-points'
-  },
-  {
-    id: 5,
-    title: 'Navigating Career Transitions Successfully',
-    description: 'Whether you\'re switching industries or roles, learn how to position yourself effectively and leverage transferable skills.',
-    category: 'Career Advice',
-    categoryColor: 'purple',
-    icon: Lightbulb,
-    slug: 'career-transitions'
-  },
-  {
-    id: 6,
-    title: 'Building a Personal Brand That Gets You Hired',
-    description: 'Create a consistent professional presence across LinkedIn, your resume, and interviews that makes you memorable to employers.',
-    category: 'Career Advice',
-    categoryColor: 'purple',
-    icon: Users,
-    slug: 'personal-brand-guide'
+    icon: Code,
+    slug: 'software-engineer-keywords'
   }
 ];
 
