@@ -6,74 +6,113 @@ import {
 
 import { createClientFromRequest } from '@/lib/supabase/server';
 
-// Helper to parse PDF content using pdf-parse with pdfjs-dist fallback
+// Helper to parse PDF content using pdfjs-dist (more reliable in serverless)
 const parseEnhancedPDF = async (buffer: Buffer) => {
+  // Primary method: pdfjs-dist (works better in serverless environments)
+  console.log('📖 Attempting to parse PDF with pdfjs-dist, buffer size:', buffer.length);
   try {
-    console.log('📖 Attempting to parse PDF with pdf-parse, buffer size:', buffer.length);
-    const pdfParse = require('pdf-parse');
+    const pdfjsLib = await import('pdfjs-dist');
+    
+    // Disable worker to avoid issues in serverless environment
+    if (typeof pdfjsLib.GlobalWorkerOptions !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+    }
+    
+    const pdfData = new Uint8Array(buffer);
+    const loadingTask = pdfjsLib.getDocument({ 
+      data: pdfData,
+      useSystemFonts: true,
+      disableFontFace: true,
+    });
+    const pdf = await loadingTask.promise;
+
+    let extractedText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item: any) => item.str)
+        .join(' ');
+      extractedText += pageText + '\n';
+    }
+
+    if (extractedText.trim().length > 10) {
+      console.log('✅ pdfjs-dist extraction successful, text length:', extractedText.length);
+      return { text: extractedText.trim(), error: null };
+    }
+  } catch (pdfJsError) {
+    console.error('❌ pdfjs-dist failed:', pdfJsError instanceof Error ? pdfJsError.message : String(pdfJsError));
+  }
+
+  // Fallback 1: Try pdf-parse
+  console.log('🔄 Attempting fallback with pdf-parse...');
+  try {
+    const pdfParse = (await import('pdf-parse')).default;
     const data = await pdfParse(buffer);
-    console.log('✅ PDF parsed successfully with pdf-parse, text length:', data?.text?.length);
-    return { text: data?.text || null, error: null };
+    if (data?.text && data.text.trim().length > 10) {
+      console.log('✅ PDF parsed successfully with pdf-parse, text length:', data.text.length);
+      return { text: data.text, error: null };
+    }
   } catch (error) {
     console.error('❌ pdf-parse failed:', error instanceof Error ? error.message : String(error));
-
-    // Fallback 1: Try pdfjs-dist
-    console.log('🔄 Attempting fallback with pdfjs-dist...');
-    try {
-      const pdfjsLib = require('pdfjs-dist');
-      const pdfData = new Uint8Array(buffer);
-      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
-
-      let extractedText = '';
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map((item: any) => item.str).join(' ');
-        extractedText += pageText + '\n';
-      }
-
-      if (extractedText.trim().length > 50) {
-        console.log('✅ pdfjs-dist extraction successful, text length:', extractedText.length);
-        return { text: extractedText.trim(), error: null };
-      }
-    } catch (pdfJsError) {
-      console.error('❌ pdfjs-dist also failed:', pdfJsError instanceof Error ? pdfJsError.message : String(pdfJsError));
-    }
-
-    // Fallback 2: Try raw text extraction from PDF buffer
-    console.log('🔄 Attempting raw buffer text extraction...');
-    try {
-      const text = buffer.toString('latin1');
-      // Extract text between common PDF text markers
-      const matches = text.match(/BT\s+(.*?)\s+ET/gs) || [];
-      const extractedText = matches
-        .map(m => m.replace(/BT|ET|Tj|TJ|\(|\)|<|>|\/F\d+|\/Tf/g, ' '))
-        .join(' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      if (extractedText.length > 50) {
-        console.log('✅ Raw buffer extraction successful, text length:', extractedText.length);
-        return { text: extractedText, error: null };
-      }
-    } catch (fallbackError) {
-      console.error('❌ Raw buffer extraction failed:', fallbackError instanceof Error ? fallbackError.message : String(fallbackError));
-    }
-
-    return { text: null, error: `Failed to parse PDF: ${error instanceof Error ? error.message : String(error)}` };
   }
+
+  // Fallback 2: Try raw text extraction from PDF buffer
+  console.log('🔄 Attempting raw buffer text extraction...');
+  try {
+    const text = buffer.toString('latin1');
+    // Extract text between common PDF text markers
+    const matches = text.match(/BT\s+(.*?)\s+ET/gs) || [];
+    const extractedText = matches
+      .map(m => m.replace(/BT|ET|Tj|TJ|\(|\)|<|>|\/F\d+|\/Tf/g, ' '))
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (extractedText.length > 20) {
+      console.log('✅ Raw buffer extraction successful, text length:', extractedText.length);
+      return { text: extractedText, error: null };
+    }
+  } catch (fallbackError) {
+    console.error('❌ Raw buffer extraction failed:', fallbackError instanceof Error ? fallbackError.message : String(fallbackError));
+  }
+
+  return { text: null, error: 'Failed to parse PDF: All parsing methods failed. The PDF may be image-based or corrupted.' };
 };
 
 // Helper to parse DOCX content
 const parseEnhancedDocument = async (buffer: Buffer) => {
+  console.log('📖 Attempting to parse DOCX, buffer size:', buffer.length);
   try {
-    const mammoth = require('mammoth');
-    // Ensure we pass just the used slice of the underlying ArrayBuffer
-    const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    // mammoth doesn't have a default export, import the module directly
+    const mammoth = await import('mammoth');
+    
+    // Create a proper ArrayBuffer from the Buffer
+    // This is critical - we need to create a new ArrayBuffer, not slice the shared one
+    const arrayBuffer = new ArrayBuffer(buffer.length);
+    const view = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < buffer.length; i++) {
+      view[i] = buffer[i];
+    }
+    
+    console.log('📄 Calling mammoth.extractRawText with arrayBuffer size:', arrayBuffer.byteLength);
     const result = await mammoth.extractRawText({ arrayBuffer });
-    return result.value;
+    
+    if (result.value && result.value.trim().length > 0) {
+      console.log('✅ DOCX parsed successfully, text length:', result.value.length);
+      return result.value;
+    }
+    
+    // Log any messages from mammoth
+    if (result.messages && result.messages.length > 0) {
+      console.warn('⚠️ Mammoth messages:', result.messages);
+    }
+    
+    console.warn('⚠️ DOCX parsed but no text extracted');
+    return null;
   } catch (error) {
-    console.error('Error parsing DOCX:', error);
+    console.error('❌ Error parsing DOCX:', error instanceof Error ? error.message : String(error));
+    console.error('❌ Full error:', error);
     return null;
   }
 };
@@ -108,6 +147,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
+    // Check file size - limit to 5MB for resumes (should be plenty)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_FILE_SIZE) {
+      console.error('❌ File too large:', file.size, 'bytes');
+      return NextResponse.json({ 
+        success: false,
+        error: `File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Please upload a resume under 5MB. If your PDF is large due to images, try compressing it or exporting as a text-based document.`
+      }, { status: 413 });
+    }
+
     console.log('📥 Received file:', file.name, 'Type:', file.type, 'Size:', file.size);
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -138,22 +187,40 @@ export async function POST(req: NextRequest) {
       }
       // cspell:disable-next-line
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': // .docx
+        console.log('🔄 Parsing DOCX...');
         parsedText = await parseEnhancedDocument(buffer);
+        if (!parsedText) {
+          parseError = 'Failed to extract text from DOCX. The file may be corrupted or password-protected.';
+        }
         break;
       case 'application/rtf':
+        console.log('🔄 Parsing RTF...');
         parsedText = parseRTF(buffer);
+        if (!parsedText || parsedText.length < 10) {
+          parseError = 'Failed to extract text from RTF file.';
+          parsedText = null;
+        }
         break;
       case 'text/plain':
+        console.log('🔄 Parsing TXT...');
         parsedText = buffer.toString('utf8');
         break;
       default:
-        return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+        return NextResponse.json({ 
+          error: `Unsupported file type: ${fileType}. Please upload a PDF, DOCX, RTF, or TXT file.` 
+        }, { status: 400 });
     }
 
-    if (!parsedText) {
-      return NextResponse.json({ success: false, error: parseError || 'Failed to parse resume content', fileType }, { status: 422 });
+    if (!parsedText || parsedText.trim().length < 10) {
+      console.error('❌ Parse failed, no usable text extracted');
+      return NextResponse.json({ 
+        success: false, 
+        error: parseError || 'Failed to extract text from the resume. The file may be image-based, corrupted, or password-protected. Try exporting your resume as a text-based PDF or DOCX.', 
+        fileType 
+      }, { status: 422 });
     }
 
+    console.log('✅ Successfully parsed resume, text length:', parsedText.length);
     // Return parsed text (future enhancement: structure extraction)
     return NextResponse.json({ success: true, parsedText, fileType });
 

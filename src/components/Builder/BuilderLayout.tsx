@@ -677,18 +677,38 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Client-side file size check (5MB limit)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast.error(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Please upload a resume under 5MB.`);
+      e.target.value = '';
+      return;
+    }
+    
     try {
       console.log('📄 Uploading resume:', file.name, file.type, file.size);
+      toast.loading('Parsing resume...', { id: 'parse-resume' });
+      
       const form = new FormData();
       form.append('resume', file);
       const res = await fetch('/api/parse-resume', { method: 'POST', body: form });
       console.log('📡 API response status:', res.status);
-      const json = await res.json();
+      
+      let json;
+      try {
+        json = await res.json();
+      } catch (jsonErr) {
+        console.error('❌ Failed to parse response JSON:', jsonErr);
+        toast.error('Server error. Please try again.', { id: 'parse-resume' });
+        return;
+      }
+      
       console.log('📦 API response:', json);
 
       if (!res.ok || !json?.success) {
         console.error('❌ Resume parse failed:', json?.error || res.statusText);
-        toast.error(`Failed to parse resume: ${json?.error || 'Unknown error'}`);
+        toast.error(json?.error || 'Failed to parse resume. Please try a different file.', { id: 'parse-resume' });
         return;
       }
 
@@ -700,7 +720,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           console.log('✅ Resume patch created:', patch);
         } catch (parseErr) {
           console.error('❌ Error parsing resume text:', parseErr);
-          toast.error(`Failed to parse resume content: ${parseErr instanceof Error ? parseErr.message : 'Unknown error'}`);
+          toast.error(`Failed to extract resume data: ${parseErr instanceof Error ? parseErr.message : 'Unknown error'}`, { id: 'parse-resume' });
           return;
         }
 
@@ -723,9 +743,10 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
               nonZero
                 .map(([k, v]) => `${k}(${v as number})`)
                 .join(', '),
+            { id: 'parse-resume' }
           );
         } else {
-          toast.success('Imported basic details. You can edit in the left panel.');
+          toast.success('Imported basic details. You can edit in the left panel.', { id: 'parse-resume' });
         }
 
         try {
@@ -760,7 +781,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       }
     } catch (err) {
       console.error('Failed to import resume:', err);
-      toast.error('Import failed. Please try a different file or format.');
+      toast.error('Import failed. Please try a different file or format.', { id: 'parse-resume' });
     } finally {
       e.target.value = '';
     }
