@@ -1,5 +1,7 @@
 # SmartATS Resume 🚀
 
+<a href="https://www.producthunt.com/products/smart-ats-resume?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-smart&#0045;ats&#0045;resume" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1043803&theme=light&t=1764470420861" alt="Smart&#0032;ATS&#0032;Resume - Beat&#0032;The&#0032;Bots&#0046;&#0046;&#0032;Land&#0032;The&#0032;Job | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 > AI-Powered ATS Resume Optimization - Beat the Bots, Get the Job
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.3.5-black)](https://nextjs.org/)
