@@ -194,6 +194,23 @@ const Page: React.FC = () => {
         <section className="fit pt-20 pb-16 px-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
           <div className="max-w-4xl mx-auto relative z-10">
+            {/* Product Hunt Badge */}
+            <div className="flex justify-center mb-8">
+              <a 
+                href="https://www.producthunt.com/products/smart-ats-resume?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-smart-ats-resume" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-90 transition-opacity"
+              >
+                <img 
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1043803&theme=light&t=1764512215784" 
+                  alt="Smart ATS Resume - Beat The Bots.. Land The Job | Product Hunt" 
+                  style={{ width: 250, height: 54 }} 
+                  width={250} 
+                  height={54} 
+                />
+              </a>
+            </div>
             <div className="flex items-center justify-center">
               <video
                 autoPlay
