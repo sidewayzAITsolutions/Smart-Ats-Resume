@@ -125,6 +125,38 @@ export default function RootLayout({
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'GA_MEASUREMENT_ID');
+              
+              // Reddit Pixel - Data Layer for purchase events
+              // Call this function when a purchase is completed
+              window.trackRedditPurchase = function(email, phone, value, currency, items) {
+                // Tag Manager version - clear previous ecommerce object
+                dataLayer.push({ ecommerce: null });
+                dataLayer.push({
+                  event: "purchase",
+                  user_data: {
+                    email_address: email || "",
+                    phone_number: phone || ""
+                  },
+                  ecommerce: {
+                    value: value || 0,
+                    currency: currency || "USD",
+                    items: items || []
+                  }
+                });
+                
+                // Google Tag version
+                if (typeof gtag === 'function') {
+                  gtag("event", "purchase", {
+                    user_data: {
+                      email_address: email || "",
+                      phone_number: phone || ""
+                    },
+                    value: value || 0,
+                    currency: currency || "USD",
+                    items: items || []
+                  });
+                }
+              };
             `,
           }}
         />
