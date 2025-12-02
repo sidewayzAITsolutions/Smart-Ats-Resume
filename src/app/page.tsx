@@ -217,7 +217,7 @@ const Page: React.FC = () => {
                 className="hover:opacity-90 transition-opacity"
               >
                 <img 
-                  src="https://www.uneed.best/EMBED3.png" 
+                  src="https://www.uneed.best/EMBED1.png" 
                   alt="Uneed Embed Badge" 
                 />
               </a>
