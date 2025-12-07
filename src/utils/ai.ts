@@ -1,4 +1,6 @@
 // utils/ai.ts
+import { createClient } from '@/lib/supabase/client';
+
 declare global {
   interface Window {
     claude?: {
@@ -13,20 +15,121 @@ interface AICompletionOptions {
   temperature?: number;
   maxTokens?: number;
   debug?: boolean;
+  skipCache?: boolean; // Option to bypass cache
+}
+
+interface CachedAIResponse {
+  id: string;
+  prompt_hash: string;
+  model: string;
+  response: string;
+  created_at: string;
+  expires_at: string;
+}
+
+// AI Response Caching - 30 day cache with Supabase
+const CACHE_DURATION_DAYS = 30;
+
+// Generate a hash of the prompt for cache lookup
+function generatePromptHash(prompt: string, model: string): string {
+  // Use a simple hash for browser compatibility
+  const combined = `${prompt}|${model}`;
+  let hash = 0;
+  for (let i = 0; i < combined.length; i++) {
+    const char = combined.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(16);
+}
+
+// Check cache for existing response
+async function getCachedResponse(promptHash: string, model: string): Promise<string | null> {
+  try {
+    const supabase = createClient();
+    
+    const { data, error } = await supabase
+      .from('ai_cache')
+      .select('response, expires_at')
+      .eq('prompt_hash', promptHash)
+      .eq('model', model)
+      .single();
+    
+    if (error || !data) {
+      return null;
+    }
+    
+    // Check if cache has expired
+    const expiresAt = new Date(data.expires_at);
+    if (expiresAt < new Date()) {
+      // Cache expired, delete it
+      await supabase
+        .from('ai_cache')
+        .delete()
+        .eq('prompt_hash', promptHash)
+        .eq('model', model);
+      return null;
+    }
+    
+    console.log('🎯 AI Cache hit! Returning cached response');
+    return data.response;
+  } catch (error) {
+    console.warn('Cache lookup failed, proceeding without cache:', error);
+    return null;
+  }
+}
+
+// Save response to cache
+async function cacheResponse(promptHash: string, model: string, response: string): Promise<void> {
+  try {
+    const supabase = createClient();
+    
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + CACHE_DURATION_DAYS);
+    
+    await supabase
+      .from('ai_cache')
+      .upsert({
+        prompt_hash: promptHash,
+        model,
+        response,
+        created_at: new Date().toISOString(),
+        expires_at: expiresAt.toISOString()
+      }, {
+        onConflict: 'prompt_hash,model'
+      });
+    
+    console.log('💾 AI response cached successfully');
+  } catch (error) {
+    console.warn('Failed to cache AI response:', error);
+    // Don't throw - caching failure shouldn't break the app
+  }
 }
 
 export async function callAICompletion(
   prompt: string, 
   options: AICompletionOptions = {}
 ): Promise<string> {
-  const { model = 'gpt-3.5-turbo', temperature = 0.7, maxTokens = 500, debug = false } = options;
+  const { model = 'gpt-3.5-turbo', temperature = 0.7, maxTokens = 500, debug = false, skipCache = false } = options;
+
+  // Check cache first (unless skipped)
+  const promptHash = generatePromptHash(prompt, model);
+  
+  if (!skipCache) {
+    const cachedResponse = await getCachedResponse(promptHash, model);
+    if (cachedResponse) {
+      if (debug) console.log('🎯 Returning cached AI response');
+      return cachedResponse;
+    }
+  }
 
   if (debug) {
     console.log('🤖 AI Completion Request:', {
       prompt: prompt.substring(0, 100) + '...',
       model,
       temperature,
-      maxTokens
+      maxTokens,
+      cacheSkipped: skipCache
     });
   }
 
@@ -36,6 +139,12 @@ export async function callAICompletion(
       if (debug) console.log('🔮 Using window.claude.complete');
       const result = await window.claude.complete(prompt);
       if (debug) console.log('✅ Claude completion successful:', result.substring(0, 100) + '...');
+      
+      // Cache the response
+      if (!skipCache) {
+        await cacheResponse(promptHash, model, result);
+      }
+      
       return result;
     }
 
@@ -91,6 +200,11 @@ export async function callAICompletion(
     
     if (!completion) {
       throw new Error('No completion text received from AI service');
+    }
+
+    // Cache the successful response
+    if (!skipCache) {
+      await cacheResponse(promptHash, model, completion);
     }
 
     if (debug) console.log('✅ AI completion successful');
