@@ -194,34 +194,7 @@ const Page: React.FC = () => {
         <section className="fit pt-20 pb-16 px-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-teal-600/10 via-amber-600/5 to-orange-600/10"></div>
           <div className="max-w-4xl mx-auto relative z-10">
-            {/* Product Hunt & Uneed Badges */}
-            <div className="flex justify-center items-center gap-4 mb-8 flex-wrap">
-              <a 
-                href="https://www.producthunt.com/products/smart-ats-resume?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-smart-ats-resume" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-90 transition-opacity"
-              >
-                <img 
-                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1043803&theme=light&t=1764512215784" 
-                  alt="Smart ATS Resume - Beat The Bots.. Land The Job | Product Hunt" 
-                  style={{ width: 250, height: 54 }} 
-                  width={250} 
-                  height={54} 
-                />
-              </a>
-              <a 
-                href="https://www.uneed.best/tool/smart-ats-resume" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-90 transition-opacity"
-              >
-                <img 
-                  src="https://www.uneed.best/EMBED1.png" 
-                  alt="Uneed Embed Badge" 
-                />
-              </a>
-            </div>
+            {/* Product Hunt & Uneed Badges removed from hero and relocated under the primary CTA */}
             <div className="flex items-center justify-center">
               <video
                 autoPlay
@@ -831,6 +804,39 @@ const Page: React.FC = () => {
                 View Pricing
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
               </button>
+            </div>
+
+            {/* Product Hunt & Uneed Badges - moved directly under the primary CTA and slightly larger */}
+            <div className="flex justify-center items-center gap-6 mt-6 mb-2 flex-wrap animate-fade-in-up">
+              <a
+                href="https://www.producthunt.com/products/smart-ats-resume?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-smart-ats-resume"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-95 transition-opacity"
+                aria-label="Product Hunt - Smart ATS Resume"
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1043803&theme=light&t=1764512215784"
+                  alt="Smart ATS Resume on Product Hunt"
+                  style={{ width: 280, height: 64 }}
+                  width={280}
+                  height={64}
+                />
+              </a>
+
+              <a
+                href="https://www.uneed.best/tool/smart-ats-resume"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-95 transition-opacity"
+                aria-label="Uneed - Smart ATS Resume"
+              >
+                <img
+                  src="https://www.uneed.best/EMBED1.png"
+                  alt="Uneed Embed Badge"
+                  style={{ width: 180, height: 64 }}
+                />
+              </a>
             </div>
 
             <p className="text-white/80 text-sm mt-6 animate-fade-in-up stagger-3">

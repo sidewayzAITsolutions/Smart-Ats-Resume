@@ -26,9 +26,13 @@ interface ATSScoreProps {
     content: MetricInsight;
     impact: MetricInsight;
   };
+  // If true, show full details. If false or undefined, blur detailed insights and show upgrade CTA.
+  isPremium?: boolean;
 }
 
-const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], metricInsights }: ATSScoreProps) => {
+import Link from 'next/link';
+
+const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], metricInsights, isPremium = false }: ATSScoreProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openMetric, setOpenMetric] = useState<string | null>(null);
 
@@ -236,45 +240,58 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                       </button>
 
                       {isOpen && hasInsights && insight && (
-                        <div className="px-3 pb-3 pt-1 text-xs text-gray-300 space-y-2 bg-gray-900">
-                          <p className="text-[11px] text-gray-400">
-                            {insight.explanation}
-                          </p>
+                        <div className="px-3 pb-3 pt-1 text-xs text-gray-300 space-y-2 bg-gray-900 relative">
+                          {/* If not premium, blur the detailed insight and show an overlay CTA */}
+                          <div className={`${!isPremium ? 'filter blur-sm pointer-events-none select-none' : ''}`}>
+                            <p className="text-[11px] text-gray-400">
+                              {insight.explanation}
+                            </p>
 
-                          {insight.whatsMissing && insight.whatsMissing.length > 0 && (
-                            <div>
-                              <p className="font-semibold text-gray-200 mb-1">What's missing</p>
-                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
-                                {insight.whatsMissing.map((item, idx) => (
-                                  <li key={idx}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                            {insight.whatsMissing && insight.whatsMissing.length > 0 && (
+                              <div>
+                                <p className="font-semibold text-gray-200 mb-1">What's missing</p>
+                                <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
+                                  {insight.whatsMissing.map((item, idx) => (
+                                    <li key={idx}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
 
-                          {insight.recommendations && insight.recommendations.length > 0 && (
-                            <div>
-                              <p className="font-semibold text-gray-200 mb-1">How to improve</p>
-                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
-                                {insight.recommendations.map((item, idx) => (
-                                  <li key={idx}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                            {insight.recommendations && insight.recommendations.length > 0 && (
+                              <div>
+                                <p className="font-semibold text-gray-200 mb-1">How to improve</p>
+                                <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
+                                  {insight.recommendations.map((item, idx) => (
+                                    <li key={idx}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
 
-                          {insight.examples && insight.examples.length > 0 && (
-                            <div>
-                              <p className="font-semibold text-gray-200 mb-1">Example bullets</p>
-                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
-                                {insight.examples.slice(0, 2).map((item, idx) => (
-                                  <li key={idx}>
-                                    <span className="text-gray-500">"</span>
-                                    {item.replace(/^"|"$/g, '')}
-                                    <span className="text-gray-500">"</span>
-                                  </li>
-                                ))}
-                              </ul>
+                            {insight.examples && insight.examples.length > 0 && (
+                              <div>
+                                <p className="font-semibold text-gray-200 mb-1">Example bullets</p>
+                                <ul className="list-disc list-inside space-y-0.5 text-[11px] text-gray-400">
+                                  {insight.examples.slice(0, 2).map((item, idx) => (
+                                    <li key={idx}>
+                                      <span className="text-gray-500">"</span>
+                                      {item.replace(/^"|"$/g, '')}
+                                      <span className="text-gray-500">"</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
+                          {!isPremium && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="bg-black/60 p-4 rounded-lg text-center">
+                                <p className="text-sm font-semibold text-white mb-2">Unlock full insights</p>
+                                <p className="text-xs text-gray-200 mb-3">Upgrade to Pro to see exact missing keywords and step-by-step fixes.</p>
+                                <Link href="/pricing" className="inline-block bg-amber-500 text-black px-3 py-1 rounded-md text-sm font-semibold">Upgrade</Link>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -294,14 +311,25 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                   <AlertCircle className="w-3 h-3 md:w-4 md:h-4 text-red-500" />
                   Issues Found
                 </h4>
-                <ul className="space-y-1">
-                  {issues.map((issue, idx) => (
-                    <li key={idx} className="text-xs md:text-sm text-gray-400 flex items-start gap-2">
-                      <span className="text-red-500 mt-1">•</span>
-                      <span>{issue}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="relative">
+                  <ul className={`space-y-1 ${!isPremium ? 'filter blur-sm pointer-events-none select-none' : ''}`}>
+                    {issues.map((issue, idx) => (
+                      <li key={idx} className="text-xs md:text-sm text-gray-400 flex items-start gap-2">
+                        <span className="text-red-500 mt-1">•</span>
+                        <span>{issue}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {!isPremium && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-black/60 p-3 rounded-md text-center">
+                        <p className="text-xs text-white mb-2">Upgrade to view full issues</p>
+                        <Link href="/pricing" className="inline-block bg-amber-500 text-black px-2 py-1 rounded text-xs font-semibold">Unlock</Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

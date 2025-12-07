@@ -25,6 +25,7 @@ interface BuilderToolbarProps {
   onExport: (format: 'pdf' | 'docx' | 'txt' | 'json') => Promise<void>;
   onImport: () => void;
   onImportLinkedIn: () => void;
+  onGenerateLinkedIn?: () => Promise<void>;
   onCheckATS: () => void;
   onClear: () => void;
   isSaving: boolean;
@@ -37,6 +38,7 @@ export default function BuilderToolbar({
   onExport,
   onImport,
   onImportLinkedIn,
+  onGenerateLinkedIn,
   onCheckATS,
   onClear,
   isSaving,
@@ -133,6 +135,16 @@ export default function BuilderToolbar({
           >
             <FileText className="h-4 w-4" />
             Import LinkedIn PDF
+          </button>
+
+          {/* Generate LinkedIn 'About' - Hidden on mobile */}
+          <button type="button"
+            onClick={() => onGenerateLinkedIn?.()}
+            className="hidden md:flex px-4 py-2 text-sm font-medium text-sky-200 bg-gradient-to-r from-sky-900/40 to-sky-700/40 border border-sky-600/50 rounded-lg hover:from-sky-800/60 hover:to-sky-600/60 transition-all duration-200 items-center gap-2 backdrop-blur-sm"
+            title="Generate LinkedIn About"
+          >
+            <Share2 className="h-4 w-4" />
+            Generate LinkedIn About
           </button>
 
           {/* Import Resume (file) - Hidden on mobile */}

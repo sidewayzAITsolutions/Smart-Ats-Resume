@@ -16,6 +16,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [promoCode, setPromoCode] = useState('');
   const [redeeming, setRedeeming] = useState(false);
+  const [humanReview, setHumanReview] = useState(false);
 
   if (!isOpen) return null;
 
@@ -32,16 +33,22 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
     setError(null);
     
     try {
+      const body: any = {
+        priceId: priceId,
+        successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}/pricing?canceled=true`,
+      };
+
+      if (humanReview) {
+        body.addOn = 'human_review';
+      }
+
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          priceId: priceId,
-          successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}/pricing?canceled=true`,
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -117,13 +124,24 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
               Access to unlimited AI suggestions, premium templates, and advanced analytics that get you hired.
             </p>
             <p className="text-2xl font-bold text-blue-600 mt-2 dark:text-blue-400">$22 / month</p>
-            <Button
-              onClick={handleUpgradeClick}
-              disabled={isLoading}
-              className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
-            >
-              {isLoading ? 'Processing...' : 'Go Pro'}
-            </Button>
+            <div className="mt-4">
+              <label className="flex items-center gap-3 mb-3">
+                <input
+                  type="checkbox"
+                  checked={humanReview}
+                  onChange={(e) => setHumanReview(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">Add one-time Human Resume Review (+$49)</span>
+              </label>
+              <Button
+                onClick={handleUpgradeClick}
+                disabled={isLoading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+              >
+                {isLoading ? 'Processing...' : 'Go Pro'}
+              </Button>
+            </div>
           </div>
           
           <div className="border border-teal-200 rounded-lg p-4 bg-teal-50 dark:bg-teal-950 dark:border-teal-800">

@@ -590,6 +590,9 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   const [isPremium, setIsPremium] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [resumeCount, setResumeCount] = useState(0);
+  const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [linkedinResult, setLinkedinResult] = useState<string | null>(null);
+  const [showLinkedinModal, setShowLinkedinModal] = useState(false);
 
   const { resumeData, updateResumeData, saveResume, resetResumeData } = useResumeStore();
   const savingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -787,6 +790,33 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     }
   };
 
+  // Generate LinkedIn 'About' from current resume data via AI endpoint
+  const handleGenerateLinkedIn = useCallback(async () => {
+    try {
+      setLinkedinLoading(true);
+      const resp = await fetch('/api/ai/linkedin-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume: resumeData }),
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        console.error('LinkedIn API error', data);
+        setLinkedinResult(data?.error || 'Failed to generate LinkedIn summary.');
+      } else {
+        setLinkedinResult(data?.about || 'No output from AI');
+      }
+      setShowLinkedinModal(true);
+    } catch (err) {
+      console.error('Failed to generate LinkedIn about:', err);
+      setLinkedinResult('Failed to generate LinkedIn about. Please try again.');
+      setShowLinkedinModal(true);
+    } finally {
+      setLinkedinLoading(false);
+    }
+  }, [resumeData]);
+
   const handleExport = useCallback(async (format: 'pdf' | 'docx' | 'txt' | 'json' = 'pdf') => {
     // For PDF export, we need the preview to be visible
     // Temporarily show it if it's hidden
@@ -898,6 +928,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           onExport={handleExport}
           onImport={handleImport}
           onImportLinkedIn={handleImportLinkedIn}
+          onGenerateLinkedIn={handleGenerateLinkedIn}
           onCheckATS={handleCheckATS}
           onClear={handleClear}
           isSaving={isSaving}
@@ -914,6 +945,50 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         onChange={onFileChange}
         className="hidden"
       />
+
+      {/* LinkedIn About Modal */}
+      {showLinkedinModal && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-6 max-w-2xl mx-4">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-semibold text-white">Generated LinkedIn 'About'</h3>
+              <div className="ml-4">
+                <button
+                  onClick={() => setShowLinkedinModal(false)}
+                  className="text-gray-400 hover:text-gray-200 p-2 rounded-full hover:bg-gray-700"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 text-sm text-gray-200 whitespace-pre-wrap max-h-96 overflow-auto">
+              {linkedinLoading ? 'Generating...' : linkedinResult}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  // copy to clipboard
+                  if (linkedinResult) {
+                    navigator.clipboard.writeText(linkedinResult);
+                    toast.success('Copied to clipboard');
+                  }
+                }}
+                className="px-4 py-2 text-sm bg-gray-700 text-white rounded-lg"
+              >
+                Copy
+              </button>
+              <button
+                onClick={() => setShowLinkedinModal(false)}
+                className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden relative z-10 min-h-0">
@@ -998,6 +1073,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           issues={atsScore.risks}
           suggestions={atsScore.suggestions}
           metricInsights={atsScore.metricInsights}
+          isPremium={isPremium}
         />
       )}
     </div>
