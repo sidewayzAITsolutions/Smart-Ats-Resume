@@ -121,6 +121,16 @@ export default function SoftwareEngineerKeywordsPage() {
                   </>
                 )}
               </button>
+              
+              <div className="mt-4 pt-4 border-t border-gray-700">
+                <p className="text-gray-400 text-sm">
+                  <strong className="text-amber-300">💡 Not sure which languages to include?</strong> Upload your resume and job description to our 
+                  <Link href="/resume-checker" className="text-amber-300 underline hover:text-amber-200 mx-1">
+                    free ATS checker
+                  </Link>
+                  — we'll tell you exactly which keywords are missing.
+                </p>
+              </div>
             </div>
           </section>
 
@@ -408,8 +418,19 @@ export default function SoftwareEngineerKeywordsPage() {
               <p className="text-gray-300 mb-4">
                 Don't just copy-paste the same keywords for every application. Each job description contains specific keywords the ATS is looking for.
               </p>
+              <p className="text-gray-300 mb-4">
+                <strong className="text-white">The fastest way?</strong> Paste any job description into our 
+                <Link href="/resume-checker" className="text-teal-300 underline hover:text-teal-200 mx-1">
+                  free resume scanner
+                </Link>
+                and it automatically extracts the exact skills you need to add.
+              </p>
               <p className="text-gray-300">
-                <strong className="text-white">The fastest way?</strong> Paste any job description into SmartATSResume.com and it automatically extracts the exact skills you need to add to your resume.
+                Or use our 
+                <Link href="/builder" className="text-teal-300 underline hover:text-teal-200 mx-1">
+                  AI resume builder
+                </Link>
+                to generate optimized bullet points that include these keywords naturally.
               </p>
             </div>
           </section>

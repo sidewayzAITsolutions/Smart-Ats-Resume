@@ -121,6 +121,16 @@ export default function ResumeNoExperiencePage() {
             <p className="text-amber-400 text-sm mt-4">
               Match these to the job description using keyword extraction.
             </p>
+            
+            <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+              <p className="text-amber-300 text-sm">
+                <strong>💡 Pro Tip:</strong> Paste your resume and job description into our 
+                <Link href="/resume-checker" className="underline hover:text-amber-200 mx-1">
+                  free ATS checker
+                </Link>
+                to instantly see which keywords you're missing and which ones to add.
+              </p>
+            </div>
           </section>
 
           {/* Step 4 */}
@@ -187,6 +197,15 @@ export default function ResumeNoExperiencePage() {
                   {verb}
                 </span>
               ))}
+            </div>
+            
+            <div className="mt-4 p-4 bg-teal-500/10 border border-teal-500/30 rounded-lg">
+              <p className="text-teal-300 text-sm">
+                <strong>✨ Need help writing strong bullets?</strong> Our AI resume builder automatically suggests powerful action verbs and writes ATS-optimized bullet points for you.
+                <Link href="/builder" className="underline hover:text-teal-200 ml-1">
+                  Try the builder for free →
+                </Link>
+              </p>
             </div>
           </section>
 

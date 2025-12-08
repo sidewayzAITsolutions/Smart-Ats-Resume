@@ -162,6 +162,14 @@ export default function ATSResumeGuidePage() {
                   <p className="text-gray-400 text-sm mb-2">Example job description: "Proficient in Excel, SQL, dashboards, reporting…"</p>
                   <p className="text-amber-300 text-sm">Your resume MUST include: Excel, SQL, Dashboards, Reporting</p>
                 </div>
+                <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                  <p className="text-amber-200 text-sm">
+                    💡 <strong>Pro tip:</strong> Not sure which keywords you're missing? 
+                    <Link href="/resume-checker" className="text-amber-400 underline hover:text-amber-300 ml-1">
+                      Try our free ATS Resume Checker
+                    </Link> to instantly see your keyword match score.
+                  </p>
+                </div>
               </div>
 
               <div className="bg-teal-950/30 border border-teal-700/50 rounded-xl p-6">
@@ -213,6 +221,15 @@ export default function ATSResumeGuidePage() {
                   <li>• Created technical documentation supporting new engineering hires</li>
                 </ul>
               </div>
+            </div>
+            <div className="mt-6 text-center">
+              <p className="text-gray-400 mb-3">Want to transform your resume bullets like this?</p>
+              <Link 
+                href="/builder" 
+                className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 font-medium transition-colors"
+              >
+                Build your ATS-optimized resume now <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           </section>
 
