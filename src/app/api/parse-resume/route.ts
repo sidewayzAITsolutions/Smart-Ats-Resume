@@ -132,16 +132,19 @@ const parseRTF = (buffer: Buffer) => {
 };
 
 export async function POST(req: NextRequest) {
+  // Allow both authenticated and guest users to parse resumes
+  // Guest users can use the basic parsing feature on the homepage
+  // Authenticated users get full functionality
   const { supabase } = createClientFromRequest(req);
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  // Note: user may be null for guest uploads (homepage feature)
+  // We still parse the resume but may limit features for guests later
 
   try {
     const formData = await req.formData();
-    const file = formData.get('resume') as File;
+    // Support both 'resume' and 'file' field names for backwards compatibility
+    const file = (formData.get('resume') || formData.get('file')) as File;
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
