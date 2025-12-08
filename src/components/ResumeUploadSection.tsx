@@ -68,14 +68,14 @@ export default function ResumeUploadSection() {
         body: formData,
       });
 
-      if (!parseResponse.ok) {
-        throw new Error('Failed to parse resume');
-      }
-
       const parseData = await parseResponse.json();
 
-      if (!parseData.success || !parseData.data) {
-        throw new Error(parseData.error || 'Failed to extract resume content');
+      if (!parseResponse.ok || !parseData.success) {
+        throw new Error(parseData.error || 'Failed to parse resume');
+      }
+
+      if (!parseData.parsedText) {
+        throw new Error('Failed to extract resume content');
       }
 
       // Call ATS scoring endpoint (or use client-side scoring)
@@ -83,8 +83,8 @@ export default function ResumeUploadSection() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          parsedText: parseData.data.text,
-          metadata: parseData.data.metadata 
+          parsedText: parseData.parsedText,
+          metadata: { fileType: parseData.fileType } 
         }),
       });
 
