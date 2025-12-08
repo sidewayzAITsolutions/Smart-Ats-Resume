@@ -1,8 +1,16 @@
 import { SEO } from "../../../components/SEO";
+import { getSEOMetadata } from "@/lib/seo-config";
 
-const BeatAtsTricksPage = () => (
+const BeatAtsTricksPage = () => {
+  const seoData = getSEOMetadata('how-to-beat-ats-tricks');
+  
+  return (
   <>
-    <SEO title="How to Beat ATS: 10 Hidden Resume Tricks" description="Learn 10 hidden tricks to ensure your resume passes the Applicant Tracking System and gets seen by a recruiter." />
+    <SEO 
+      title={seoData.title}
+      description={seoData.description}
+      url={seoData.url}
+    />
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
         How to Beat ATS: **10 Hidden Resume Tricks** Hiring Managers Don't Tell You
@@ -78,5 +86,6 @@ const BeatAtsTricksPage = () => (
       </div>
     </div>
   </>
-);
+  );
+};
 export default BeatAtsTricksPage;

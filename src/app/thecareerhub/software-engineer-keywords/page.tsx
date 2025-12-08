@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import { ArrowLeft, Code, Copy, Check, Database, Cloud, Wrench, Users, Zap, ArrowRight, FileText, Terminal } from 'lucide-react';
 import { useState } from 'react';
+import { SEO } from '@/components/SEO';
+import { getSEOMetadata } from '@/lib/seo-config';
 
 export default function SoftwareEngineerKeywordsPage() {
+  const seoData = getSEOMetadata('software-engineer-keywords');
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
   const copyToClipboard = (text: string, section: string) => {
@@ -31,6 +34,12 @@ export default function SoftwareEngineerKeywordsPage() {
   const fullKeywordBlock = 'Python, SQL, Docker, AWS, React, Node.js, REST APIs, GitHub Actions, Agile, CI/CD, Kubernetes, TypeScript';
 
   return (
+    <>
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
     <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Hero Section */}
       <div className="relative py-16 border-b border-gray-800 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
@@ -433,5 +442,6 @@ export default function SoftwareEngineerKeywordsPage() {
         </div>
       </article>
     </main>
+    </>
   );
 }

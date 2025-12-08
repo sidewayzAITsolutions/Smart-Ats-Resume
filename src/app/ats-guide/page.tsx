@@ -13,9 +13,19 @@ import {
 import Link from 'next/link';
 
 import GlobalNavigation from '@/components/GlobalNavigation';
+import { SEO } from '@/components/SEO';
+import { getSEOMetadata } from '@/lib/seo-config';
 
 const ATSGuidePage = () => {
+  const seoData = getSEOMetadata('ats-guide');
+  
   return (
+    <>
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Global Navigation */}
       <GlobalNavigation
@@ -161,6 +171,7 @@ const ATSGuidePage = () => {
         </section>
       </main>
     </div>
+    </>
   );
 };
 

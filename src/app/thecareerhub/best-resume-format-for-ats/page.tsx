@@ -1,8 +1,16 @@
 import { SEO } from "../../../components/SEO";
+import { getSEOMetadata } from "@/lib/seo-config";
 
-const BestFormatPage = () => (
+const BestFormatPage = () => {
+  const seoData = getSEOMetadata('best-resume-format-for-ats');
+  
+  return (
   <>
-    <SEO title="Best Resume Format to Pass ATS in 2025" description="A definitive guide comparing chronological, functional, and hybrid formats for ATS optimization." />
+    <SEO 
+      title={seoData.title}
+      description={seoData.description}
+      url={seoData.url}
+    />
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
         The Definitive Guide to the **Best Resume Format to Pass ATS in 2025**
@@ -63,5 +71,6 @@ const BestFormatPage = () => (
       </div>
     </div>
   </>
-);
+  );
+};
 export default BestFormatPage;

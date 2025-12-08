@@ -1,8 +1,16 @@
 import { SEO } from "../../../components/SEO";
+import { getSEOMetadata } from "@/lib/seo-config";
 
-const AtsComparisonPage = () => (
+const AtsComparisonPage = () => {
+  const seoData = getSEOMetadata('ats-tool-comparison');
+  
+  return (
   <>
-    <SEO title="[Your Tool Name] vs. Top Resume Builder Pro: ATS Score Comparison" description="See how our ATS checker compares to leading resume software in key areas like keyword matching and formatting." />
+    <SEO 
+      title={seoData.title}
+      description={seoData.description}
+      url={seoData.url}
+    />
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
         **Smart ATS Resume** vs. Top Resume Builder Pro: The Ultimate ATS Score Comparison
@@ -77,5 +85,6 @@ const AtsComparisonPage = () => (
       </div>
     </div>
   </>
-);
+  );
+};
 export default AtsComparisonPage;

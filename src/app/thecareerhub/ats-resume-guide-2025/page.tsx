@@ -2,9 +2,19 @@
 
 import Link from 'next/link';
 import { ArrowLeft, FileText, CheckCircle, XCircle, Zap, Download, ArrowRight } from 'lucide-react';
+import { SEO } from '@/components/SEO';
+import { getSEOMetadata } from '@/lib/seo-config';
 
 export default function ATSResumeGuidePage() {
+  const seoData = getSEOMetadata('ats-resume-guide-2025');
+  
   return (
+    <>
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
     <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Hero Section */}
       <div className="relative py-16 border-b border-gray-800 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
@@ -260,5 +270,6 @@ export default function ATSResumeGuidePage() {
         </div>
       </article>
     </main>
+    </>
   );
 }

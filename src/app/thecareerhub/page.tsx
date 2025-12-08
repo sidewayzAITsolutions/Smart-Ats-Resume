@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { ArrowLeft, BookOpen, Briefcase, FileText, Users, Target, Lightbulb, ArrowRight, Code, GraduationCap } from 'lucide-react';
-import { Metadata } from 'next';
+import { SEO } from '@/components/SEO';
+import { getSEOMetadata } from '@/lib/seo-config';
 
 // Note: For SEO, you'd typically export metadata from a separate file or use generateMetadata
 // Since this is a client component, metadata should be in a layout or separate server component
@@ -45,8 +46,16 @@ const categoryColors: Record<string, { bg: string; text: string; border: string 
 };
 
 export default function CareerHubPage() {
+  const seoData = getSEOMetadata('thecareerhub');
+  
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
+    <>
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
+      <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Hero Section */}
       <div className="relative py-20 border-b border-gray-800 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
         <div className="max-w-6xl mx-auto px-4 relative z-10">
@@ -163,6 +172,7 @@ export default function CareerHubPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }
 
