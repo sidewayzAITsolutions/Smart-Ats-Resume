@@ -1,6 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, TrendingUp, AlertCircle, CheckCircle, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, TrendingUp, AlertCircle, CheckCircle, X, Lock } from 'lucide-react';
+import { PremiumGate } from '@/components/Builder/PremiumGate';
+import Link from 'next/link';
 
 interface MetricInsight {
   label: string;
@@ -30,11 +32,10 @@ interface ATSScoreProps {
   isPremium?: boolean;
 }
 
-import Link from 'next/link';
-
 const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], metricInsights, isPremium = false }: ATSScoreProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openMetric, setOpenMetric] = useState<string | null>(null);
+  const [showFullAnalysis, setShowFullAnalysis] = useState(false);
 
   // Determine color based on score
   const getScoreColor = () => {
@@ -174,8 +175,27 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
           {/* Breakdown with per-metric coaching */}
           {breakdown && (
             <div className="p-4 md:p-6 border-b border-gray-800 overflow-y-auto flex-1">
-              <h4 className="text-white font-semibold mb-4 text-sm md:text-base">Score Breakdown</h4>
-              <div className="space-y-3">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-white font-semibold text-sm md:text-base">Score Breakdown</h4>
+                {!isPremium && !showFullAnalysis && (
+                  <button
+                    onClick={() => setShowFullAnalysis(true)}
+                    className="flex items-center gap-1 text-xs px-2 py-1 bg-amber-500/20 text-amber-400 rounded border border-amber-500/40 hover:bg-amber-500/30 transition-colors"
+                  >
+                    <Lock className="w-3 h-3" />
+                    Unlock Analysis
+                  </button>
+                )}
+              </div>
+              
+              {showFullAnalysis && !isPremium ? (
+                <PremiumGate feature="Full ATS Analysis with detailed keyword matches and improvement recommendations">
+                  <div className="space-y-3">
+                    {/* Placeholder for blurred content */}
+                  </div>
+                </PremiumGate>
+              ) : (
+                <div className="space-y-3">
                 {metricOrder.map((metricKey) => {
                   const value = breakdown[metricKey];
                   if (typeof value !== 'number') return null;
@@ -299,7 +319,8 @@ const CollapsibleATSScore = ({ score, breakdown, issues = [], suggestions = [], 
                     </div>
                   );
                 })}
-              </div>
+                </div>
+              )}
             </div>
           )}
 

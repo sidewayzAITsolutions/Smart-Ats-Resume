@@ -140,6 +140,30 @@ export const TEMPLATE_LIBRARY: Template[] = [
     features: ['Publication Focus', 'Research Emphasis', 'Academic Format', 'Citation Ready'],
     industries: ['Academia', 'Research', 'Education', 'Science', 'Government'],
     targetAudience: ['Academic', 'Researcher', 'Professor']
+  },
+  {
+    id: 'modern-elite',
+    name: 'Modern Elite',
+    description: 'Sleek, contemporary design with bold accents and modern typography',
+    category: 'modern',
+    atsScore: 94,
+    isPremium: true,
+    previewImage: '/templates/modern-elite.png',
+    features: ['Bold Design', 'Gradient Accents', 'Modern Typography', 'Visual Hierarchy', 'Two-Column Layout'],
+    industries: ['Technology', 'Marketing', 'Consulting', 'Finance', 'Media', 'Startups'],
+    targetAudience: ['Professional', 'Mid-Level', 'Senior', 'Tech Professional']
+  },
+  {
+    id: 'academic-cv',
+    name: 'Academic CV',
+    description: 'Comprehensive CV format designed for academia, featuring publications, grants, and teaching experience',
+    category: 'professional',
+    atsScore: 97,
+    isPremium: true,
+    previewImage: '/templates/academic-cv.png',
+    features: ['CV Format', 'Publications Section', 'Grants & Awards', 'Teaching Experience', 'Conference Presentations', 'Multi-Page Support'],
+    industries: ['Academia', 'Research', 'Education', 'Science', 'Government', 'Think Tanks'],
+    targetAudience: ['Professor', 'Researcher', 'PhD Candidate', 'Postdoc', 'Academic Professional']
   }
 ];
   

@@ -3,7 +3,12 @@
 import Link from 'next/link';
 import { ArrowLeft, FileText, CheckCircle, XCircle, Zap, Download, ArrowRight } from 'lucide-react';
 import { SEO } from '@/components/SEO';
-import { getSEOMetadata } from '@/lib/seo-config';
+
+interface SEOMetadata {
+  title: string;
+  description: string;
+  url: string;
+}
 
 export default function ATSResumeGuidePage() {
   const seoData = getSEOMetadata('ats-resume-guide-2025');
@@ -290,3 +295,21 @@ export default function ATSResumeGuidePage() {
     </>
   );
 }
+
+function getSEOMetadata(slug: string): SEOMetadata {
+  const seoMap: Record<string, SEOMetadata> = {
+    'ats-resume-guide-2025': {
+      title: 'The Ultimate 2025 ATS Resume Guide | Smart ATS',
+      description: 'Learn how to pass ATS systems and get your resume noticed. Over 75% of resumes get rejected automatically. Master keyword optimization, formatting, and ATS best practices.',
+      url: '/thecareerhub/ats-resume-guide-2025',
+    },
+  };
+
+  // Return metadata for the slug, or provide sensible defaults
+  return seoMap[slug] || {
+    title: 'Career Hub Guide | Smart ATS',
+    description: 'Discover career resources and guides to help you succeed.',
+    url: `/thecareerhub/${slug}`,
+  };
+}
+

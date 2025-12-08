@@ -30,6 +30,8 @@ import {
 
 import GlobalNavigation from '@/components/GlobalNavigation';
 import LogoSplashScreen from '@/components/LogoSplashScreen';
+import ResumeUploadSection from '@/components/ResumeUploadSection';
+import TrustBar from '@/components/TrustBar';
 import { useRouter } from 'next/navigation';
 
 type ATSDemoModalProps = {
@@ -243,6 +245,12 @@ const Page: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* Trust Bar - Company Logos */}
+        <TrustBar />
+
+        {/* Resume Upload Section */}
+        <ResumeUploadSection />
 
         {/* Problem/Solution Section */}
         <section className="py-20 px-6 relative">
