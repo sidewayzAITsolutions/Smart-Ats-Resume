@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Image from 'next/image';
 
 interface Company {
   name: string;
@@ -11,32 +12,32 @@ const TrustBar: React.FC = () => {
   const companies: Company[] = [
     {
       name: 'Google',
-      logo: '🔍',
+      logo: '/logos/google.png',
       altText: 'Google'
     },
     {
       name: 'Amazon',
-      logo: '📦',
+      logo: '/logos/amazon.png',
       altText: 'Amazon'
     },
     {
       name: 'Microsoft',
-      logo: '💻',
+      logo: '/logos/microsoft.png',
       altText: 'Microsoft'
     },
     {
       name: 'Apple',
-      logo: '🍎',
+      logo: '/logos/apple.png',
       altText: 'Apple'
     },
     {
       name: 'Meta',
-      logo: '🌐',
+      logo: '/logos/meta.png',
       altText: 'Meta'
     },
     {
       name: 'Tesla',
-      logo: '⚡',
+      logo: '/logos/tesla.png',
       altText: 'Tesla'
     }
   ];
@@ -59,12 +60,18 @@ const TrustBar: React.FC = () => {
           {companies.map((company, index) => (
             <div
               key={index}
-              className="group flex flex-col items-center justify-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-amber-500/50 hover:bg-gray-900/80 transition-all duration-300 cursor-default animate-fade-in-up hover-card"
+              className="group relative flex flex-col items-center justify-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-amber-500/50 hover:bg-gray-900/80 transition-all duration-300 cursor-default animate-fade-in-up hover-card"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {/* Logo/Icon */}
-              <div className="text-5xl md:text-6xl mb-3 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">
-                {company.logo}
+              {/* Logo Image */}
+              <div className="relative w-16 h-16 md:w-20 md:h-20 mb-3 group-hover:scale-110 transition-transform duration-300">
+                <Image
+                  src={company.logo}
+                  alt={company.altText}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 64px, 80px"
+                />
               </div>
 
               {/* Company Name */}
