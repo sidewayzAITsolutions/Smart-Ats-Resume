@@ -259,16 +259,14 @@ export default function ResumeUploadSection() {
                     <span className="text-gray-400 text-2xl">/100</span>
                   </div>
                 </div>
-                {/* Blurred Pass Rate Badge - Premium Only */}
-                <div className="relative">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg blur-sm select-none">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg relative">
+                  <div className="blur-sm select-none flex items-center gap-2">
                     {getPassRateIcon(atsScore.passRate)}
-                    <span className="text-sm font-semibold text-gray-300">
+                    <span className={`text-sm font-semibold ${
+                      atsScore.passRate === 'high' ? 'text-green-300' : 'text-amber-300'
+                    }`}>
                       {atsScore.passRate === 'high' ? 'Excellent' : atsScore.passRate === 'medium' ? 'Good' : 'Needs Work'}
                     </span>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xs text-amber-400 font-semibold bg-gray-900/80 px-2 py-1 rounded">🔒 Premium</span>
                   </div>
                 </div>
               </div>
@@ -281,16 +279,10 @@ export default function ResumeUploadSection() {
                   { label: 'Content', score: atsScore.breakdown.content },
                   { label: 'Completeness', score: atsScore.breakdown.completeness },
                 ].map((item) => (
-                  <div key={item.label} className="bg-white/5 rounded-lg p-4">
+                  <div key={item.label} className="bg-white/5 rounded-lg p-4 relative">
                     <div className="text-sm text-gray-400 mb-2">{item.label}</div>
-                    {/* Blurred Score Number - Premium Only */}
-                    <div className="relative">
-                      <div className="text-2xl font-bold text-gray-200 blur-sm select-none">{item.score}</div>
-                      <div className="absolute inset-0 flex items-center">
-                        <span className="text-xs text-amber-400 font-semibold">🔒</span>
-                      </div>
-                    </div>
-                    <div className="w-full h-1.5 bg-gray-700 rounded-full mt-2 overflow-hidden">
+                    <div className="text-2xl font-bold text-gray-200 blur-sm select-none">{item.score}</div>
+                    <div className="w-full h-1.5 bg-gray-700 rounded-full mt-2 overflow-hidden blur-sm">
                       <div
                         className="h-full bg-gradient-to-r from-teal-500 to-amber-500"
                         style={{ width: `${item.score}%` }}
@@ -301,12 +293,12 @@ export default function ResumeUploadSection() {
               </div>
             </div>
 
-            {/* Issues and Suggestions - Blurred for Premium */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8 relative">
-              {/* Issues - Blurred */}
+            {/* Issues and Suggestions */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {/* Issues */}
               {atsScore.issues.length > 0 && (
-                <div className="relative">
-                  <div className="bg-red-950/30 border border-red-700/50 rounded-xl p-6 blur-sm select-none">
+                <div className="bg-red-950/30 border border-red-700/50 rounded-xl p-6 relative">
+                  <div className="blur-sm select-none">
                     <div className="flex items-center gap-2 mb-4">
                       <AlertCircle className="w-5 h-5 text-red-400" />
                       <h3 className="font-semibold text-red-300">Areas to Improve</h3>
@@ -320,20 +312,18 @@ export default function ResumeUploadSection() {
                       ))}
                     </ul>
                   </div>
-                  {/* Premium Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900/40 rounded-xl backdrop-blur-[2px]">
-                    <div className="text-center">
-                      <span className="text-2xl">🔒</span>
-                      <p className="text-amber-400 font-semibold text-sm mt-1">Unlock with Premium</p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-gray-900/80 px-4 py-2 rounded-lg border border-gray-700">
+                      <span className="text-gray-300 text-sm font-medium">🔒 Premium Feature</span>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Suggestions - Blurred */}
+              {/* Suggestions */}
               {atsScore.suggestions.length > 0 && (
-                <div className="relative">
-                  <div className="bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 blur-sm select-none">
+                <div className="bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 relative">
+                  <div className="blur-sm select-none">
                     <div className="flex items-center gap-2 mb-4">
                       <CheckCircle className="w-5 h-5 text-teal-400" />
                       <h3 className="font-semibold text-teal-300">Quick Fixes</h3>
@@ -347,29 +337,13 @@ export default function ResumeUploadSection() {
                       ))}
                     </ul>
                   </div>
-                  {/* Premium Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900/40 rounded-xl backdrop-blur-[2px]">
-                    <div className="text-center">
-                      <span className="text-2xl">🔒</span>
-                      <p className="text-amber-400 font-semibold text-sm mt-1">Unlock with Premium</p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-gray-900/80 px-4 py-2 rounded-lg border border-gray-700">
+                      <span className="text-gray-300 text-sm font-medium">🔒 Premium Feature</span>
                     </div>
                   </div>
                 </div>
               )}
-            </div>
-
-            {/* Upgrade CTA */}
-            <div className="bg-gradient-to-r from-amber-900/30 via-orange-900/30 to-amber-900/30 border border-amber-500/50 rounded-xl p-6 mb-8 text-center">
-              <h3 className="text-xl font-bold text-white mb-2">Want the Full Picture?</h3>
-              <p className="text-gray-300 mb-4">Unlock detailed scores, personalized fixes, and AI-powered optimization</p>
-              <Link
-                href="/pricing?plan=sprint"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-lg hover:from-amber-400 hover:to-orange-400 transition-all transform hover:scale-105"
-              >
-                <span>🚀</span>
-                Get Premium - Just $9 for 7 Days
-                <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
 
             {/* CTA Buttons */}
