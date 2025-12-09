@@ -32,6 +32,7 @@ import GlobalNavigation from '@/components/GlobalNavigation';
 import LogoSplashScreen from '@/components/LogoSplashScreen';
 import ResumeUploadSection from '@/components/ResumeUploadSection';
 import TrustBar from '@/components/TrustBar';
+import SprintBanner from '@/components/SprintBanner';
 import { useRouter } from 'next/navigation';
 
 type ATSDemoModalProps = {
@@ -246,8 +247,8 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Trust Bar - Company Logos */}
-        <TrustBar />
+        {/* 7-Day Sprint Promo Banner */}
+        <SprintBanner />
 
         {/* Resume Upload Section */}
         <ResumeUploadSection />
@@ -318,6 +319,9 @@ const Page: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* Trust Bar - Company Logos */}
+        <TrustBar />
 
         {/* Features Grid */}
 

@@ -84,15 +84,6 @@ const TrustBar: React.FC = () => {
             </div>
           ))}
         </div>
-
-        {/* Bottom Stat */}
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-amber-900/30 via-orange-900/30 to-amber-900/30 border border-amber-700/50 rounded-lg hover:border-amber-500/70 transition-all duration-300">
-            <span className="text-amber-300 font-semibold">
-              ✨ Used by professionals across <strong className="text-amber-400">500+ Fortune companies</strong>
-            </span>
-          </div>
-        </div>
       </div>
     </section>
   );
