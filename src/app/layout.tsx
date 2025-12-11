@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter, Roboto, Playfair_Display, Crimson_Pro, Lora, Montserrat, Open_Sans } from 'next/font/google'
 import './global.css'
 import { Toaster } from 'react-hot-toast'
+import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 const roboto = Roboto({
@@ -101,6 +102,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* TikTok Pixel Code Start */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+
+  ttq.load('D4T9U83C77U9PCMM0IHG');
+  ttq.page();
+}(window, document, 'ttq');
+            `,
+          }}
+        />
+        {/* TikTok Pixel Code End */}
+        
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -114,13 +132,14 @@ export default function RootLayout({
           }}
         />
         {/* End Google Tag Manager */}
-        
+
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-LW218B0V79"></script>
-        
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Crimson+Pro:wght@300;400;600&family=Lora:wght@400;700&family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+        
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -131,9 +150,7 @@ export default function RootLayout({
               gtag('config', 'G-LW218B0V79');
               
               // Reddit Pixel - Data Layer for purchase events
-              // Call this function when a purchase is completed
               window.trackRedditPurchase = function(email, phone, value, currency, items) {
-                // Tag Manager version - clear previous ecommerce object
                 dataLayer.push({ ecommerce: null });
                 dataLayer.push({
                   event: "purchase",
@@ -148,7 +165,6 @@ export default function RootLayout({
                   }
                 });
                 
-                // Google Tag version
                 if (typeof gtag === 'function') {
                   gtag("event", "purchase", {
                     user_data: {
@@ -168,8 +184,14 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} ${roboto.variable} ${playfairDisplay.variable} ${crimsonPro.variable} ${lora.variable} ${montserrat.variable} ${openSans.variable}`}>
         {/* Google Tag Manager (noscript) */}
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5CR4JBCN"
-        height="0" width="0" style={{display:"none",visibility:"hidden"}}></iframe></noscript>
+        <noscript>
+          <iframe 
+            src="https://www.googletagmanager.com/ns.html?id=GTM-5CR4JBCN"
+            height="0" 
+            width="0" 
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         {/* End Google Tag Manager (noscript) */}
         {children}
         <Toaster position="top-right" />
@@ -177,3 +199,4 @@ export default function RootLayout({
     </html>
   )
 }
+
