@@ -52,8 +52,8 @@ const LogoSplashScreen = () => {
         {/* Inner ring animation */}
         <div className={`absolute inset-0 rounded-full border-2 border-amber-500/50 animate-spin-slow`} />
         
-        {/* Logo - Now twice as big */}
-        <div className={`relative w-[640px] h-[640px] rounded-full overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 p-2 ${
+        {/* Logo - Responsive: fits screen on mobile, full size on desktop */}
+        <div className={`relative w-[80vw] h-[80vw] max-w-[640px] max-h-[640px] rounded-full overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 p-2 ${
           !isExiting ? 'animate-bounce-slow' : ''
         }`}>
           <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-950 to-gray-900 flex items-center justify-center">
@@ -65,13 +65,13 @@ const LogoSplashScreen = () => {
           </div>
         </div>
 
-        {/* Welcome text - Now 3x bigger and brighter */}
-        <div className={`absolute -bottom-32 left-1/2 transform -translate-x-1/2 whitespace-nowrap transition-all duration-500 ${
+        {/* Welcome text - Responsive for mobile */}
+        <div className={`absolute -bottom-20 md:-bottom-32 left-1/2 transform -translate-x-1/2 whitespace-nowrap transition-all duration-500 ${
           isExiting ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
         }`}>
-          <h2 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-amber-100 text-center">
+          <h2 className="text-3xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-amber-100 text-center">
             Welcome to SmartATS Resume<br />
-            <span className="text-purple-300 text-4xl gap-2">Putting People Back in Front of People</span>
+            <span className="text-purple-300 text-xl md:text-4xl gap-2">Putting People Back in Front of People</span>
           </h2>
         </div>
       </div>
