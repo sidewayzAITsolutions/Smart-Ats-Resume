@@ -98,7 +98,7 @@ const PricingPage = () => {
       name: 'Sprint Pass',
       price: 9,
       period: '7 days',
-      mascotImage: '/Donkey2.png',
+      mascotImage: '/logo.png',
       description: '7-day access for urgent resume fixes',
       features: [
         'Full Pro features for 7 days',
