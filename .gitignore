@@ -109,3 +109,4 @@ src/DBCredentials.txt
 **/credentials.txt
 **/*credentials*
 **/*secrets*
+.vscode/ntrsync

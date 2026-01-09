@@ -28,7 +28,7 @@ const EnterprisePage = () => {
     {
       icon: Palette,
       title: "Custom Branding",
-      description: "Make it yours with custom branding, logos, and color schemes",
+      description: "Custom branding, logos, and color schemes",
       details: [
         "Upload your company logo",
         "Custom color schemes",
@@ -39,7 +39,7 @@ const EnterprisePage = () => {
     {
       icon: FileText,
       title: "Bulk Resume Creation",
-      description: "Generate hundreds of ATS-optimized resumes simultaneously",
+      description: "Generate hundreds of ATS-optimized resumes at once",
       details: [
         "Batch upload via CSV",
         "Template automation",
@@ -50,7 +50,7 @@ const EnterprisePage = () => {
     {
       icon: BarChart3,
       title: "Advanced Analytics",
-      description: "Comprehensive insights into resume performance and team productivity",
+      description: "Track resume performance and team productivity",
       details: [
         "Performance dashboards",
         "Team activity reports",
@@ -61,7 +61,7 @@ const EnterprisePage = () => {
     {
       icon: HeadphonesIcon,
       title: "Dedicated Support",
-      description: "Get personalized assistance with a dedicated account manager",
+      description: "Dedicated account manager and priority support",
       details: [
         "Dedicated account manager",
         "Priority email support",
@@ -103,8 +103,7 @@ const EnterprisePage = () => {
             </h1>
 
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-              Empower your HR team with AI-powered resume optimization, advanced analytics,
-              and seamless collaboration tools designed for high-volume recruitment.
+              AI-powered resume optimization, advanced analytics, and collaboration tools for high-volume recruitment.
             </p>
 
             <div className="flex justify-center">
@@ -178,10 +177,10 @@ const EnterprisePage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Simple, Transparent Pricing
+              Simple Pricing
             </h2>
             <p className="text-xl text-gray-300">
-              One plan with everything you need to scale your hiring
+              One plan. Everything you need.
             </p>
           </div>
 
@@ -275,7 +274,7 @@ const EnterprisePage = () => {
               Everything You Need to Scale
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Powerful features designed for teams and recruitment agencies
+              Features built for teams and recruitment agencies
             </p>
           </div>
 
@@ -328,10 +327,10 @@ const EnterprisePage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Powerful Integrations & Export Options
+              Integrations & Export Options
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Connect SmartATS to your workflow with flexible integration options
+              Connect SmartATS to your workflow
             </p>
           </div>
           <div className="text-center mt-12">
@@ -354,7 +353,7 @@ const EnterprisePage = () => {
             Ready to Transform Your Hiring Process?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Join and become a SmartATS Enterprise
+            Join SmartATS Enterprise
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">

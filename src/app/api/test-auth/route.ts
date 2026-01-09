@@ -106,6 +106,8 @@ export async function POST(req: NextRequest) {
     console.log('🧪 Testing signup with:', { email });
     
     const { supabase } = createClientFromRequest(req);
+	    const origin = req.headers.get('origin') ?? new URL(req.url).origin;
+	    const emailRedirectTo = `${origin}/auth/callback?next=${encodeURIComponent('/templates')}`;
     
     // Test signup
     const { data, error } = await supabase.auth.signUp({
@@ -114,7 +116,8 @@ export async function POST(req: NextRequest) {
       options: {
         data: {
           full_name: 'Test User',
-        }
+	        },
+	        emailRedirectTo,
       }
     });
     

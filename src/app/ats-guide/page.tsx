@@ -35,7 +35,7 @@ const ATSGuidePage = () => {
             Complete ATS Guide
           </h1>
           <p className="text-xl text-gray-400">
-            Everything you need to know about beating Applicant Tracking Systems
+            How to beat Applicant Tracking Systems
           </p>
         </div>
 
@@ -47,8 +47,8 @@ const ATSGuidePage = () => {
               What is an ATS?
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              An Applicant Tracking System (ATS) is software used by employers to collect, sort, scan, and rank job applications. 
-              Over 98% of Fortune 500 companies use ATS to filter resumes before they reach human recruiters.
+              An Applicant Tracking System (ATS) is software that collects, sorts, and ranks job applications. 
+              98% of Fortune 500 companies use ATS to filter resumes before human recruiters see them.
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-gray-800 rounded-xl p-6">
@@ -80,7 +80,7 @@ const ATSGuidePage = () => {
                 <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Use Standard Section Headers</h3>
-                  <p className="text-gray-400">Stick to conventional headers like "Work Experience," "Education," and "Skills" instead of creative alternatives.</p>
+                  <p className="text-gray-400">Use "Work Experience," "Education," and "Skills"—not creative alternatives.</p>
                 </div>
               </div>
               
@@ -88,7 +88,7 @@ const ATSGuidePage = () => {
                 <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Include Relevant Keywords</h3>
-                  <p className="text-gray-400">Mirror the language used in the job description. Include both the full term and abbreviations (e.g., "Search Engine Optimization (SEO)").</p>
+                  <p className="text-gray-400">Match the job description language. Include full terms and abbreviations (e.g., "Search Engine Optimization (SEO)").</p>
                 </div>
               </div>
               
@@ -96,7 +96,7 @@ const ATSGuidePage = () => {
                 <CheckCircle className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Use Simple Formatting</h3>
-                  <p className="text-gray-400">Avoid tables, text boxes, headers/footers, and complex formatting that can confuse ATS parsers.</p>
+                  <p className="text-gray-400">Avoid tables, text boxes, headers/footers, and complex layouts that confuse ATS parsers.</p>
                 </div>
               </div>
               
@@ -150,7 +150,7 @@ const ATSGuidePage = () => {
           <div className="bg-gradient-to-r from-teal-600 to-amber-600 rounded-2xl p-8">
             <h2 className="text-3xl font-bold mb-4">Ready to Beat the ATS?</h2>
             <p className="text-xl mb-6 opacity-90">
-              Use our AI-powered resume builder to create an ATS-optimized resume in minutes.
+              Create an ATS-optimized resume in minutes with our AI-powered builder.
             </p>
             <Link href="/templates" className="inline-block bg-white text-teal-600 px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
               Start Building Your Resume

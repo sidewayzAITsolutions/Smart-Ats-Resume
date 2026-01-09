@@ -83,6 +83,9 @@ export default function SignupPage(): React.JSX.Element {
     try {
       console.log('Starting signup process...');
 
+	      // Ensure Supabase confirmation links return to *this* app (not a stale Site URL like localhost)
+	      const emailRedirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/templates')}`;
+
       // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -91,6 +94,7 @@ export default function SignupPage(): React.JSX.Element {
           data: {
             full_name: fullName,
           },
+	          emailRedirectTo,
         }
       });
 

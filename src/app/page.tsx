@@ -36,14 +36,13 @@ const Page: React.FC = () => {
 
 
 
-
   const WhyChooseSmartATS = {
     title: "Why Choose SmartATS?",
-    subtitle: "Two game-changing features that set us apart from the competition",
+    subtitle: "Two capabilities that set us apart",
     features: [
       {
         title: "Advanced ATS Scorecard",
-        description: "Our proprietary ATS scoring algorithm analyzes your resume against real ATS systems used by Fortune 500 companies. Get instant feedback on keyword optimization, formatting compatibility, and section structure to ensure your resume passes through automated screening systems.",
+        description: "Our proprietary algorithm tests your resume against Fortune 500 ATS systems. Get instant feedback on keywords, formatting, and structure to ensure it passes automated screening.",
         icon: "📊",
         highlights: [
           "Real-time ATS compatibility scoring",
@@ -54,7 +53,7 @@ const Page: React.FC = () => {
       },
       {
         title: "AI-Powered Content Generation",
-        description: "Leverage cutting-edge artificial intelligence to craft compelling resume content that resonates with both ATS systems and human recruiters. Our AI understands industry trends, job requirements, and recruiter preferences to help you stand out.",
+        description: "AI generates resume content that passes ATS filters and impresses recruiters. Our system analyzes industry trends and job requirements to position you competitively.",
         icon: "🤖",
         highlights: [
           "Intelligent bullet point generation",
@@ -64,7 +63,7 @@ const Page: React.FC = () => {
         ]
       }
     ],
-    summary: "While other resume builders focus on templates, SmartATS focuses on results. Our ATS scorecard ensures your resume gets past automated filters, while our AI implementation helps you create content that impresses human recruiters. It's not just about looking good—it's about getting hired."
+    summary: "Other builders focus on templates. We focus on results. Our ATS scorecard ensures your resume clears filters. Our AI creates content that gets interviews."
   };
 
   const ATSDemoModal = ({ open, onClose }: ATSDemoModalProps) => {
@@ -84,7 +83,7 @@ const Page: React.FC = () => {
           </button>
 
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold text-white mb-6">Live ATS Analysis Demo</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">Live ATS Analysis</h2>
 
             <div className="bg-gradient-to-br from-teal-900/50 to-amber-900/50 border border-teal-700/50 rounded-2xl p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
@@ -132,8 +131,8 @@ const Page: React.FC = () => {
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
                 <div>
-                  <p className="font-medium text-green-300">Resume Optimized!</p>
-                  <p className="text-sm text-green-400 mt-1">Your resume scored above the 75% threshold - ready for submission!</p>
+                  <p className="font-medium text-green-300">Resume Optimized</p>
+                  <p className="text-sm text-green-400 mt-1">Your resume scored above 75%—ready for submission</p>
                 </div>
               </div>
             </div>
@@ -146,7 +145,7 @@ const Page: React.FC = () => {
               } }
               className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold py-4 px-8 rounded-xl hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
             >
-              Start Building Your ATS-Optimized Resume
+              Start Building Your Resume
               <ArrowRight className="inline-block ml-2 w-5 h-5" />
             </button>
           </div>
@@ -187,7 +186,7 @@ const Page: React.FC = () => {
           <div className="max-w-6xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-900/50 to-amber-900/50 border border-teal-700/50 rounded-full mb-8 animate-bounce-slow">
               <Sparkles className="w-4 h-4 text-teal-400" />
-              <span className="text-sm font-medium text-gray-300">AI-Powered ATS Optimization for a $17B Market</span>
+              <span className="text-sm font-medium text-gray-300">Enterprise-Grade ATS Optimization</span>
             </div>
 
             <h1 className="text-8xl md:text-12xl lg:text-15xl font-bold text-white mb-12 leading-tight " style={{textShadow: '0 0 20px #fbff00ff, 0 0 40px #00c7b3ff, 0 0 60px #00c7b3ff'}}>
@@ -215,8 +214,8 @@ const Page: React.FC = () => {
             </div>
 
             <p className="text-xl md:text-4xl text-red-400 mb-12 max-w-5xl mx-auto leading-relaxed">
-              <span className="font-bold text-gray-200">A Builder That Is</span>
-              <span className="font-bold text-red-500"> Putting The Power Back In Human Hands!</span>
+              <span className="font-bold text-gray-200">Technology That</span>
+              <span className="font-bold text-red-500"> Amplifies Your Potential</span>
             </p>
 
             {/* Trust Indicators */}
@@ -246,7 +245,7 @@ const Page: React.FC = () => {
                   <div className="w-16 h-16 bg-red-900/50 rounded-2xl flex items-center justify-center mb-6">
                     <X className="w-8 h-8 text-red-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">The Brutal Truth</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">The Reality</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
@@ -264,7 +263,7 @@ const Page: React.FC = () => {
                       <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <X className="w-3 h-3 text-red-400" />
                       </div>
-                      <span className="text-gray-300">70% of resumes auto-rejected before human review</span>
+                      <span className="text-gray-300">70% of resumes rejected before human review</span>
                     </li>
                   </ul>
                 </div>
@@ -276,13 +275,13 @@ const Page: React.FC = () => {
                   <div className="w-16 h-16 bg-green-900/50 rounded-2xl flex items-center justify-center mb-6">
                     <CheckCircle className="w-8 h-8 text-green-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Your Secret Weapon</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">Your Advantage</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span className="text-gray-300">AI analyzes job descriptions for perfect keyword match</span>
+                      <span className="text-gray-300">AI matches keywords to job requirements</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
@@ -294,7 +293,7 @@ const Page: React.FC = () => {
                       <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span className="text-gray-300">Proven templates that pass all major ATS systems</span>
+                      <span className="text-gray-300">Templates proven to pass enterprise ATS systems</span>
                     </li>
                   </ul>
                 </div>
@@ -326,25 +325,25 @@ const Page: React.FC = () => {
                 {
                   icon: <Shield className="w-8 h-8" />,
                   title: "ATS-Proof Formatting",
-                  description: "Clean, scannable templates that work with all major ATS systems",
+                  description: "Templates validated across all major ATS systems",
                   color: "green"
                 },
                 {
                   icon: <Zap className="w-8 h-8" />,
                   title: "Real-Time Scoring",
-                  description: "See your ATS score instantly and get tips to improve it",
+                  description: "Instant ATS score with actionable recommendations",
                   color: "amber"
                 },
                 {
                   icon: <FileText className="w-8 h-8" />,
                   title: "Multiple Formats",
-                  description: "Download in PDF, DOCX, or plain text - whatever the job requires",
+                  description: "Export as PDF, DOCX, or plain text—whatever the job requires",
                   color: "orange"
                 },
                 {
                   icon: <Clock className="w-8 h-8" />,
                   title: "Quick Builder",
-                  description: "Professional resume in under 10 minutes - beat the 60% faster ATS hiring cycle",
+                  description: "Professional resume in under 10 minutes",
                   color: "pink"
                 },
                 {
@@ -393,7 +392,7 @@ const Page: React.FC = () => {
                   The Competition
                 </span>
               </h2>
-              <p className="text-xl text-gray-400 mt-4">See how we stack up against the biggest names in resume building</p>
+              <p className="text-xl text-gray-400 mt-4">How we compare to the competition</p>
             </div>
 
             <div className="overflow-x-auto">
@@ -521,7 +520,7 @@ const Page: React.FC = () => {
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-900/30 to-green-800/30 border border-green-700/50 rounded-xl">
                 <Sparkles className="w-7 h-7 text-green-400" />
                 <p className="text-green-300 font-medium">
-                  SmartATS SAVES you TIME and DOLLARS while giving you the BEST Quality! <span className="text-green-400 font-bold">30% more</span> than competitors
+                  SmartATS delivers <span className="text-green-400 font-bold">30% more value</span> than competitors—better quality at a better price
                 </p>
               </div>
             </div>
@@ -586,9 +585,7 @@ const Page: React.FC = () => {
                 <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent"> Enterprise</span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Transform your organization's hiring process with advanced team collaboration,
-                custom branding, and enterprise-grade analytics. Built for HR teams and agencies
-                managing high-volume recruitment.
+                Transform your hiring process with team collaboration, custom branding, and enterprise analytics. Built for HR teams managing high-volume recruitment.
               </p>
             </div>
 
@@ -601,13 +598,12 @@ const Page: React.FC = () => {
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">Create in Bulk</h3>
+                      <h3 className="text-xl font-bold text-white">Bulk Creation</h3>
                       <p className="text-amber-200 text-sm">Unlimited Resumes</p>
                     </div>
                   </div>
                   <p className="text-gray-300 leading-relaxed">
-                    Generate and manage unlimited resumes for your entire team with bulk creation
-                    and editing capabilities, streamlining the hiring process across departments.
+                    Generate unlimited resumes for your entire team with bulk creation and editing. Streamline hiring across all departments.
                   </p>
                 </div>
 
@@ -617,13 +613,12 @@ const Page: React.FC = () => {
                       <Sparkles className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">Brand Customization</h3>
+                      <h3 className="text-xl font-bold text-white">Custom Branding</h3>
                       <p className="text-amber-200 text-sm">White-label solution</p>
                     </div>
                   </div>
                   <p className="text-gray-300 leading-relaxed">
-                    Customize templates with your company branding, logos, color schemes,
-                    and create branded candidate experiences that reflect your organization.
+                    Customize templates with your branding, logos, and colors. Create branded experiences that represent your organization.
                   </p>
                 </div>
 
@@ -638,15 +633,14 @@ const Page: React.FC = () => {
                     </div>
                   </div>
                   <p className="text-gray-300 leading-relaxed">
-                    Put our ATS score card to work with detailed analytics on resume performance,
-                    candidate engagement, and team collaboration metrics to optimize your hiring strategy.
+                    Track resume performance, candidate engagement, and team metrics. Optimize your hiring strategy with data.
                   </p>
                 </div>
               </div>
 
               {/* Right side - ROI Stats */}
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-3xl p-8">
-                <h3 className="text-2xl font-bold text-white mb-8 text-center">Projected Enterprise ROI Impact</h3>
+                <h3 className="text-2xl font-bold text-white mb-8 text-center">Enterprise ROI Impact</h3>
 
                 <div className="space-y-6">
                   <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700/30">
@@ -695,19 +689,19 @@ const Page: React.FC = () => {
               <div className="text-center p-6 bg-gray-800/50 rounded-xl border border-gray-700">
                 <Shield className="w-8 h-8 text-amber-400 mx-auto mb-3" />
                 <h4 className="font-semibold text-white mb-2">Priority Support</h4>
-                <p className="text-sm text-gray-400">Dedicated phone support and account manager for enterprise needs</p>
+                <p className="text-sm text-gray-400">Dedicated account manager and phone support</p>
               </div>
 
               <div className="text-center p-6 bg-gray-800/50 rounded-xl border border-gray-700">
                 <Target className="w-8 h-8 text-amber-400 mx-auto mb-3" />
                 <h4 className="font-semibold text-white mb-2">Custom Integrations</h4>
-                <p className="text-sm text-gray-400">API access and custom integrations with your existing HR systems</p>
+                <p className="text-sm text-gray-400">API access and integrations with your HR systems</p>
               </div>
 
               <div className="text-center p-6 bg-gray-800/50 rounded-xl border border-gray-700">
                 <Clock className="w-8 h-8 text-amber-400 mx-auto mb-3 justify-center" />
                 <h4 className="font-semibold text-white mb-2 justify-center">SLA Guarantee</h4>
-                <p className="text-sm text-gray-400 justify-center">99.9% uptime guarantee with enterprise-grade infrastructure</p>
+                <p className="text-sm text-gray-400 justify-center">99.9% uptime with enterprise infrastructure</p>
               </div>
 
               <div className="text-center p-6 bg-gray-800/50 rounded-xl border border-gray-700">
