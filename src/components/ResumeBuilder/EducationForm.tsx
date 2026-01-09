@@ -177,7 +177,7 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                   value={edu.field}
                   onChange={(e) => updateEducation(index, 'field', e.target.value)}
                   list={`fields-${index}`}
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400" // Apply sleek-input
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                   placeholder="e.g., Computer Science"
                 />
                 <datalist id={`fields-${index}`}>

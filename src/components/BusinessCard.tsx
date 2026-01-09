@@ -252,7 +252,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ className = '' }) => {
               Scale Your Hiring with SmartATS Enterprise
             </h4>
             <p className="text-gray-300 mb-2">
-              Join organizations already using our AI-powered resume optimization platform.
+              Join organizations already dominating with our AI-powered resume optimization platform.
             </p>
             <p className="text-amber-300 text-sm mb-4">
               • Dedicated Account Manager • 24/7 Enterprise Support • Custom Implementation

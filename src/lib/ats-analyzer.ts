@@ -163,6 +163,7 @@ export class ATSAnalyzer {
       actionVerbsUsed,
       hasMetrics,
       hasBulletPoints,
+      words,
     });
 
     // Generate global suggestions
@@ -201,6 +202,7 @@ export class ATSAnalyzer {
     actionVerbsUsed: string[];
     hasMetrics: boolean;
     hasBulletPoints: boolean;
+    words: string[];
   }): {
     keywords: MetricInsight;
     formatting: MetricInsight;
@@ -215,6 +217,7 @@ export class ATSAnalyzer {
       actionVerbsUsed,
       hasMetrics,
       hasBulletPoints,
+      words,
     } = params;
 
     const missingKeywordExamples = missingKeywords.slice(0, 5);

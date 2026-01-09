@@ -198,7 +198,7 @@ export default function SignupPage(): React.JSX.Element {
             Create Your Account
           </h1>
           <p className="text-gray-400 text-center mb-6">
-            Start optimizing your resume with AI
+            Start optimizing your resume with AI that delivers results
           </p>
 
           {error && (

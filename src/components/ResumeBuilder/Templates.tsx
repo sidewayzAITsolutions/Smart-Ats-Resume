@@ -144,6 +144,30 @@ const TEMPLATE_LIBRARY: Template[] = [
     features: ['Publication Focus', 'Research Emphasis', 'Academic Format', 'Citation Ready'],
     industries: ['Academia', 'Research', 'Education', 'Science', 'Government'],
     targetAudience: ['Academic', 'Researcher', 'Professor']
+  },
+  {
+    id: 'modern-elite',
+    name: 'Modern Elite',
+    description: 'Sleek, contemporary design with bold accents and modern typography',
+    category: 'modern',
+    atsScore: 94,
+    isPremium: true,
+    previewImage: '/templates/modern-elite.png',
+    features: ['Bold Design', 'Gradient Accents', 'Modern Typography', 'Visual Hierarchy', 'Two-Column Layout'],
+    industries: ['Technology', 'Marketing', 'Consulting', 'Finance', 'Media', 'Startups'],
+    targetAudience: ['Professional', 'Mid-Level', 'Senior', 'Tech Professional']
+  },
+  {
+    id: 'academic-cv',
+    name: 'Academic CV',
+    description: 'Comprehensive CV format designed for academia, featuring publications, grants, and teaching experience',
+    category: 'professional',
+    atsScore: 97,
+    isPremium: true,
+    previewImage: '/templates/academic-cv.png',
+    features: ['CV Format', 'Publications Section', 'Grants & Awards', 'Teaching Experience', 'Conference Presentations', 'Multi-Page Support'],
+    industries: ['Academia', 'Research', 'Education', 'Science', 'Government', 'Think Tanks'],
+    targetAudience: ['Professor', 'Researcher', 'PhD Candidate', 'Postdoc', 'Academic Professional']
   }
 ];
 
@@ -396,6 +420,97 @@ const TemplatePreview = ({ template }: { template: Template }) => {
             <div>
               <div className="font-semibold text-gray-800 mb-1">GRANTS</div>
               <div className="text-xs">NSF, NIH, DARPA funding</div>
+            </div>
+          </div>
+        );
+      
+      case 'modern-elite':
+        return (
+          <div className={`${baseStyles} bg-gradient-to-br from-slate-900 to-slate-800 text-white`}>
+            <div className="flex h-full">
+              {/* Left sidebar with gradient accent */}
+              <div className="w-1/3 bg-gradient-to-b from-cyan-500 via-blue-500 to-purple-600 p-2 relative">
+                <div className="absolute top-0 left-0 w-full h-1 bg-white/30"></div>
+                <div className="text-center mb-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full mx-auto mb-2 flex items-center justify-center">
+                    <div className="w-6 h-6 bg-white/40 rounded-full"></div>
+                  </div>
+                </div>
+                <div className="text-xs text-white/90 mb-3">
+                  <div className="font-bold mb-1 text-white">CONTACT</div>
+                  <div className="text-white/80">alex@email.com</div>
+                  <div className="text-white/80">linkedin.com/in/alex</div>
+                </div>
+                <div className="text-xs">
+                  <div className="font-bold mb-1 text-white">SKILLS</div>
+                  <div className="space-y-1">
+                    <div className="bg-white/20 rounded px-1 py-0.5 text-center">React</div>
+                    <div className="bg-white/20 rounded px-1 py-0.5 text-center">TypeScript</div>
+                    <div className="bg-white/20 rounded px-1 py-0.5 text-center">Node.js</div>
+                  </div>
+                </div>
+              </div>
+              {/* Main content */}
+              <div className="w-2/3 p-2">
+                <div className="mb-3">
+                  <div className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">ALEX RIVERA</div>
+                  <div className="text-cyan-400 text-sm font-medium">Senior Software Engineer</div>
+                  <div className="w-full h-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 mt-1"></div>
+                </div>
+                <div className="mb-2">
+                  <div className="font-semibold text-cyan-400 text-xs mb-1">EXPERIENCE</div>
+                  <div className="text-xs">
+                    <div className="font-medium">Lead Developer</div>
+                    <div className="text-gray-400">TechCorp • 2022-Present</div>
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold text-purple-400 text-xs mb-1">ACHIEVEMENTS</div>
+                  <div className="text-xs text-gray-300">
+                    <div>• Led team of 8 engineers</div>
+                    <div>• Reduced load time by 60%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      
+      case 'academic-cv':
+        return (
+          <div className={`${baseStyles} bg-white text-gray-800 border-t-4 border-indigo-700`}>
+            <div className="text-center mb-3 pb-2 border-b-2 border-indigo-100">
+              <div className="font-serif font-bold text-lg text-indigo-900">Prof. Elizabeth Warren, PhD</div>
+              <div className="text-indigo-700 text-sm">Associate Professor of Molecular Biology</div>
+              <div className="text-xs text-gray-600 mt-1">Stanford University | Department of Biology</div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <div className="font-semibold text-indigo-800 mb-1 border-b border-indigo-200">EDUCATION</div>
+                <div className="text-gray-700">
+                  <div className="font-medium">PhD, Molecular Biology</div>
+                  <div className="text-gray-500">MIT, 2015</div>
+                </div>
+              </div>
+              <div>
+                <div className="font-semibold text-indigo-800 mb-1 border-b border-indigo-200">GRANTS</div>
+                <div className="text-gray-700">
+                  <div>NIH R01 ($1.2M)</div>
+                  <div>NSF CAREER ($500K)</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="font-semibold text-indigo-800 mb-1 border-b border-indigo-200 text-xs">SELECTED PUBLICATIONS</div>
+              <div className="text-xs text-gray-700 space-y-1">
+                <div className="italic">• Nature (2023) - "CRISPR advances..."</div>
+                <div className="italic">• Cell (2022) - "Gene therapy..."</div>
+                <div className="text-indigo-600 font-medium">+ 45 peer-reviewed papers</div>
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="font-semibold text-indigo-800 mb-1 border-b border-indigo-200 text-xs">TEACHING</div>
+              <div className="text-xs text-gray-700">BIO 201, BIO 301, Graduate Seminar</div>
             </div>
           </div>
         );

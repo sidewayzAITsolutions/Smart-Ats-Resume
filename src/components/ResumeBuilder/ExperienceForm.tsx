@@ -2,7 +2,7 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { Experience } from '../../types/resume';
-import { Plus, Trash2, Calendar, Building, Briefcase, Star, Lightbulb, Loader } from 'lucide-react';
+import { Plus, Trash2, Calendar, Building, Briefcase, Star, Lightbulb, Loader, Sparkles, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'react-hot-toast'; // Import toast
 import { callAICompletion } from '@/utils/ai';
@@ -20,6 +20,7 @@ export default function ExperienceForm({ initialData, onUpdate, jobDescription, 
     initialData.length > 0 ? initialData : [createEmptyExperience()]
   );
   const [generatingAchievementIndex, setGeneratingAchievementIndex] = useState<number | null>(null);
+  const [generatingBulletsIndex, setGeneratingBulletsIndex] = useState<number | null>(null);
 
 function createEmptyExperience(): Experience {
   return {
@@ -142,6 +143,86 @@ Return only bullet points starting with "- ", one per line.`;
     }
   }, [experiences, jobDescription, onUpdate, isProUser, onUpgradeClick]);
 
+  // AI Bullet Points Generation Function (Premium Feature)
+  const generateBulletPoints = useCallback(async (expIndex: number) => {
+    // Check premium status first
+    if (!isProUser) {
+      onUpgradeClick(); // Trigger parent's upgrade modal
+      toast.error('This feature requires a Premium subscription');
+      return;
+    }
+
+    const experience = experiences[expIndex];
+    
+    // Validate required fields
+    if (!experience.position || !experience.company) {
+      toast.error('Please fill in at least the job title and company name');
+      return;
+    }
+
+    if (!jobDescription || jobDescription.trim().length === 0) {
+      toast.error('Please provide a target job description for tailored bullet points');
+      return;
+    }
+
+    setGeneratingBulletsIndex(expIndex);
+
+    try {
+      // Build role history from all experiences
+      const roleHistory = experiences.map(exp => ({
+        title: exp.position,
+        company: exp.company,
+        duration: exp.startDate && exp.endDate 
+          ? `${exp.startDate} - ${exp.endDate}` 
+          : exp.current 
+            ? `${exp.startDate} - Present` 
+            : exp.startDate || undefined,
+        responsibilities: exp.description ? [exp.description] : undefined
+      })).filter(role => role.title && role.company);
+
+      // Call the generate-bullets API
+      const response = await fetch('/api/generate-bullets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jobTitle: experience.position,
+          jobDescription: jobDescription,
+          roleHistory: roleHistory
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate bullet points');
+      }
+
+      const data = await response.json();
+      const bulletPoints: string[] = data.bulletPoints;
+
+      if (!bulletPoints || bulletPoints.length === 0) {
+        throw new Error('No bullet points generated');
+      }
+
+      // Update the experience with generated bullet points as achievements
+      const updatedExperiences = experiences.map((exp, i) =>
+        i === expIndex ? { ...exp, achievements: bulletPoints } : exp
+      );
+      
+      setExperiences(updatedExperiences);
+      onUpdate(updatedExperiences);
+      
+      toast.success(`Generated ${bulletPoints.length} tailored bullet points!`);
+    } catch (err) {
+      console.error('Error generating bullet points:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to generate bullet points';
+      toast.error(errorMessage);
+    } finally {
+      setGeneratingBulletsIndex(null);
+    }
+  }, [experiences, jobDescription, onUpdate, isProUser, onUpgradeClick]);
+
   const actionVerbSuggestions = [
     'Achieved', 'Managed', 'Led', 'Developed', 'Implemented', 'Increased', 'Decreased',
     'Improved', 'Created', 'Built', 'Designed', 'Optimized', 'Streamlined', 'Coordinated',
@@ -184,7 +265,6 @@ Return only bullet points starting with "- ", one per line.`;
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              {/* Job Title */}
               <div>
                 <label className="block text-sm font-medium text-white mb-2">
                   Job Title *
@@ -193,7 +273,7 @@ Return only bullet points starting with "- ", one per line.`;
                   type="text"
                   value={experience.position}
                   onChange={(e) => updateExperience(expIndex, 'position', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                   placeholder="e.g., Senior Software Engineer"
                 />
               </div>
@@ -211,7 +291,7 @@ Return only bullet points starting with "- ", one per line.`;
                     type="text"
                     value={experience.company}
                     onChange={(e) => updateExperience(expIndex, 'company', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     placeholder="e.g., Tech Company Inc."
                   />
                 </div>
@@ -234,7 +314,7 @@ Return only bullet points starting with "- ", one per line.`;
                         const month = e.target.value;
                         updateExperience(expIndex, 'startDate', month ? `${year}-${month}` : '');
                       }}
-                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     >
                       <option value="">Month</option>
                       <option value="01">January</option>
@@ -257,7 +337,7 @@ Return only bullet points starting with "- ", one per line.`;
                         const year = e.target.value;
                         updateExperience(expIndex, 'startDate', year && month ? `${year}-${month}` : '');
                       }}
-                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                      className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
                     >
                       <option value="">Year</option>
                       {Array.from({ length: 50 }, (_, i) => {
@@ -292,7 +372,7 @@ Return only bullet points starting with "- ", one per line.`;
                           updateExperience(expIndex, 'endDate', month ? `${year}-${month}` : '');
                         }}
                         disabled={experience.current}
-                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input"
+                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input placeholder-gray-400"
                       >
                         <option value="">Month</option>
                         <option value="01">January</option>
@@ -316,7 +396,7 @@ Return only bullet points starting with "- ", one per line.`;
                           updateExperience(expIndex, 'endDate', year && month ? `${year}-${month}` : '');
                         }}
                         disabled={experience.current}
-                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input"
+                        className="flex-1 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 sleek-input placeholder-gray-400"
                       >
                         <option value="">Year</option>
                         {Array.from({ length: 50 }, (_, i) => {
@@ -350,9 +430,33 @@ Return only bullet points starting with "- ", one per line.`;
 
             {/* Job Description */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-white mb-2">
-                Job Description
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-white">
+                  Job Description
+                </label>
+                {/* Generate Bullet Points with AI Button - Premium Feature */}
+                <Button
+                  onClick={() => generateBulletPoints(expIndex)}
+                  disabled={generatingBulletsIndex === expIndex}
+                  size="sm"
+                  variant="ghost"
+                  className={`flex items-center gap-1 ${
+                    isProUser 
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white' 
+                      : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  } px-3 py-1.5 rounded-lg transition-all duration-200`}
+                >
+                  {generatingBulletsIndex === expIndex ? (
+                    <Loader className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4" />
+                  )}
+                  <span className="text-xs font-medium">
+                    {generatingBulletsIndex === expIndex ? 'Generating...' : 'Generate Bullet Points with AI'}
+                  </span>
+                  {!isProUser && <Crown className="w-3 h-3 text-amber-400 ml-1" />}
+                </Button>
+              </div>
               <textarea
                 value={experience.description}
                 onChange={(e) => updateExperience(expIndex, 'description', e.target.value)}
@@ -363,6 +467,15 @@ Return only bullet points starting with "- ", one per line.`;
               <p className="mt-1 text-xs text-gray-400">
                 Keep it concise - focus on your key responsibilities and the scope of your role
               </p>
+              {/* Premium Feature Info */}
+              {!isProUser && (
+                <div className="mt-2 flex items-center gap-2 text-xs text-amber-400/80 bg-amber-900/20 border border-amber-700/30 rounded-lg px-3 py-2">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span>
+                    <strong>Premium Feature:</strong> Generate tailored, metric-driven bullet points based on the target job description
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Key Achievements */}
@@ -403,15 +516,13 @@ Return only bullet points starting with "- ", one per line.`;
               <div className="space-y-3">
                 {experience.achievements.map((achievement: string, achIndex: number) => (
                   <div key={achIndex} className="flex gap-3">
-                    <div className="flex-1">
-                      <textarea
-                        value={achievement}
-                        onChange={(e) => updateAchievement(expIndex, achIndex, e.target.value)}
-                        rows={2}
-                        className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
-                        placeholder="• Increased sales by 25% through strategic client relationship management and cross-selling initiatives"
-                      />
-                    </div>
+                    <textarea
+                      value={achievement}
+                      onChange={(e) => updateAchievement(expIndex, achIndex, e.target.value)}
+                      rows={2}
+                      className="flex-1 px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input placeholder-gray-400"
+                      placeholder="• Increased sales by 25% through strategic client relationship management and cross-selling initiatives"
+                    />
                     {experience.achievements.length > 1 && (
                       <Button
                         variant="outline"

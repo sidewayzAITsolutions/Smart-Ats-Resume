@@ -42,7 +42,7 @@ const ATSGuide = () => {
           ATS Guide
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Master the art of beating Applicant Tracking Systems with our comprehensive guide
+          Master the art of dominating Applicant Tracking Systems with our comprehensive guide
         </p>
       </div>
 
@@ -59,7 +59,7 @@ const ATSGuide = () => {
           <div className="flex items-center">
             <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2" />
             <p className="text-yellow-800 font-semibold">
-              Your resume has only 6 seconds to pass the ATS scan!
+              Your resume has only 6 seconds to dominate the ATS scan!
             </p>
           </div>
         </div>
@@ -129,7 +129,7 @@ const ATSGuide = () => {
       {/* CTA */}
       <div className="text-center mt-16">
         <h3 className="text-2xl font-bold mb-4">Ready to Optimize Your Resume?</h3>
-        <p className="text-gray-600 mb-8">Use our smart ATS optimization tool to ensure your resume passes every scan.</p>
+        <p className="text-gray-600 mb-8">Use our smart ATS optimization tool to guarantee your resume dominates every scan.</p>
         <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105">
           Optimize My Resume Now
         </button>

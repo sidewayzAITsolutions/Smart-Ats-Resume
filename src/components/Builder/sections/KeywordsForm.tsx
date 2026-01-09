@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Tag, Sparkles, FileText, Trash2, Loader2 } from "lucide-react";
+import { Tag, Sparkles, FileText, Trash2, Loader2, Lock, Crown } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import { ResumeData } from "@/types/resume";
@@ -10,9 +10,10 @@ import { callAICompletion } from "@/utils/ai";
 interface KeywordsFormProps {
   data: ResumeData;
   onChange: (data: Partial<ResumeData>) => void;
+  isPremium?: boolean;
 }
 
-export default function KeywordsForm({ data, onChange }: KeywordsFormProps) {
+export default function KeywordsForm({ data, onChange, isPremium = false }: KeywordsFormProps) {
   const [loadingAction, setLoadingAction] = useState<
     "extract" | "generate" | null
   >(null);
@@ -52,6 +53,12 @@ export default function KeywordsForm({ data, onChange }: KeywordsFormProps) {
     mode: "extract" | "generate",
     extraPrompt?: string
   ) => {
+    if (!isPremium) {
+      toast.error("AI keyword extraction is a premium feature");
+      window.location.href = '/pricing';
+      return;
+    }
+
     try {
       setLoadingAction(mode);
 
@@ -229,28 +236,42 @@ export default function KeywordsForm({ data, onChange }: KeywordsFormProps) {
               type="button"
               onClick={handleExtractFromJD}
               disabled={loadingAction === "extract"}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-sm font-medium text-white hover:from-teal-500 hover:to-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium relative ${
+                isPremium
+                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:from-teal-500 hover:to-emerald-500'
+                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+              } disabled:opacity-60 disabled:cursor-not-allowed`}
+              title={!isPremium ? 'Premium feature - Upgrade to use AI extraction' : ''}
             >
+              {!isPremium && <Lock className="w-4 h-4" />}
               {loadingAction === "extract" ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Sparkles className="w-4 h-4" />
               )}
               Extract from Job Description
+              {!isPremium && <Crown className="w-3 h-3 text-amber-500 absolute -top-1 -right-1" />}
             </button>
 
             <button
               type="button"
               onClick={handleGenerateByRole}
               disabled={loadingAction === "generate"}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-800 text-sm font-medium text-teal-200 border border-gray-700 hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+              className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border relative ${
+                isPremium
+                  ? 'bg-gray-800 text-teal-200 border-gray-700 hover:bg-gray-700'
+                  : 'bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700'
+              } disabled:opacity-60 disabled:cursor-not-allowed`}
+              title={!isPremium ? 'Premium feature - Upgrade to use AI generation' : ''}
             >
+              {!isPremium && <Lock className="w-4 h-4" />}
               {loadingAction === "generate" ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Sparkles className="w-4 h-4" />
               )}
               Generate More Keywords by Role
+              {!isPremium && <Crown className="w-3 h-3 text-amber-500 absolute -top-1 -right-1" />}
             </button>
           </div>
 

@@ -7,12 +7,13 @@ import React, {
   useState,
 } from 'react';
 
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 
 import toast from 'react-hot-toast';
 import { useResumeStore } from '@/store/resumeStore';
 import { ResumeData } from '@/types/resume';
 import CollapsibleATSScore from '@/components/CollapsibleATSScore';
+import { createClient } from '@/lib/supabase/client';
 
 import BuilderSidebar from './BuilderSidebar';
 import BuilderToolbar from './BuilderToolbar';
@@ -586,9 +587,50 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
     risks: string[];
     metricInsights?: import('@/lib/ats-analyzer').ATSAnalysis['metricInsights'];
   } | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [resumeCount, setResumeCount] = useState(0);
+  const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [linkedinResult, setLinkedinResult] = useState<string | null>(null);
+  const [showLinkedinModal, setShowLinkedinModal] = useState(false);
 
-  const { resumeData, updateResumeData, saveResume } = useResumeStore();
+  const { resumeData, updateResumeData, saveResume, resetResumeData } = useResumeStore();
   const savingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch user premium status and resume count
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return;
+
+        setUserId(user.id);
+
+        // Get premium status
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_premium')
+          .eq('id', user.id)
+          .single();
+
+        setIsPremium(profile?.is_premium || false);
+
+        // Get resume count
+        const { count } = await supabase
+          .from('resumes')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+
+        setResumeCount(count || 0);
+      } catch (error) {
+        console.error('Error fetching user status:', error);
+      }
+    };
+
+    fetchUserStatus();
+  }, []);
 
   // Initialize with existing data if provided
   useEffect(() => {
@@ -605,6 +647,12 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       }
     };
   }, []);
+
+  // Clear resume handler
+  const handleClear = useCallback(() => {
+    resetResumeData();
+    toast.success('Resume cleared! Starting fresh.');
+  }, [resetResumeData]);
 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
@@ -632,18 +680,38 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Client-side file size check (5MB limit)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast.error(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Please upload a resume under 5MB.`);
+      e.target.value = '';
+      return;
+    }
+    
     try {
       console.log('📄 Uploading resume:', file.name, file.type, file.size);
+      toast.loading('Parsing resume...', { id: 'parse-resume' });
+      
       const form = new FormData();
       form.append('resume', file);
       const res = await fetch('/api/parse-resume', { method: 'POST', body: form });
       console.log('📡 API response status:', res.status);
-      const json = await res.json();
+      
+      let json;
+      try {
+        json = await res.json();
+      } catch (jsonErr) {
+        console.error('❌ Failed to parse response JSON:', jsonErr);
+        toast.error('Server error. Please try again.', { id: 'parse-resume' });
+        return;
+      }
+      
       console.log('📦 API response:', json);
 
       if (!res.ok || !json?.success) {
         console.error('❌ Resume parse failed:', json?.error || res.statusText);
-        toast.error(`Failed to parse resume: ${json?.error || 'Unknown error'}`);
+        toast.error(json?.error || 'Failed to parse resume. Please try a different file.', { id: 'parse-resume' });
         return;
       }
 
@@ -655,7 +723,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           console.log('✅ Resume patch created:', patch);
         } catch (parseErr) {
           console.error('❌ Error parsing resume text:', parseErr);
-          toast.error(`Failed to parse resume content: ${parseErr instanceof Error ? parseErr.message : 'Unknown error'}`);
+          toast.error(`Failed to extract resume data: ${parseErr instanceof Error ? parseErr.message : 'Unknown error'}`, { id: 'parse-resume' });
           return;
         }
 
@@ -678,9 +746,10 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
               nonZero
                 .map(([k, v]) => `${k}(${v as number})`)
                 .join(', '),
+            { id: 'parse-resume' }
           );
         } else {
-          toast.success('Imported basic details. You can edit in the left panel.');
+          toast.success('Imported basic details. You can edit in the left panel.', { id: 'parse-resume' });
         }
 
         try {
@@ -715,16 +784,61 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
       }
     } catch (err) {
       console.error('Failed to import resume:', err);
-      toast.error('Import failed. Please try a different file or format.');
+      toast.error('Import failed. Please try a different file or format.', { id: 'parse-resume' });
     } finally {
       e.target.value = '';
     }
   };
 
-  const handleExport = useCallback(async () => {
-    const { exportResume } = await import('@/lib/export-resume');
-    await exportResume(resumeData as any, 'pdf');
+  // Generate LinkedIn 'About' from current resume data via AI endpoint
+  const handleGenerateLinkedIn = useCallback(async () => {
+    try {
+      setLinkedinLoading(true);
+      const resp = await fetch('/api/ai/linkedin-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume: resumeData }),
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        console.error('LinkedIn API error', data);
+        setLinkedinResult(data?.error || 'Failed to generate LinkedIn summary.');
+      } else {
+        setLinkedinResult(data?.about || 'No output from AI');
+      }
+      setShowLinkedinModal(true);
+    } catch (err) {
+      console.error('Failed to generate LinkedIn about:', err);
+      setLinkedinResult('Failed to generate LinkedIn about. Please try again.');
+      setShowLinkedinModal(true);
+    } finally {
+      setLinkedinLoading(false);
+    }
   }, [resumeData]);
+
+  const handleExport = useCallback(async (format: 'pdf' | 'docx' | 'txt' | 'json' = 'pdf') => {
+    // For PDF export, we need the preview to be visible
+    // Temporarily show it if it's hidden
+    const wasPreviewHidden = !showPreview;
+
+    if (format === 'pdf' && wasPreviewHidden) {
+      setShowPreview(true);
+      // Wait for the preview to render
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    try {
+      const { exportResume } = await import('@/lib/export-resume');
+      await exportResume(resumeData as any, format as any);
+    } finally {
+      // Hide the preview again if it was hidden before
+      if (format === 'pdf' && wasPreviewHidden) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setShowPreview(false);
+      }
+    }
+  }, [resumeData, showPreview]);
 
   // Keyboard shortcuts (Cmd/Ctrl+S/P/E)
   useEffect(() => {
@@ -794,7 +908,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
   }, [resumeData]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 relative overflow-hidden">
+    <div className="h-[100dvh] flex flex-col bg-gray-900 relative overflow-hidden">
       {/* Background gradient effects matching site theme */}
       <div className="fixed inset-0 bg-gradient-to-br from-teal-900/20 via-amber-900/20 to-pink-900/20 opacity-50 pointer-events-none z-0"></div>
 
@@ -803,18 +917,20 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         <img
           src="/Donkey.png"
           alt="Smart ATS Donkey"
-          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300"
+          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300 hidden lg:block"
         />
       </div>
 
       {/* Toolbar */}
-      <div className="relative z-10">
+      <div className="relative z-[100]">
         <BuilderToolbar
           onSave={handleSave}
           onExport={handleExport}
           onImport={handleImport}
           onImportLinkedIn={handleImportLinkedIn}
+          onGenerateLinkedIn={handleGenerateLinkedIn}
           onCheckATS={handleCheckATS}
+          onClear={handleClear}
           isSaving={isSaving}
           showPreview={showPreview}
           onTogglePreview={() => setShowPreview(!showPreview)}
@@ -830,8 +946,52 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         className="hidden"
       />
 
+      {/* LinkedIn About Modal */}
+      {showLinkedinModal && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-6 max-w-2xl mx-4">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-semibold text-white">Generated LinkedIn 'About'</h3>
+              <div className="ml-4">
+                <button
+                  onClick={() => setShowLinkedinModal(false)}
+                  className="text-gray-400 hover:text-gray-200 p-2 rounded-full hover:bg-gray-700"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 text-sm text-gray-200 whitespace-pre-wrap max-h-96 overflow-auto">
+              {linkedinLoading ? 'Generating...' : linkedinResult}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  // copy to clipboard
+                  if (linkedinResult) {
+                    navigator.clipboard.writeText(linkedinResult);
+                    toast.success('Copied to clipboard');
+                  }
+                }}
+                className="px-4 py-2 text-sm bg-gray-700 text-white rounded-lg"
+              >
+                Copy
+              </button>
+              <button
+                onClick={() => setShowLinkedinModal(false)}
+                className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden relative z-10">
+      <div className="flex-1 flex overflow-hidden relative z-10 min-h-0">
         {/* Sidebar Navigation */}
         <BuilderSidebar
           activeSection={activeSection}
@@ -846,28 +1006,56 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         />
 
         {/* Editor */}
-        <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto py-8 px-6">
+        <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm min-h-0">
+          {/* Add padding-bottom on mobile for bottom nav, extra in landscape */}
+          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6 pb-28 lg:pb-8">
             <ResumeEditor
               activeSection={activeSection}
               resumeData={resumeData}
               onUpdate={updateResumeData}
+              isPremium={isPremium}
             />
           </div>
         </div>
 
-        {/* Preview Panel */}
+        {/* Preview Panel - Responsive */}
         {showPreview && (
-          <div className="w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
-            <ResumePreview 
-              resumeData={resumeData} 
+          <div className="hidden lg:block lg:w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
+            <ResumePreview
+              resumeData={resumeData}
               onTemplateChange={(templateId) => {
                 updateResumeData({ templateId });
               }}
+              isPremium={isPremium}
             />
           </div>
         )}
       </div>
+
+      {/* Mobile Preview Modal - Full screen on mobile when preview is toggled */}
+      {showPreview && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-gray-900">
+          {/* Mobile preview header with close button */}
+          <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-white">Resume Preview</h2>
+            <button
+              onClick={() => setShowPreview(false)}
+              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="h-[calc(100vh-60px)] overflow-y-auto pb-20">
+            <ResumePreview
+              resumeData={resumeData}
+              onTemplateChange={(templateId) => {
+                updateResumeData({ templateId });
+              }}
+              isPremium={isPremium}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Auto-save indicator */}
       {isSaving && (
@@ -885,6 +1073,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           issues={atsScore.risks}
           suggestions={atsScore.suggestions}
           metricInsights={atsScore.metricInsights}
+          isPremium={isPremium}
         />
       )}
     </div>

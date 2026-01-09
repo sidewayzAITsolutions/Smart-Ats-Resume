@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, Check, Crown, FileText, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 import GlobalNavigation from '@/components/GlobalNavigation';
 import { createClient } from '@/lib/supabase/client';
@@ -80,8 +81,8 @@ const PricingPage = () => {
       name: 'Free',
       price: 0,
       period: 'forever',
-      icon: FileText,
-      description: 'Perfect for getting started',
+      mascotImage: '/Donkey1.png',
+      description: 'Essential tools to get started',
       features: [
         'Basic resume builder',
         'ATS score checker',
@@ -90,14 +91,31 @@ const PricingPage = () => {
         'Basic keyword optimization'
       ],
       highlighted: false,
-      buttonText: 'Get Started Free'
+      buttonText: 'Start Building Now',
+      priceId: null
     },
     {
-      name: 'Pro',
+      name: 'Sprint Pass',
+      price: 9,
+      period: '7 days',
+      mascotImage: '/logo.png',
+      description: '7-day access for urgent resume fixes',
+      features: [
+        'Full Pro features for 7 days',
+        'One-week access to premium templates',
+        'AI-powered optimization',
+        '1 downloadable PDF',
+      ],
+      highlighted: false,
+      buttonText: 'Start Sprint Pass',
+      priceId: process.env.NEXT_PUBLIC_STRIPE_SPRINT_PRICE_ID
+    },
+    {
+      name: 'Pro Monthly',
       price: 22,
       period: 'month',
-      icon: Crown,
-      description: 'Most popular for job seekers',
+      mascotImage: '/3.png',
+      description: 'Comprehensive features for active job seekers',
       features: [
         'Everything in Free',
         'All premium templates',
@@ -109,11 +127,34 @@ const PricingPage = () => {
         'Resume analytics'
       ],
       highlighted: true,
-      buttonText: 'Start Pro Trial'
+      buttonText: 'Start Pro Monthly',
+      priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID
+    },
+    {
+      name: 'Pro Yearly',
+      price: 200,
+      period: 'year',
+      mascotImage: '/Donkey4.png',
+      description: 'Best value - Save $64/year',
+      features: [
+        'Everything in Free',
+        'All premium templates',
+        'AI-powered optimization',
+        'Unlimited downloads',
+        'Advanced ATS analysis',
+        'Job description scanner',
+        'Priority email support',
+        'Resume analytics',
+        '2 months free compared to monthly'
+      ],
+      highlighted: false,
+      buttonText: 'Start Pro Yearly',
+      priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID,
+      savings: 'Save $64'
     }
   ];
 
-  const createCheckoutSession = async (): Promise<void> => {
+  const createCheckoutSession = async (priceId: string): Promise<void> => {
     try {
       // Check if user is authenticated first
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -124,11 +165,8 @@ const PricingPage = () => {
         return;
       }
 
-      // Get price ID from environment variable
-      const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
-      
       if (!priceId) {
-        console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+        console.error('Price ID is not configured');
         toast.error('Payment configuration error. Please contact support.');
         return;
       }
@@ -179,9 +217,9 @@ const PricingPage = () => {
     }
   };
 
-  const handlePlanSelect = async (planName: string) => {
+  const handlePlanSelect = async (planName: string, priceId: string | null) => {
     // Check if user is authenticated for paid plans
-    if (planName === 'Pro' && !userData) {
+    if ((planName === 'Pro Monthly' || planName === 'Pro Yearly') && !userData) {
       toast.error('Please sign in to subscribe to Pro plan.');
       router.push('/login?redirectTo=/pricing');
       return;
@@ -191,17 +229,14 @@ const PricingPage = () => {
     setSelectedPlan(planName);
 
     try {
-      switch (planName) {
-        case 'Free':
-          toast.success('Free plan selected!');
-          router.push('/builder');
-          break;
-        case 'Pro':
-          await createCheckoutSession();
-          break;
-        default:
-          console.warn(`Unknown plan: ${planName}`);
-          toast.error('Unknown plan selected');
+      if (planName === 'Free') {
+        toast.success('Free plan selected!');
+        router.push('/builder');
+      } else if (priceId) {
+        await createCheckoutSession(priceId);
+      } else {
+        console.warn(`No price ID for plan: ${planName}`);
+        toast.error('Payment configuration error. Please contact support.');
       }
     } catch (error) {
       // Error handling is done in createCheckoutSession
@@ -221,120 +256,139 @@ const PricingPage = () => {
       />
 
       <div className="container mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent">
-            Choose Your Plan
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Get the perfect plan for your career goals. Start free and upgrade when you're ready.
-          </p>
+        {/* Hero Section with Mascot */}
+        <div className="text-center mb-16 relative">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
+            <div className="relative w-48 h-48 md:w-64 md:h-64">
+              <Image
+                src="/donkey3.jpeg"
+                alt="Smart ATS Resume Mascot"
+                fill
+                className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                priority
+              />
+            </div>
+            <div className="flex-1 max-w-2xl animate-fade-in-up">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-200 bg-clip-text text-transparent animated-gradient-text">
+                Choose Your Plan
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300">
+                Get the perfect plan for your career goals. Start free and upgrade when you're ready to unlock AI-powered optimization and premium features that deliver results.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Admin Premium Override (hidden helper for site owner) */}
+        {/* Promo Code Section */}
         <div className="max-w-xl mx-auto mb-10">
-          <details className="group bg-gray-900/60 border border-dashed border-pink-500/40 rounded-2xl p-4 text-sm text-gray-300">
-            <summary className="flex items-center justify-between cursor-pointer list-none">
-              <span className="font-semibold text-pink-400 flex items-center gap-2">
-                <Crown className="w-4 h-4" />
-                Admin Tools
-              </span>
-              <span className="text-xs text-gray-500 group-open:hidden">(for site owner testing only)</span>
-              <span className="text-xs text-gray-500 hidden group-open:inline">Hide admin tools</span>
-            </summary>
-            <div className="mt-4 space-y-3">
-              <p className="text-xs text-gray-400">
-                Enter your secret admin code to instantly unlock premium on your account without going through Stripe checkout.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="password"
-                  value={adminCode}
-                  onChange={(e) => setAdminCode(e.target.value)}
-                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/70"
-                  placeholder="Enter admin premium code"
-                />
-                <button
-                  type="button"
-                  disabled={adminLoading || !adminCode}
-                  onClick={async () => {
-                    try {
-                      setAdminLoading(true);
-                      const res = await fetch('/api/admin/upgrade-premium', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ adminCode }),
-                      });
-
-                      const data = await res.json();
-
-                      if (!res.ok) {
-                        throw new Error(data.error || 'Failed to apply admin override');
-                      }
-
-                      toast.success('Premium enabled on your account (admin override).');
-                      if (typeof window !== 'undefined') {
-                        localStorage.setItem('premium_status_updated', Date.now().toString());
-                      }
-                    } catch (error: any) {
-                      console.error('Admin override failed:', error);
-                      toast.error(error.message || 'Invalid admin code');
-                    } finally {
-                      setAdminLoading(false);
-                    }
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-                >
-                  {adminLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Activating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Activate Premium</span>
-                      <Crown className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </div>
+          <div className="bg-gradient-to-r from-teal-900/40 to-amber-900/40 border border-teal-500/30 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Crown className="w-5 h-5 text-amber-400" />
+              <span className="font-semibold text-white">Have a Promo Code?</span>
             </div>
-          </details>
+            <p className="text-sm text-gray-300 mb-4">
+              Enter your promo code to unlock Premium features instantly.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                value={adminCode}
+                onChange={(e) => setAdminCode(e.target.value.toUpperCase())}
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/70 uppercase tracking-wider"
+                placeholder="ENTER PROMO CODE"
+              />
+              <button
+                type="button"
+                disabled={adminLoading || !adminCode}
+                onClick={async () => {
+                  try {
+                    setAdminLoading(true);
+                    const res = await fetch('/api/admin/upgrade-premium', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ adminCode }),
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                      throw new Error(data.error || 'Invalid promo code');
+                    }
+
+                    toast.success('🎉 Premium unlocked! Enjoy your free access.');
+                    if (typeof window !== 'undefined') {
+                      localStorage.setItem('premium_status_updated', Date.now().toString());
+                    }
+                    setAdminCode('');
+                  } catch (error: any) {
+                    console.error('Promo code failed:', error);
+                    toast.error(error.message || 'Invalid promo code');
+                  } finally {
+                    setAdminLoading(false);
+                  }
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-lg text-sm font-semibold hover:from-teal-500 hover:to-teal-400 hover:shadow-lg hover:shadow-teal-900/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {adminLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Applying...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Apply Code</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-          {pricingTiers.map((tier) => {
-            const Icon = tier.icon;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
+          {pricingTiers.map((tier, tierIndex) => {
             const isHighlighted = tier.highlighted;
             return (
               <div
                 key={tier.name}
-                className={`relative rounded-2xl p-8 ${
+                className={`relative rounded-2xl p-8 hover-card group animate-fade-in-up ${
                   isHighlighted
-                    ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500'
-                    : 'bg-gray-900 border border-gray-800'
-                }`}
+                    ? 'bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-2 border-blue-500 hover:border-blue-400 hover:shadow-blue-500/20'
+                    : 'bg-gray-900 border border-gray-800 hover:border-gray-600'
+                } transition-all duration-300`}
+                style={{ animationDelay: `${tierIndex * 0.15}s` }}
               >
                 {isHighlighted && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold animate-pulse">
                       Most Popular
                     </div>
                   </div>
                 )}
 
+                {tier.savings && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-full text-sm font-bold animate-bounce-gentle">
+                      {tier.savings}
+                    </div>
+                  </div>
+                )}
+
                 <div className="text-center mb-8">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl mb-4 ${
-                    'bg-gradient-to-br from-blue-600 to-purple-600'
-                  }`}>
-                    <Icon className="w-8 h-8 text-white" />
+                  <div className="inline-flex items-center justify-center w-24 h-24 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Image
+                      src={tier.mascotImage}
+                      alt={`${tier.name} mascot`}
+                      width={96}
+                      height={96}
+                      className="object-contain group-hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300"
+                    />
                   </div>
                   <h3 className="text-2xl text-blue-200 font-bold mb-2">{tier.name}</h3>
                   <p className="text-gray-400 mb-6">{tier.description}</p>
 
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                    <span className="text-5xl font-bold bg-gradient-to-r from-cyan-500 via-blue-300 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)] group-hover:scale-110 transition-transform duration-300">
                       ${tier.price}
                     </span>
                     <span className="text-gray-400">/{tier.period}</span>
@@ -343,14 +397,14 @@ const PricingPage = () => {
 
                 <button
                   type="button"
-                  onClick={() => handlePlanSelect(tier.name)}
+                  onClick={() => handlePlanSelect(tier.name, tier.priceId || null)}
                   disabled={loading && selectedPlan === tier.name}
-                  className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 mb-8 ${
+                  className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 mb-8 btn-shine ${
                     isHighlighted
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:scale-105'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105'
                       : tier.price === 0
-                      ? 'bg-white text-gray-900 hover:bg-gray-100'
-                      : 'bg-gray-700 text-white hover:bg-gray-600'
+                      ? 'bg-white text-gray-900 hover:bg-gray-100 hover:scale-105'
+                      : 'bg-gray-700 text-white hover:bg-gray-600 hover:scale-105'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {loading && selectedPlan === tier.name ? (
@@ -361,7 +415,7 @@ const PricingPage = () => {
                   ) : (
                     <>
                       <span>{tier.buttonText}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                     </>
                   )}
                 </button>
@@ -369,7 +423,7 @@ const PricingPage = () => {
                 {/* Features List */}
                 <div className="space-y-4">
                   {tier.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
+                    <div key={index} className="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300">
                       <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                       <span className="text-gray-300 text-sm">{feature}</span>
                     </div>

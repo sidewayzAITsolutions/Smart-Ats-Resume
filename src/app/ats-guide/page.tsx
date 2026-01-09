@@ -8,13 +8,24 @@ import {
   CheckCircle,
   FileText,
   Target,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 
 import GlobalNavigation from '@/components/GlobalNavigation';
+import { SEO } from '@/components/SEO';
+import { getSEOMetadata } from '@/lib/seo-config';
 
 const ATSGuidePage = () => {
+  const seoData = getSEOMetadata('ats-guide');
+  
   return (
+    <>
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Global Navigation */}
       <GlobalNavigation
@@ -34,8 +45,14 @@ const ATSGuidePage = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Complete ATS Guide
           </h1>
+<<<<<<< HEAD
           <p className="text-xl text-gray-400">
             How to beat Applicant Tracking Systems
+=======
+          <p className="text-gray-300 text-lg leading-relaxed mb-6">
+            An Applicant Tracking System (ATS) is sophisticated software that organizations use to manage, filter, and rank applications. 
+            With 98% of Fortune 500 companies implementing ATS technology, mastering these systems is essential for career advancement.
+>>>>>>> d44af965ea8f51c819b72b23f6238799555af2dc
           </p>
         </div>
 
@@ -47,21 +64,26 @@ const ATSGuidePage = () => {
               What is an ATS?
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
+<<<<<<< HEAD
               An Applicant Tracking System (ATS) is software that collects, sorts, and ranks job applications. 
               98% of Fortune 500 companies use ATS to filter resumes before human recruiters see them.
+=======
+              An Applicant Tracking System (ATS) is software used by employers to collect, sort, scan, and rank job applications. 
+              Over 98% of Fortune 500 companies use ATS to filter resumes before they reach human recruiters. Master the ATS, and you master the job market.
+>>>>>>> d44af965ea8f51c819b72b23f6238799555af2dc
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-gray-800 rounded-xl p-6">
                 <div className="text-2xl font-bold text-red-400 mb-2">75%</div>
-                <p className="text-gray-400">of resumes are rejected by ATS before human review</p>
+                <p className="text-gray-400">of resumes are filtered before human review</p>
               </div>
               <div className="bg-gray-800 rounded-xl p-6">
                 <div className="text-2xl font-bold text-yellow-400 mb-2">6 sec</div>
-                <p className="text-gray-400">average time ATS spends scanning each resume</p>
+                <p className="text-gray-400">average ATS processing time per resume</p>
               </div>
               <div className="bg-gray-800 rounded-xl p-6">
                 <div className="text-2xl font-bold text-green-400 mb-2">94%</div>
-                <p className="text-gray-400">of recruiters rely on ATS for initial screening</p>
+                <p className="text-gray-400">of recruiters depend on ATS for initial screening</p>
               </div>
             </div>
           </div>
@@ -148,9 +170,13 @@ const ATSGuidePage = () => {
         {/* CTA Section */}
         <section className="text-center">
           <div className="bg-gradient-to-r from-teal-600 to-amber-600 rounded-2xl p-8">
-            <h2 className="text-3xl font-bold mb-4">Ready to Beat the ATS?</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Optimize Your Resume?</h2>
             <p className="text-xl mb-6 opacity-90">
+<<<<<<< HEAD
               Create an ATS-optimized resume in minutes with our AI-powered builder.
+=======
+              Utilize our AI-powered builder to create an ATS-optimized resume efficiently.
+>>>>>>> d44af965ea8f51c819b72b23f6238799555af2dc
             </p>
             <Link href="/templates" className="inline-block bg-white text-teal-600 px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
               Start Building Your Resume
@@ -159,6 +185,7 @@ const ATSGuidePage = () => {
         </section>
       </main>
     </div>
+    </>
   );
 };
 

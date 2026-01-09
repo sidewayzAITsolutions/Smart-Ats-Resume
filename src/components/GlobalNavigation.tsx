@@ -68,7 +68,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
   const mainNavItems = [
     { href: '/templates', label: 'Templates', icon: FileText },
     { href: '/pricing', label: 'Pricing', icon: CreditCard },
-    { href: '/ats-guide', label: 'ATS Guide', icon: BookOpen },
+    { href: '/thecareerhub', label: 'Career Hub', icon: BookOpen },
     { href: '/contact-sales', label: 'Contact', icon: Phone }
   ];
 
@@ -88,16 +88,16 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo - Always on far left */}
         <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="relative w-10 h-10 flex-shrink-0">
+          <Link href="/" className="group flex items-center gap-3 hover:opacity-90 transition-all duration-300">
+            <div className="relative w-10 h-10 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
               <img 
                 src="/horse-logo.png" 
                 alt="SmartATS Logo" 
-                className="w-full h-full object-contain" 
+                className="w-full h-full object-contain group-hover:drop-shadow-[0_0_10px_rgba(56,178,172,0.5)] transition-all duration-300" 
               />
             </div>
             <div className="hidden sm:block">
-              <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">
+              <div className="text-xl font-bold bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent group-hover:from-teal-300 group-hover:to-amber-300 transition-all duration-300">
                 SmartATS
               </div>
             </div>
@@ -156,11 +156,11 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-teal-400 ${
+                    className={`group flex items-center gap-2 text-sm font-medium transition-all duration-300 hover:text-teal-400 hover-underline ${
                       isActive ? 'text-teal-400' : 'text-gray-300'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                     {item.label}
                   </Link>
                 );
@@ -178,16 +178,16 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
                   <button
                     type="button"
                     onClick={() => navigateTo('/login')}
-                    className="text-gray-300 hover:text-white font-medium transition-colors"
+                    className="text-gray-300 hover:text-white font-medium transition-all duration-300 hover-underline"
                   >
                     Sign In
                   </button>
                   <button
                     type="button"
                     onClick={() => navigateTo('/signup')}
-                    className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                    className="bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg hover:shadow-teal-500/25 transform hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 btn-shine"
                   >
-                    Start Free
+                    Start Now
                   </button>
                 </div>
               )}
@@ -274,7 +274,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
                 onClick={() => navigateTo('/signup')}
                 className="w-full bg-gradient-to-r from-teal-600 to-amber-600 text-white px-4 py-3 rounded-xl font-medium"
               >
-                Start Free
+                Start Now
               </button>
             </div>
           )}

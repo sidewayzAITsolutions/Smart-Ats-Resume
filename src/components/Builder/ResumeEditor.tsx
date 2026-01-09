@@ -15,17 +15,20 @@ import EducationForm from '../ResumeBuilder/EducationForm';
 import ExperienceForm from '../ResumeBuilder/ExperienceForm';
 import PersonalInfoForm from '../ResumeBuilder/PersonalInfoForm';
 import SkillsForm from '../ResumeBuilder/SkillsForm';
+import FormattingToolbar from './FormattingToolbar';
 
 interface ResumeEditorProps {
   activeSection: string;
   resumeData: ResumeData;
   onUpdate: (data: Partial<ResumeData>) => void;
+  isPremium: boolean;
 }
 
 export default function ResumeEditor({
   activeSection,
   resumeData,
   onUpdate,
+  isPremium,
 }: ResumeEditorProps) {
   const renderSection = () => {
     switch (activeSection) {
@@ -52,6 +55,7 @@ export default function ResumeEditor({
               data={resumeData.summary || ''}
               onChange={(summary) => onUpdate({ summary })}
               jobTitle={resumeData.personalInfo?.title}
+              isPremium={isPremium}
             />
           </div>
         );
@@ -66,8 +70,8 @@ export default function ResumeEditor({
               initialData={resumeData.experience || []}
               onUpdate={(experience) => onUpdate({ experience })}
               jobDescription={(resumeData as any).jobDescription || ''}
-              isProUser={false}
-              onUpgradeClick={() => {}}
+              isProUser={isPremium}
+              onUpgradeClick={() => window.location.href = '/pricing'}
             />
           </div>
         );
@@ -104,6 +108,7 @@ export default function ResumeEditor({
             <KeywordsForm
               data={resumeData}
               onChange={onUpdate}
+              isPremium={isPremium}
             />
           </div>
         );
@@ -130,6 +135,22 @@ export default function ResumeEditor({
             <CertificationsForm
               certifications={resumeData.certifications || []}
               onChange={(certifications) => onUpdate({ certifications })}
+            />
+          </div>
+        );
+
+      case 'formatting':
+        return (
+          <div>
+            <h2 className="text-3xl font-bold text-lime-400 mb-6">
+              Formatting Options
+            </h2>
+            <p className="text-gray-300 mb-6">
+              Customize how your resume looks with different bullet styles, font sizes, and line spacing.
+            </p>
+            <FormattingToolbar
+              options={resumeData.formattingOptions || { bulletStyle: 'bullet', fontSize: 'medium', lineSpacing: 'normal' }}
+              onChange={(formattingOptions) => onUpdate({ formattingOptions })}
             />
           </div>
         );

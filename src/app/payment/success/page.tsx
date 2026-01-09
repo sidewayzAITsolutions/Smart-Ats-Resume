@@ -68,6 +68,24 @@ function PaymentSuccessContent() {
         if (userData.is_premium) {
           setPaymentStatus('success');
           setMessage('Payment successful! Your account has been upgraded to Premium.');
+          
+          // Track purchase event for Reddit Pixel and Google Analytics
+          if (typeof window !== 'undefined' && (window as any).trackRedditPurchase) {
+            (window as any).trackRedditPurchase(
+              user.email || '',           // email (hashed by Reddit)
+              '',                          // phone (optional)
+              22.00,                       // purchase value
+              'USD',                       // currency
+              [{
+                item_id: 'premium_subscription',
+                item_name: 'Smart ATS Premium',
+                item_category: 'Subscription',
+                price: 22.00,
+                quantity: 1
+              }]
+            );
+            console.log('Reddit/GA purchase event tracked');
+          }
         } else {
           setPaymentStatus('failed');
           setMessage('Payment verification failed. Please try again or contact support.');

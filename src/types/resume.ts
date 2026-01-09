@@ -69,6 +69,17 @@ export interface ATSScore {
 }
 
 
+export interface FormattingOptions {
+  bulletStyle: 'bullet' | 'dash' | 'circle' | 'number';
+  fontSize: 'small' | 'medium' | 'large';
+  lineSpacing: 'compact' | 'normal' | 'relaxed';
+  colors?: {
+    primaryText?: string;
+    headingText?: string;
+    accentColor?: string;
+  };
+}
+
 // Lightweight UI state for the builder (persisted locally)
 export interface ResumeData {
   personalInfo?: Partial<PersonalInfo>;
@@ -83,4 +94,6 @@ export interface ResumeData {
   // New: global ATS keywords and job description for the builder UI
   keywords?: string[];
   jobDescription?: string;
+  // Formatting options
+  formattingOptions?: FormattingOptions;
 }

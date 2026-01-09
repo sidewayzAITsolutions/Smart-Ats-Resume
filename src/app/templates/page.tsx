@@ -53,7 +53,7 @@ const PremiumUpgradeBanner = () => (
       <div className="flex items-center justify-center gap-3 mb-4">
         <Crown className="w-10 h-10 animate-bounce text-yellow-300" />
         <h3 className="text-2xl md:text-3xl font-bold">
-          Unlock ALL Premium Templates!
+          Access All Premium Templates
         </h3>
         <Crown
           className="w-10 h-10 animate-bounce text-yellow-300"
@@ -61,13 +61,9 @@ const PremiumUpgradeBanner = () => (
         />
       </div>
       <p className="mb-2 text-pink-100 text-lg">
-        🚀 <strong>3x More Interviews</strong> • 🎯{" "}
-        <strong>98% ATS Pass Rate</strong> • ⚡{" "}
-        <strong>AI-Powered Optimization</strong>
+        🚀 <strong>3x Interview Rate</strong> • 🎯 <strong>98% ATS Success</strong> • ⚡ <strong>AI-Powered Optimization</strong>
       </p>
       <p className="mb-6 text-pink-200 text-sm">
-        Join 50,000+ job seekers who landed their dream jobs with our premium
-        templates
       </p>
       <Link href="/pricing">
         <button className="px-8 py-4 bg-white text-pink-600 font-bold rounded-xl hover:bg-pink-50 transform hover:scale-105 transition-all cursor-pointer shadow-lg text-lg">
@@ -1202,71 +1198,73 @@ const EnhancedTemplatesPage = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 px-6 overflow-hidden">
+      <section className="relative pt-16 sm:pt-24 pb-8 sm:pb-16 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-900/20 via-amber-900/20 to-pink-900/20 opacity-50"></div>
         <div className="relative max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-900/50 border border-teal-700/50 rounded-full mb-6">
-            <Shield className="w-4 h-4 text-teal-400" />
-            <span className="text-sm font-medium text-teal-300">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-teal-900/50 border border-teal-700/50 rounded-full mb-4 sm:mb-6">
+            <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-teal-400" />
+            <span className="text-xs sm:text-sm font-medium text-teal-300">
               Professional LaTeX Templates with 98%+ ATS Score
             </span>
           </div>
 
-          <h1 className="text-7xl font-bold text-purple-200 mb-4">
-            Choose Your Perfect
-            <span className="block mt-2 text-gradient-primary from-teal-400 to-amber-400 bg-transparent">
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-purple-200 mb-3 sm:mb-4">
+            Select Your Professional
+            <span className="block mt-1 sm:mt-2 text-gradient-primary from-teal-400 to-amber-400 bg-transparent">
               LaTeX Resume Template
             </span>
           </h1>
 
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center landscape:hidden sm:flex">
             <div className="relative">
               <img
-                alt="SmartATS Enterprise Dashboard"
-                className="w-80 h-85 rounded-2xl shadow-2xl border border-gray-700"
+                alt="SmartATS Dashboard"
+                className="w-48 sm:w-80 h-auto rounded-2xl shadow-2xl border border-gray-700"
                 src="/Donkey.png"
               />
             </div>
           </div>
 
-          <p className="font-bold text-4xl text-yellow-100">Simplified LaTeX Resume Designs That Actually Work!<br />
-            At Smart ATS We Prioritize Getting You<br />
-            <span className="font-bold text-6xl text-pink-600">HIRED</span>
+          <p className="font-bold text-xl sm:text-3xl lg:text-4xl text-yellow-100 leading-relaxed space-y-2 sm:space-y-4 mt-4 sm:mt-0">
+            <span className="block mb-2 sm:mb-4">Refined LaTeX Designs That Deliver Results</span>
+            <span className="block mb-2 sm:mb-4">SmartATS Prioritizes Your</span>
+            <span className="font-bold text-3xl sm:text-5xl lg:text-6xl text-pink-600 block">SUCCESS</span>
           </p>
 
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto mt-4 sm:mt-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-teal-400 mb-1">98%</div>
-              <div className="text-sm text-gray-500">ATS Pass Rate</div>
+              <div className="text-2xl sm:text-4xl font-bold text-teal-400 mb-0.5 sm:mb-1">98%</div>
+              <div className="text-xs sm:text-sm text-gray-500">ATS Pass Rate</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-amber-400 mb-1">7</div>
-              <div className="text-sm text-gray-500">LaTeX Templates</div>
+              <div className="text-2xl sm:text-4xl font-bold text-amber-400 mb-0.5 sm:mb-1">7</div>
+              <div className="text-xs sm:text-sm text-gray-500">LaTeX Templates</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-400 mb-1">3x</div>
-              <div className="text-sm text-gray-500">More Interviews</div>
+              <div className="text-2xl sm:text-4xl font-bold text-green-400 mb-0.5 sm:mb-1">3x</div>
+              <div className="text-xs sm:text-sm text-gray-500">More Interviews</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Category Filter */}
-      <section className="sticky top-[73px] z-20 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 py-4 px-6">
+      <section className="sticky top-[64px] sm:top-[73px] z-20 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 py-2 sm:py-4 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
+          <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-1 sm:pb-2 scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === category.id
                     ? "bg-gradient-to-r from-teal-600 to-amber-600 text-white shadow-lg"
                     : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
                 }`}
               >
                 {category.icon}
-                {category.name}
+                <span className="hidden sm:inline">{category.name}</span>
+                <span className="sm:hidden">{category.name.split(' ')[0]}</span>
               </button>
             ))}
           </div>
@@ -1274,30 +1272,31 @@ const EnhancedTemplatesPage = () => {
       </section>
 
       {/* Templates Grid */}
-      <section className="py-12 px-6">
+      <section className="py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredTemplates.map((template) => (
+          <div className="grid grid-cols-1 landscape:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+            {filteredTemplates.map((template, templateIndex) => (
               <div
                 key={template.id}
-                className={`group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden ${
+                className={`group relative rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover-card animate-fade-in-up ${
                   template.isPremium
                     ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-2 border-gradient-to-r from-amber-400 to-orange-400 hover:border-amber-300 hover:shadow-amber-400/20"
-                    : "bg-gray-900 border border-gray-800"
+                    : "bg-gray-900 border border-gray-800 hover:border-gray-600"
                 }`}
+                style={{ animationDelay: `${templateIndex * 0.1}s` }}
                 onMouseEnter={() => setHoveredTemplate(template.id)}
                 onMouseLeave={() => setHoveredTemplate(null)}
               >
                 {/* Premium Glow Effect */}
                 {template.isPremium && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 via-orange-400/5 to-amber-400/10 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 via-orange-400/5 to-amber-400/10 pointer-events-none group-hover:from-amber-400/20 group-hover:to-amber-400/20 transition-all duration-300"></div>
                 )}
 
                 {/* Premium Badge */}
                 {template.isPremium && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <div className="bg-gradient-to-r from-amber-400 to-orange-400 text-gray-900 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg">
-                      <Crown className="w-4 h-4" />
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
+                    <div className="bg-gradient-to-r from-amber-400 to-orange-400 text-gray-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                      <Crown className="w-3 h-3 sm:w-4 sm:h-4 group-hover:animate-bounce" />
                       PREMIUM
                     </div>
                   </div>
@@ -1305,9 +1304,9 @@ const EnhancedTemplatesPage = () => {
 
                 {/* Popularity Badge */}
                 {template.popularityRank <= 3 && (
-                  <div className="absolute top-4 left-4 z-10">
-                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                      <TrendingUp className="w-3 h-3" />
+                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
+                    <div className="bg-red-500 text-white px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-1 animate-pulse">
+                      <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                       Popular
                     </div>
                   </div>
@@ -1315,12 +1314,12 @@ const EnhancedTemplatesPage = () => {
 
                 {/* Template Preview */}
                 <div
-                  className="h-64 relative overflow-hidden cursor-pointer bg-gray-800"
+                  className="h-48 landscape:h-40 sm:h-64 relative overflow-hidden cursor-pointer bg-gray-800 img-zoom"
                   onClick={() => setShowPreview(template)}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center p-6">
+                  <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6">
                     <div
-                      className="w-full max-w-[200px] h-full bg-white rounded-lg shadow-xl transform transition-transform duration-300"
+                      className="w-full max-w-[160px] sm:max-w-[200px] h-full bg-white rounded-lg shadow-xl transform transition-transform duration-300"
                       style={{
                         transform:
                           hoveredTemplate === template.id
@@ -1349,16 +1348,16 @@ const EnhancedTemplatesPage = () => {
 
                 {/* Template Info */}
                 <div
-                  className={`p-6 ${
+                  className={`p-4 sm:p-6 ${
                     template.isPremium
                       ? "bg-gradient-to-b from-gray-800/50 to-gray-900/50"
                       : ""
                   }`}
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-start gap-3">
+                  <div className="flex items-start justify-between mb-2 sm:mb-3">
+                    <div className="flex items-start gap-2 sm:gap-3">
                       <div
-                        className={`p-2 rounded-lg ${
+                        className={`p-1.5 sm:p-2 rounded-lg ${
                           template.isPremium ? "bg-amber-400/20" : "bg-gray-800"
                         }`}
                       >
@@ -1366,17 +1365,17 @@ const EnhancedTemplatesPage = () => {
                       </div>
                       <div>
                         <h3
-                          className={`text-xl font-bold mb-1 ${
+                          className={`text-base sm:text-xl font-bold mb-0.5 sm:mb-1 ${
                             template.isPremium ? "text-amber-100" : "text-white"
                           }`}
                         >
                           {template.name}
                           {template.isPremium && (
-                            <span className="ml-2 text-amber-400">✨</span>
+                            <span className="ml-1 sm:ml-2 text-amber-400">✨</span>
                           )}
                         </h3>
                         <p
-                          className={`text-sm ${
+                          className={`text-xs sm:text-sm line-clamp-2 ${
                             template.isPremium
                               ? "text-amber-200/80"
                               : "text-gray-400"
@@ -1390,22 +1389,22 @@ const EnhancedTemplatesPage = () => {
 
                   {/* Enhanced Stats for Premium */}
                   <div
-                    className={`grid grid-cols-3 gap-3 mb-4 ${
+                    className={`grid grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4 ${
                       template.isPremium
-                        ? "bg-amber-400/10 rounded-lg p-3 border border-amber-400/20"
+                        ? "bg-amber-400/10 rounded-lg p-2 sm:p-3 border border-amber-400/20"
                         : ""
                     }`}
                   >
                     <div className="text-center">
                       <div
-                        className={`text-sm font-bold ${
+                        className={`text-xs sm:text-sm font-bold ${
                           template.isPremium ? "text-amber-300" : "text-white"
                         }`}
                       >
                         {template.atsScore}%
                       </div>
                       <div
-                        className={`text-xs ${
+                        className={`text-[10px] sm:text-xs ${
                           template.isPremium
                             ? "text-amber-200/70"
                             : "text-gray-500"
@@ -1415,16 +1414,16 @@ const EnhancedTemplatesPage = () => {
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1">
+                      <div className="flex items-center justify-center gap-0.5 sm:gap-1">
                         <Star
-                          className={`w-3 h-3 fill-amber-400 ${
+                          className={`w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400 ${
                             template.isPremium
                               ? "text-amber-300"
                               : "text-amber-400"
                           }`}
                         />
                         <span
-                          className={`text-sm font-bold ${
+                          className={`text-xs sm:text-sm font-bold ${
                             template.isPremium ? "text-amber-300" : "text-white"
                           }`}
                         >
@@ -1432,7 +1431,7 @@ const EnhancedTemplatesPage = () => {
                         </span>
                       </div>
                       <div
-                        className={`text-xs ${
+                        className={`text-[10px] sm:text-xs ${
                           template.isPremium
                             ? "text-amber-200/70"
                             : "text-gray-500"
@@ -1443,7 +1442,7 @@ const EnhancedTemplatesPage = () => {
                     </div>
                     <div className="text-center">
                       <div
-                        className={`text-sm font-bold ${
+                        className={`text-xs sm:text-sm font-bold ${
                           template.isPremium ? "text-amber-300" : "text-white"
                         }`}
                       >
@@ -1531,11 +1530,10 @@ const EnhancedTemplatesPage = () => {
       <section className="py-16 px-6 bg-gradient-to-br from-teal-900/20 to-amber-900/20">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Can't Find the Perfect Template?
+            Need a Custom Solution?
           </h2>
           <p className="text-xl text-gray-300 mb-6">
-            Start with our smart builder and create a custom ATS-optimized
-            resume
+            Utilize our intelligent builder to create a personalized ATS-optimized resume
           </p>
           <button
             onClick={() => (window.location.href = "/builder")}

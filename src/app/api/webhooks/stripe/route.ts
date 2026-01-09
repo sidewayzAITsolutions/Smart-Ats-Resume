@@ -196,8 +196,14 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription, supa
 async function handlePaymentSucceeded(invoice: Stripe.Invoice, supabase: any) {
   console.log('Processing payment succeeded:', invoice.id);
 
-  if (invoice.subscription && stripe) {
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+  // Type assertion for subscription property which exists at runtime
+  const invoiceWithSub = invoice as any;
+  const subscriptionId = typeof invoiceWithSub.subscription === 'string'
+    ? invoiceWithSub.subscription
+    : invoiceWithSub.subscription?.id;
+
+  if (subscriptionId && stripe) {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const userId = subscription.metadata?.userId;
 
     if (userId) {
@@ -224,8 +230,14 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice, supabase: any) {
 async function handlePaymentFailed(invoice: Stripe.Invoice, supabase: any) {
   console.log('Processing payment failed:', invoice.id);
 
-  if (invoice.subscription && stripe) {
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+  // Type assertion for subscription property which exists at runtime
+  const invoiceWithSub = invoice as any;
+  const subscriptionId = typeof invoiceWithSub.subscription === 'string'
+    ? invoiceWithSub.subscription
+    : invoiceWithSub.subscription?.id;
+
+  if (subscriptionId && stripe) {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const userId = subscription.metadata?.userId;
 
     if (userId) {

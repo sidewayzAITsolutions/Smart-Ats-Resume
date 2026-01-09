@@ -1,8 +1,9 @@
-/* Tailwind CSS directives */
+/* 
+  The @tailwind directives below require Tailwind CSS and a build tool (like PostCSS) to process them.
+  If you see "Unknown at rule @tailwind", make sure your build tool is running and Tailwind is installed.
+*/
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
 
 /* CSS Custom Properties */
@@ -384,22 +385,33 @@ input:focus,
   background-clip: text;
 }
 
-/* Sleek form inputs */
+/* Sleek form inputs - Dark theme */
 .sleek-input {
-  background: #f8fafc;
-  border: 2px solid transparent;
+  background: #374151 !important;
+  border: 2px solid #4b5563;
+  color: white !important;
   transition: all 0.2s ease;
 }
 
+.sleek-input::placeholder {
+  color: #9ca3af;
+}
+
 .sleek-input:hover {
-  background: #f1f5f9;
-  border-color: #e2e8f0;
+  background: #4b5563 !important;
+  border-color: #6b7280;
 }
 
 .sleek-input:focus {
-  background: white;
+  background: #374151 !important;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.sleek-input:disabled {
+  background: #1f2937 !important;
+  color: #9ca3af !important;
+  border-color: #374151;
 }
 
 /* Modern button styles */
@@ -568,6 +580,286 @@ input:focus,
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out 3s infinite;
+}
+
+/* ============================================
+   MICRO ANIMATIONS & HOVER EFFECTS
+   ============================================ */
+
+/* Hover lift effect for cards */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+}
+
+/* Subtle hover scale */
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Hover glow effect */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px rgba(56, 178, 172, 0.4);
+}
+
+/* Hover border glow */
+.hover-border-glow {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.hover-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #38b2ac, #ecc94b, #38b2ac);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.hover-border-glow:hover::before {
+  opacity: 1;
+}
+
+/* Button shine effect */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg) translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btn-shine:hover::after {
+  transform: rotate(30deg) translateX(100%);
+}
+
+/* Animated gradient text */
+.animated-gradient-text {
+  background: linear-gradient(
+    90deg,
+    #38b2ac 0%,
+    #ecc94b 25%,
+    #f59e0b 50%,
+    #ecc94b 75%,
+    #38b2ac 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 3s linear infinite;
+}
+
+@keyframes shimmerText {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Icon bounce on hover */
+.icon-bounce:hover svg {
+  animation: iconBounce 0.5s ease;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-4px); }
+  75% { transform: translateY(2px); }
+}
+
+/* Underline animation */
+.hover-underline {
+  position: relative;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #38b2ac, #ecc94b);
+  transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* Stagger animation delays */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* Fade in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Scale on hover with shadow */
+.hover-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 30px rgba(56, 178, 172, 0.15);
+}
+
+/* Pulse ring effect */
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(56, 178, 172, 0.5);
+  border-radius: inherit;
+  animation: pulseRing 2s ease-out infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* Gradient border animation */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(#111827, #111827) padding-box,
+              linear-gradient(90deg, #38b2ac, #ecc94b, #f59e0b, #38b2ac) border-box;
+  border: 2px solid transparent;
+  background-size: 100% 100%, 300% 100%;
+  animation: gradientBorder 4s linear infinite;
+}
+
+@keyframes gradientBorder {
+  0% { background-position: 0 0, 0% 0; }
+  100% { background-position: 0 0, 300% 0; }
+}
+
+/* Magnetic button effect */
+.magnetic-btn {
+  transition: transform 0.3s ease;
+}
+
+/* Number counter animation */
+.number-animate {
+  animation: countUp 1s ease-out;
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover arrow animation */
+.hover-arrow:hover svg.arrow-icon {
+  transform: translateX(4px);
+  transition: transform 0.3s ease;
+}
+
+/* Image zoom on hover */
+.img-zoom {
+  overflow: hidden;
+}
+
+.img-zoom img {
+  transition: transform 0.5s ease;
+}
+
+.img-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* Loading shimmer */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Rotate on hover */
+.hover-rotate:hover {
+  transform: rotate(12deg);
+  transition: transform 0.3s ease;
+}
+
+/* Tilt effect */
+.tilt-effect {
+  transition: transform 0.3s ease;
+}
+
+.tilt-effect:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
 }
 
 /* Ensure all buttons show pointer cursor */

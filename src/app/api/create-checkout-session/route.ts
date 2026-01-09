@@ -15,10 +15,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if price ID is configured
-    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    // Read priceId from request body if provided (validated), otherwise fall back to env
+    const body = await req.json();
+    const requestedPriceId = body?.priceId as string | undefined;
+
+    let priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    if (requestedPriceId && typeof requestedPriceId === 'string' && requestedPriceId.startsWith('price_')) {
+      priceId = requestedPriceId;
+    }
+
     if (!priceId) {
-      console.error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+      console.error('No price ID available (env or request)');
       return NextResponse.json(
         { error: 'Payment configuration error. Please contact support.' },
         { status: 500 }
@@ -37,12 +44,9 @@ export async function POST(req: NextRequest) {
     // Determine app origin for redirect URLs
     const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
 
-    // Parse request body
-    const body = await req.json();
-    const { successUrl: customSuccessUrl, cancelUrl: customCancelUrl } = body;
+  const { successUrl: customSuccessUrl, cancelUrl: customCancelUrl, addOn } = body;
 
-    // Use price ID from environment variable (ignore any priceId from body for security)
-    console.log('Using price ID from environment:', priceId);
+  console.log('Using price ID:', priceId, 'addOn:', addOn);
 
     // Get authenticated user
     const { supabase } = createClientFromRequest(req);
@@ -86,9 +90,9 @@ export async function POST(req: NextRequest) {
       apiVersion: '2025-08-27.basil',
     });
 
-    // Retrieve the price to determine if it's a subscription
-    const price = await stripe.prices.retrieve(priceId);
-    const isSubscription = !!price?.recurring;
+  // Retrieve the price to determine if it's a subscription
+  const price = await stripe.prices.retrieve(priceId);
+  const isSubscription = !!price?.recurring;
 
     console.log('Price details:', {
       id: price.id,
@@ -98,19 +102,32 @@ export async function POST(req: NextRequest) {
       isSubscription
     });
 
-    // Create checkout session
+    // Build line items. Main price first.
+    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [{ price: priceId, quantity: 1 }];
+
+    // Optional add-on: human_review
+    if (addOn === 'human_review') {
+      const humanPriceId = process.env.NEXT_PUBLIC_STRIPE_HUMAN_REVIEW_PRICE_ID;
+      if (humanPriceId && humanPriceId.startsWith('price_')) {
+        line_items.push({ price: humanPriceId, quantity: 1 });
+      } else {
+        console.warn('Human review price ID not configured or invalid');
+      }
+    }
+
     const sessionConfig: Stripe.Checkout.SessionCreateParams = {
       mode: isSubscription ? 'subscription' : 'payment',
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items,
       success_url: successUrl,
       cancel_url: cancelUrl,
       customer_email: user.email || undefined,
       client_reference_id: user.id,
-      metadata: { 
-        userId: user.id, 
-        userEmail: user.email || '' 
+      metadata: {
+        userId: user.id,
+        userEmail: user.email || '',
+        addOn: addOn || ''
       },
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: ['card'],
     };
 
     if (isSubscription) {

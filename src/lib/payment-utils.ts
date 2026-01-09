@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/client';
 export interface CheckoutSessionData {
   successUrl?: string;
   cancelUrl?: string;
+  priceId?: string;
+  addOn?: string;
 }
 
 export interface CheckoutResponse {
@@ -52,11 +54,11 @@ export const createCheckoutSession = async (data?: CheckoutSessionData): Promise
       return;
     }
 
-    // Get price ID from environment variable
-    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
+    // Allow caller to supply a specific priceId (e.g., Sprint Pass) or fall back to env
+    const priceId = data?.priceId || process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID;
     if (!priceId) {
       toast.error('Payment configuration error. Please contact support.');
-      throw new Error('NEXT_PUBLIC_STRIPE_PRO_PRICE_ID is not configured');
+      throw new Error('No Stripe price ID configured');
     }
 
     // Create checkout session
@@ -67,6 +69,7 @@ export const createCheckoutSession = async (data?: CheckoutSessionData): Promise
       },
       body: JSON.stringify({
         priceId: priceId,
+        addOn: data?.addOn,
         successUrl: data?.successUrl || `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: data?.cancelUrl || `${window.location.origin}/pricing?canceled=true`,
       }),

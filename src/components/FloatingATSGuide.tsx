@@ -92,8 +92,13 @@ const FloatingATSGuide = () => {
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
                 <div>
+<<<<<<< HEAD
                   <div className="font-bold text-white">ATS Guide</div>
                   <div className="text-xs text-white/90">Beat ATS, get interviews</div>
+=======
+                  <div className="font-bold text-white">ATS Optimization Guide</div>
+                  <div className="text-xs text-white/90">Dominate the bots, land interviews</div>
+>>>>>>> d44af965ea8f51c819b72b23f6238799555af2dc
                 </div>
               </div>
               <button
@@ -138,8 +143,13 @@ const FloatingATSGuide = () => {
             <div className="bg-gradient-to-r from-teal-600/20 to-amber-600/20 rounded-lg p-4 border border-teal-600/30">
               <div className="flex items-center justify-between">
                 <div>
+<<<<<<< HEAD
                   <div className="text-sm font-medium text-white">Need help?</div>
                   <div className="text-xs text-gray-400">Get personalized feedback</div>
+=======
+                  <div className="text-sm font-medium text-white">Need more help?</div>
+                  <div className="text-xs text-gray-400">Get personalized feedback that works</div>
+>>>>>>> d44af965ea8f51c819b72b23f6238799555af2dc
                 </div>
                 <button className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />

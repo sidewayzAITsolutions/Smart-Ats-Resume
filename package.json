@@ -6,13 +6,12 @@
           "dev": "next dev",
           "build": "next build",
           "start": "next start",
-          "lint": "next lint",
           "test:keploy": "jest --coverage --config='{\"testEnvironment\":\"jsdom\",\"transform\":{\"^.+\\\\.(js|jsx|ts|tsx)$\":[\"@swc/jest\",{\"jsc\":{\"parser\":{\"syntax\":\"typescript\",\"tsx\":true,\"dynamicImport\":true},\"transform\":{\"react\":{\"runtime\":\"automatic\"}}},\"module\":{\"type\":\"commonjs\"}}]},\"moduleFileExtensions\":[\"js\",\"jsx\",\"ts\",\"tsx\"],\"coveragePathIgnorePatterns\":[\"/monaco-editor/\"],\"collectCoverageFrom\":[\"./**/*.{js,jsx,ts,tsx}\"],\"coverageDirectory\":\".\",\"coverageReporters\":[\"text\",\"cobertura\"]}'",
           "test:parse-resume": "node tests/test-parse-resume.js"
      },
      "dependencies": {
           "@genkit-ai/mcp": "^1.21.0",
-          "@playwright/test": "^1.54.1",
+          "@playwright/test": "^1.56.1",
           "@sentry/nextjs": "^10.0.0",
           "@stripe/stripe-js": "^7.4.0",
           "@supabase/ssr": "^0.6.1",
@@ -22,6 +21,7 @@
           "@vercel/analytics": "^1.5.0",
           "@vercel/speed-insights": "^1.2.0",
           "ai": "^5.0.1",
+          "docx": "^9.5.1",
           "dompurify": "^3.2.6",
           "fileinput": "^0.2.0",
           "formidable": "^3.5.4",
@@ -29,7 +29,7 @@
           "jspdf": "^3.0.1",
           "lucide-react": "^0.536.0",
           "mammoth": "^1.9.1",
-          "next": "^15.4.2",
+          "next": "^15.5.7",
           "openai": "^5.23.2",
           "pdf-parse": "^1.1.1",
           "pdf2pic": "^3.2.0",
@@ -50,8 +50,6 @@
           "@types/react": "^19.1.8",
           "@types/react-dom": "^19.1.6",
           "autoprefixer": "^10.4.21",
-          "eslint": "^9.30.1",
-          "eslint-config-next": "^15.3.5",
           "jest": "^30.2.0",
           "postcss": "^8.4.49"
      }

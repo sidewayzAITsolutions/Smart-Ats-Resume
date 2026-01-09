@@ -26,6 +26,7 @@
   STRIPE_WEBHOOK_SECRET=whsec_... (should start with whsec_)
   NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=price_...
   NEXT_PUBLIC_APP_URL=https://smartatsresume.com
+  NEXT_PUBLIC_STRIPE_HUMAN_REVIEW_PRICE_ID=price_... (optional one-time add-on)
   ```
 
 ### 4. Improved Checkout Session Creation

@@ -7,18 +7,21 @@ import React, {
 } from 'react';
 
 import {
+  Crown,
+  Lock,
   Maximize2,
   Minimize2,
   Palette,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { ResumeData } from '@/types/resume';
+import { ResumeData, FormattingOptions } from '@/types/resume';
 
 interface ResumePreviewProps {
   resumeData: ResumeData;
   template?: string;
   onTemplateChange?: (templateId: string) => void;
+  isPremium?: boolean;
 }
 
 const templates: Record<string, string> = {
@@ -32,14 +35,72 @@ const templates: Record<string, string> = {
   'creative-designer': 'Creative Designer',
 };
 
+// Helper function to get bullet style character
+const getBulletChar = (style: FormattingOptions['bulletStyle']) => {
+  switch (style) {
+    case 'bullet': return '•';
+    case 'dash': return '−';
+    case 'circle': return '○';
+    case 'number': return ''; // Numbers are handled differently
+    default: return '•';
+  }
+};
+
+// Helper function to get font size
+const getFontSize = (size: FormattingOptions['fontSize'], baseSize: string) => {
+  const baseSizeNum = parseFloat(baseSize);
+  switch (size) {
+    case 'small': return `${baseSizeNum * 0.9}rem`; // 10pt equivalent
+    case 'medium': return baseSize; // 11pt equivalent (default)
+    case 'large': return `${baseSizeNum * 1.1}rem`; // 12pt equivalent
+    default: return baseSize;
+  }
+};
+
+// Helper function to get line spacing
+const getLineSpacing = (spacing: FormattingOptions['lineSpacing']) => {
+  switch (spacing) {
+    case 'compact': return '1.0';
+    case 'normal': return '1.15';
+    case 'relaxed': return '1.5';
+    default: return '1.15';
+  }
+};
+
+// Helper functions to get colors with defaults
+const getPrimaryTextColor = (colors?: FormattingOptions['colors']) => {
+  return colors?.primaryText || '#374151';
+};
+
+const getHeadingTextColor = (colors?: FormattingOptions['colors']) => {
+  return colors?.headingText || '#111827';
+};
+
+const getAccentColor = (colors?: FormattingOptions['colors']) => {
+  return colors?.accentColor || '#3B82F6';
+};
+
 export default function ResumePreview({
   resumeData,
   template = 'modern',
-  onTemplateChange
+  onTemplateChange,
+  isPremium = false
 }: ResumePreviewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Free users can only use 'modern' template
+  const availableTemplates = isPremium
+    ? templates
+    : { modern: 'Modern' };
   const [selectedTemplate, setSelectedTemplate] = useState(resumeData?.templateId || template);
   const [showTemplateMenu, setShowTemplateMenu] = useState(false);
+
+  // Get formatting options with defaults
+  const formatting: FormattingOptions = resumeData.formattingOptions || {
+    bulletStyle: 'bullet',
+    fontSize: 'medium',
+    lineSpacing: 'normal',
+  };
 
   useEffect(() => {
     if (resumeData?.templateId) {
@@ -56,7 +117,7 @@ export default function ResumePreview({
         <div className="bg-white p-8 shadow-lg mx-auto" style={{ maxWidth: '850px', minHeight: '1100px', fontFamily: '"Inter", "Roboto", sans-serif' }}>
           {/* Header */}
           {resumeData.personalInfo && (
-            <header className="mb-6 pb-6 border-b border-gray-200">
+            <header data-section="header" className="mb-6 pb-6 border-b border-gray-200">
               <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700 }}>
                 {resumeData.personalInfo.fullName || 'Your Name'}
               </h1>
@@ -79,11 +140,11 @@ export default function ResumePreview({
 
           {/* Summary */}
           {resumeData.summary && (
-            <section className="mb-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+            <section data-section="summary" className="mb-6">
+              <h2 className="text-lg font-bold mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em', color: getHeadingTextColor(formatting.colors) }}>
                 Professional Summary
               </h2>
-              <p className="text-gray-700 leading-relaxed text-sm" style={{ fontFamily: '"Inter", sans-serif', lineHeight: '1.6' }}>
+              <p className="leading-relaxed text-sm" style={{ fontFamily: '"Inter", sans-serif', lineHeight: '1.6', color: getPrimaryTextColor(formatting.colors) }}>
                 {resumeData.summary}
               </p>
             </section>
@@ -91,29 +152,45 @@ export default function ResumePreview({
 
           {/* Experience */}
           {resumeData.experience && resumeData.experience.length > 0 && (
-            <section className="mb-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
+            <section data-section="experience" className="mb-6">
+              <h2 className="text-lg font-bold mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em', color: getHeadingTextColor(formatting.colors) }}>
                 Work Experience
               </h2>
               {resumeData.experience.map((exp, index) => (
-                <div key={index} className="mb-4">
+                <div key={index} className="mb-4" data-section={`experience-${index}`} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
                   <div className="flex justify-between items-start mb-1">
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-base" style={{ fontFamily: '"Inter", sans-serif' }}>
+                      <h3 className="font-semibold text-base" style={{ fontFamily: '"Inter", sans-serif', color: getHeadingTextColor(formatting.colors) }}>
                         {exp.position}
                       </h3>
-                      <p className="text-gray-600 text-sm" style={{ fontFamily: '"Inter", sans-serif' }}>{exp.company}</p>
+                      <p className="text-sm" style={{ fontFamily: '"Inter", sans-serif', color: getPrimaryTextColor(formatting.colors), opacity: 0.8 }}>{exp.company}</p>
                     </div>
-                    <span className="text-sm text-gray-500 font-medium whitespace-nowrap ml-4">
+                    <span className="text-sm font-medium whitespace-nowrap ml-4" style={{ color: getPrimaryTextColor(formatting.colors), opacity: 0.6 }}>
                       {exp.startDate} - {exp.endDate || 'Present'}
                     </span>
                   </div>
                   {exp.description && (
-                    <ul className="mt-2 space-y-1">
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
-                        <li key={i} className="text-gray-700 text-sm pl-5 relative" style={{ fontFamily: '"Inter", sans-serif', lineHeight: '1.5' }}>
-                          <span className="absolute left-0 text-gray-400">•</span>
-                          {line}
+                    <p className="mt-2 text-sm" style={{ fontFamily: '"Inter", sans-serif', lineHeight: getLineSpacing(formatting.lineSpacing), color: getPrimaryTextColor(formatting.colors) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                    <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                        <li
+                          key={i}
+                          className="pl-5 relative"
+                          style={{
+                            fontFamily: '"Inter", sans-serif',
+                            lineHeight: getLineSpacing(formatting.lineSpacing),
+                            fontSize: getFontSize(formatting.fontSize, '0.875rem'),
+                            color: getPrimaryTextColor(formatting.colors)
+                          }}
+                        >
+                          {formatting.bulletStyle !== 'number' && (
+                            <span className="absolute left-0" style={{ color: getAccentColor(formatting.colors) }}>{getBulletChar(formatting.bulletStyle)}</span>
+                          )}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -125,7 +202,7 @@ export default function ResumePreview({
 
           {/* Education */}
           {resumeData.education && resumeData.education.length > 0 && (
-            <section className="mb-6">
+            <section data-section="education" className="mb-6" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Education
               </h2>
@@ -152,7 +229,7 @@ export default function ResumePreview({
 
           {/* Skills */}
           {resumeData.skills && resumeData.skills.length > 0 && (
-            <section className="mb-6">
+            <section data-section="skills" className="mb-6" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Skills
               </h2>
@@ -172,7 +249,7 @@ export default function ResumePreview({
 
           {/* Projects */}
           {resumeData.projects && resumeData.projects.length > 0 && (
-            <section className="mb-6">
+            <section data-section="projects" className="mb-6">
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Projects
               </h2>
@@ -202,7 +279,7 @@ export default function ResumePreview({
 
           {/* Certifications */}
           {resumeData.certifications && resumeData.certifications.length > 0 && (
-            <section className="mb-6">
+            <section data-section="certifications" className="mb-6" style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}>
               <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide" style={{ fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
                 Certifications
               </h2>
@@ -298,11 +375,26 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
-                    <ul className="mt-3 space-y-1.5">
-                      {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
-                        <li key={i} className="text-gray-700 text-sm pl-6 relative" style={{ fontFamily: '"Crimson Pro", serif', lineHeight: '1.7' }}>
-                          <span className="absolute left-0 text-gray-400">▸</span>
-                          {line}
+                    <p className="mt-2 text-gray-700" style={{ fontFamily: '"Crimson Pro", serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                    <ul className="mt-3 space-y-1.5" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                        <li
+                          key={i}
+                          className="text-gray-700 pl-6 relative"
+                          style={{
+                            fontFamily: '"Crimson Pro", serif',
+                            lineHeight: getLineSpacing(formatting.lineSpacing),
+                            fontSize: getFontSize(formatting.fontSize, '0.875rem')
+                          }}
+                        >
+                          {formatting.bulletStyle !== 'number' && (
+                            <span className="absolute left-0 text-gray-400">{getBulletChar(formatting.bulletStyle)}</span>
+                          )}
+                          {achievement}
                         </li>
                       ))}
                     </ul>
@@ -483,7 +575,29 @@ export default function ResumePreview({
                       </span>
                     </div>
                     {exp.description && (
-                      <p className="text-gray-700 text-sm mt-2 leading-relaxed" style={{ fontFamily: '"Times New Roman", serif', lineHeight: '1.7' }}>{exp.description}</p>
+                      <p className="mt-2 text-gray-700" style={{ fontFamily: '"Times New Roman", serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                        {exp.description}
+                      </p>
+                    )}
+                    {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                      <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                        {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                          <li
+                            key={i}
+                            className="text-gray-700 pl-6 relative"
+                            style={{
+                              fontFamily: '"Times New Roman", serif',
+                              lineHeight: getLineSpacing(formatting.lineSpacing),
+                              fontSize: getFontSize(formatting.fontSize, '0.875rem')
+                            }}
+                          >
+                            {formatting.bulletStyle !== 'number' && (
+                              <span className="absolute left-0 text-gray-600">{getBulletChar(formatting.bulletStyle)}</span>
+                            )}
+                            {achievement}
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
                 ))}
@@ -587,8 +701,6 @@ export default function ResumePreview({
                 ))}
               </section>
             )}
-              </section>
-            )}
           </div>
         </div>
       );
@@ -647,7 +759,29 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-700 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Arial", sans-serif', lineHeight: '1.4' }}>{exp.description}</p>
+                    <p className="mt-1 text-gray-700 text-xs" style={{ fontFamily: '"Arial", sans-serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                    <ul className="mt-1 space-y-0.5" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                        <li
+                          key={i}
+                          className="text-gray-700 pl-5 relative"
+                          style={{
+                            fontFamily: '"Arial", sans-serif',
+                            lineHeight: getLineSpacing(formatting.lineSpacing),
+                            fontSize: getFontSize(formatting.fontSize, '0.75rem')
+                          }}
+                        >
+                          {formatting.bulletStyle !== 'number' && (
+                            <span className="absolute left-0 text-gray-500">{getBulletChar(formatting.bulletStyle)}</span>
+                          )}
+                          {achievement}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               ))}
@@ -811,7 +945,29 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-700 text-sm mt-2 leading-relaxed" style={{ fontFamily: '"Segoe UI", "Roboto", sans-serif', lineHeight: '1.6' }}>{exp.description}</p>
+                    <p className="mt-2 text-gray-700 text-sm" style={{ fontFamily: '"Segoe UI", "Roboto", sans-serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                    <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                        <li
+                          key={i}
+                          className="text-gray-700 pl-5 relative"
+                          style={{
+                            fontFamily: '"Segoe UI", "Roboto", sans-serif',
+                            lineHeight: getLineSpacing(formatting.lineSpacing),
+                            fontSize: getFontSize(formatting.fontSize, '0.875rem')
+                          }}
+                        >
+                          {formatting.bulletStyle !== 'number' && (
+                            <span className="absolute left-0 text-teal-500">{getBulletChar(formatting.bulletStyle)}</span>
+                          )}
+                          {achievement}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               ))}
@@ -975,7 +1131,30 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-600 text-xs mt-1 leading-relaxed" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, lineHeight: '1.6' }}>{exp.description}</p>
+                    <p className="mt-1 text-gray-600 text-xs" style={{ fontFamily: '"Roboto", sans-serif', fontWeight: 300, lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                    <ul className="mt-1 space-y-0.5" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                        <li
+                          key={i}
+                          className="text-gray-600 pl-5 relative"
+                          style={{
+                            fontFamily: '"Roboto", sans-serif',
+                            fontWeight: 300,
+                            lineHeight: getLineSpacing(formatting.lineSpacing),
+                            fontSize: getFontSize(formatting.fontSize, '0.75rem')
+                          }}
+                        >
+                          {formatting.bulletStyle !== 'number' && (
+                            <span className="absolute left-0 text-gray-400">{getBulletChar(formatting.bulletStyle)}</span>
+                          )}
+                          {achievement}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               ))}
@@ -1137,7 +1316,29 @@ export default function ResumePreview({
                     </span>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-600 text-sm mt-2 leading-relaxed" style={{ fontFamily: '"Lora", serif', lineHeight: '1.8' }}>{exp.description}</p>
+                    <p className="mt-2 text-gray-600 text-sm" style={{ fontFamily: '"Lora", serif', lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                      {exp.description}
+                    </p>
+                  )}
+                  {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                    <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                      {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                        <li
+                          key={i}
+                          className="text-gray-600 pl-5 relative"
+                          style={{
+                            fontFamily: '"Lora", serif',
+                            lineHeight: getLineSpacing(formatting.lineSpacing),
+                            fontSize: getFontSize(formatting.fontSize, '0.875rem')
+                          }}
+                        >
+                          {formatting.bulletStyle !== 'number' && (
+                            <span className="absolute left-0 text-gray-400">{getBulletChar(formatting.bulletStyle)}</span>
+                          )}
+                          {achievement}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               ))}
@@ -1281,11 +1482,11 @@ export default function ResumePreview({
 
             {resumeData.summary && (
               <section className="mb-8">
-                <h2 className="text-lg font-bold text-indigo-600 mb-3 uppercase tracking-wider" style={{ fontFamily: '"Montserrat", sans-serif' }}>
-                  <span className="inline-block w-3 h-3 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-full mr-2"></span>
+                <h2 className="text-lg font-bold mb-3 uppercase tracking-wider" style={{ fontFamily: '"Montserrat", sans-serif', color: getHeadingTextColor(formatting.colors) }}>
+                  <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: getAccentColor(formatting.colors) }}></span>
                   Professional Summary
                 </h2>
-                <p className="text-gray-700 leading-relaxed pl-5 border-l-2 border-indigo-200" style={{ fontFamily: '"Open Sans", sans-serif' }}>
+                <p className="leading-relaxed pl-5 border-l-2" style={{ fontFamily: '"Open Sans", sans-serif', color: getPrimaryTextColor(formatting.colors), borderColor: getAccentColor(formatting.colors) + '33' }}>
                   {resumeData.summary}
                 </p>
               </section>
@@ -1293,26 +1494,49 @@ export default function ResumePreview({
 
             {resumeData.experience && resumeData.experience.length > 0 && (
               <section className="mb-8">
-                <h2 className="text-lg font-bold text-indigo-600 mb-4 uppercase tracking-wider" style={{ fontFamily: '"Montserrat", sans-serif' }}>
-                  <span className="inline-block w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-2"></span>
+                <h2 className="text-lg font-bold mb-4 uppercase tracking-wider" style={{ fontFamily: '"Montserrat", sans-serif', color: getHeadingTextColor(formatting.colors) }}>
+                  <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: getAccentColor(formatting.colors) }}></span>
                   Work Experience
                 </h2>
                 {resumeData.experience.map((exp, index) => (
-                  <div key={index} className="mb-5 pl-5 border-l-2 border-purple-200 relative">
-                    <div className="absolute -left-2.5 top-0 w-5 h-5 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 border-2 border-white"></div>
+                  <div key={index} className="mb-5 pl-5 border-l-2 relative" style={{ borderColor: getAccentColor(formatting.colors) + '33' }}>
+                    <div className="absolute -left-2.5 top-0 w-5 h-5 rounded-full border-2 border-white" style={{ backgroundColor: getAccentColor(formatting.colors) }}></div>
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-bold text-gray-900 text-lg mb-1" style={{ fontFamily: '"Montserrat", sans-serif' }}>
+                        <h3 className="font-bold text-lg mb-1" style={{ fontFamily: '"Montserrat", sans-serif', color: getHeadingTextColor(formatting.colors) }}>
                           {exp.position}
                         </h3>
-                        <p className="text-indigo-600 font-semibold" style={{ fontFamily: '"Montserrat", sans-serif' }}>{exp.company}</p>
+                        <p className="font-semibold" style={{ fontFamily: '"Montserrat", sans-serif', color: getAccentColor(formatting.colors) }}>{exp.company}</p>
                       </div>
-                      <span className="text-sm text-gray-500 font-medium bg-indigo-50 px-2 py-1 rounded">
+                      <span className="text-sm font-medium px-2 py-1 rounded" style={{ color: getPrimaryTextColor(formatting.colors), backgroundColor: getAccentColor(formatting.colors) + '1A' }}>
                         {exp.startDate} - {exp.endDate || 'Present'}
                       </span>
                     </div>
                     {exp.description && (
-                      <p className="text-gray-700 text-sm mt-2 leading-relaxed" style={{ fontFamily: '"Open Sans", sans-serif' }}>{exp.description}</p>
+                      <p className="mt-2" style={{ fontFamily: '"Open Sans", sans-serif', color: getPrimaryTextColor(formatting.colors), lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                        {exp.description}
+                      </p>
+                    )}
+                    {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                      <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                        {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                          <li
+                            key={i}
+                            className="pl-5 relative"
+                            style={{
+                              fontFamily: '"Open Sans", sans-serif',
+                              lineHeight: getLineSpacing(formatting.lineSpacing),
+                              fontSize: getFontSize(formatting.fontSize, '0.875rem'),
+                              color: getPrimaryTextColor(formatting.colors)
+                            }}
+                          >
+                            {formatting.bulletStyle !== 'number' && (
+                              <span className="absolute left-0" style={{ color: getAccentColor(formatting.colors) }}>{getBulletChar(formatting.bulletStyle)}</span>
+                            )}
+                            {achievement}
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
                 ))}
@@ -1438,11 +1662,25 @@ export default function ResumePreview({
                   </span>
                 </div>
                 {exp.description && (
-                  <ul className="mt-2 space-y-1">
-                    {exp.description.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => (
-                      <li key={i} className="text-gray-700 text-sm pl-5 relative">
-                        <span className="absolute left-0">•</span>
-                        {line}
+                  <p className="mt-2 text-gray-700" style={{ lineHeight: getLineSpacing(formatting.lineSpacing) }}>
+                    {exp.description}
+                  </p>
+                )}
+                {exp.achievements && exp.achievements.length > 0 && exp.achievements.some((a: string) => a.trim()) && (
+                  <ul className="mt-2 space-y-1" style={{ listStyleType: formatting.bulletStyle === 'number' ? 'decimal' : 'none' }}>
+                    {exp.achievements.filter((achievement: string) => achievement.trim()).map((achievement: string, i: number) => (
+                      <li
+                        key={i}
+                        className="text-gray-700 pl-5 relative"
+                        style={{
+                          lineHeight: getLineSpacing(formatting.lineSpacing),
+                          fontSize: getFontSize(formatting.fontSize, '0.875rem')
+                        }}
+                      >
+                        {formatting.bulletStyle !== 'number' && (
+                          <span className="absolute left-0">{getBulletChar(formatting.bulletStyle)}</span>
+                        )}
+                        {achievement}
                       </li>
                     ))}
                   </ul>
@@ -1552,11 +1790,15 @@ export default function ResumePreview({
             </button>
             
             {showTemplateMenu && (
-              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
-                {Object.entries(templates).map(([key, label]) => (
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10 min-w-[200px]">
+                {Object.entries(availableTemplates).map(([key, label]) => (
                   <button
                     key={key}
                     onClick={() => {
+                      if (!isPremium && key !== 'modern') {
+                        window.location.href = '/pricing';
+                        return;
+                      }
                       setSelectedTemplate(key);
                       setShowTemplateMenu(false);
                       // Update resume data with new template
@@ -1565,11 +1807,27 @@ export default function ResumePreview({
                       }
                     }}
                     className={cn(
-                      "w-full px-4 py-2 text-sm text-left hover:bg-gray-50",
+                      "w-full px-4 py-2 text-sm text-left hover:bg-gray-50 flex items-center justify-between",
                       selectedTemplate === key && "bg-indigo-50 text-indigo-600"
                     )}
                   >
-                    {label}
+                    <span>{label}</span>
+                  </button>
+                ))}
+
+                {/* Show locked premium templates for free users */}
+                {!isPremium && Object.entries(templates).filter(([key]) => key !== 'modern').map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => window.location.href = '/pricing'}
+                    className="w-full px-4 py-2 text-sm text-left hover:bg-gray-50 flex items-center justify-between text-gray-400 cursor-pointer"
+                    title="Premium template - Upgrade to unlock"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      {label}
+                    </span>
+                    <Crown className="w-3 h-3 text-amber-500" />
                   </button>
                 ))}
               </div>
@@ -1592,7 +1850,9 @@ export default function ResumePreview({
 
       {/* Preview Content */}
       <div className="flex-1 overflow-y-auto bg-gray-100 p-8">
-        {renderPreviewContent()}
+        <div data-resume-preview>
+          {renderPreviewContent()}
+        </div>
       </div>
     </div>
   );

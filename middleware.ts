@@ -92,8 +92,8 @@ export async function middleware(request: NextRequest) {
     )
   }
 
-  // If authenticated user tries to access login/signup, redirect to templates
-  if (user && ['/login', '/signup'].includes(request.nextUrl.pathname)) {
+  // If authenticated user tries to access login/signup/home, redirect to templates
+  if (user && ['/login', '/signup', '/'].includes(request.nextUrl.pathname)) {
     console.log('Middleware - Redirecting authenticated user to templates from:', request.nextUrl.pathname)
     return NextResponse.redirect(new URL('/templates', request.url))
   }
