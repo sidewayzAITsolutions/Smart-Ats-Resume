@@ -89,7 +89,7 @@ export default function BuilderSidebar({
   return (
     <>
       {/* MOBILE: Bottom Navigation Bar - Streamlined and Easy */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-700 safe-area-inset-bottom">
+	      <div className="xl:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-700 safe-area-inset-bottom">
         {/* Progress bar at top of mobile nav */}
         <div className="h-1 bg-gray-800">
           <div
@@ -156,8 +156,8 @@ export default function BuilderSidebar({
       </div>
 
       {/* Mobile Full-Screen Section Picker */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-[60] bg-gray-900/95 backdrop-blur-sm flex flex-col">
+	      {isMobileMenuOpen && (
+	        <div className="xl:hidden fixed inset-0 z-[60] bg-gray-900/95 backdrop-blur-sm flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-700 shrink-0">
             <div>
@@ -244,7 +244,7 @@ export default function BuilderSidebar({
       )}
 
       {/* DESKTOP: Original Sidebar - Hidden on Mobile */}
-      <div className="hidden lg:flex w-64 bg-gray-800 border-r border-gray-700 flex-col">
+	      <div className="hidden xl:flex w-64 bg-gray-800 border-r border-gray-700 flex-col">
         {/* Progress Indicator */}
         <div className="p-6 border-b border-gray-700">
           <div className="mb-2 flex items-center justify-between">

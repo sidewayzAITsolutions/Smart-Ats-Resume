@@ -578,7 +578,7 @@ interface BuilderLayoutProps {
 
 export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   const [activeSection, setActiveSection] = useState('personal');
   const [atsScore, setAtsScore] = useState<{
     score: number;
@@ -596,6 +596,13 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
   const { resumeData, updateResumeData, saveResume, resetResumeData } = useResumeStore();
   const savingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Default to hiding preview on mobile/tablet; show by default on desktop (xl+)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isDesktop = window.matchMedia('(min-width: 1280px)').matches;
+    setShowPreview(isDesktop);
+  }, []);
 
   // Fetch user premium status and resume count
   useEffect(() => {
@@ -917,7 +924,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         <img
           src="/Donkey.png"
           alt="Smart ATS Donkey"
-          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300 hidden lg:block"
+	          className="w-80 h-80 object-contain opacity-40 transition-opacity duration-300 hidden xl:block"
         />
       </div>
 
@@ -1008,7 +1015,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
         {/* Editor */}
         <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm min-h-0">
           {/* Add padding-bottom on mobile for bottom nav, extra in landscape */}
-          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6 pb-28 lg:pb-8">
+	          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6 pb-28 xl:pb-8">
             <ResumeEditor
               activeSection={activeSection}
               resumeData={resumeData}
@@ -1020,7 +1027,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
         {/* Preview Panel - Responsive */}
         {showPreview && (
-          <div className="hidden lg:block lg:w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
+	          <div className="hidden xl:block xl:w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
             <ResumePreview
               resumeData={resumeData}
               onTemplateChange={(templateId) => {
@@ -1034,9 +1041,9 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
       {/* Mobile Preview Modal - Full screen on mobile when preview is toggled */}
       {showPreview && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-gray-900">
+	        <div className="xl:hidden fixed inset-0 z-[70] bg-gray-900 flex flex-col">
           {/* Mobile preview header with close button */}
-          <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+	          <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+12px)] flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">Resume Preview</h2>
             <button
               onClick={() => setShowPreview(false)}
@@ -1045,7 +1052,7 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
               <X className="h-5 w-5" />
             </button>
           </div>
-          <div className="h-[calc(100vh-60px)] overflow-y-auto pb-20">
+	          <div className="flex-1 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5rem)]">
             <ResumePreview
               resumeData={resumeData}
               onTemplateChange={(templateId) => {

@@ -1849,7 +1849,7 @@ export default function ResumePreview({
       </div>
 
       {/* Preview Content */}
-      <div className="flex-1 overflow-y-auto bg-gray-100 p-8">
+	      <div className="flex-1 overflow-y-auto overflow-x-hidden bg-gray-100 p-3 sm:p-6 xl:p-8">
         <div data-resume-preview>
           {renderPreviewContent()}
         </div>

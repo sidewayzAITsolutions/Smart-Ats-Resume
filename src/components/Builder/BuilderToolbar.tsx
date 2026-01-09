@@ -179,12 +179,14 @@ export default function BuilderToolbar({
             {showPreview ? (
               <>
                 <EyeOff className="h-4 w-4" />
-                <span className="hidden sm:inline">Hide Preview</span>
+	          				<span className="inline sm:hidden">Edit</span>
+	          				<span className="hidden sm:inline">Hide Preview</span>
               </>
             ) : (
               <>
                 <Eye className="h-4 w-4" />
-                <span className="hidden sm:inline">Show Preview</span>
+	          				<span className="inline sm:hidden">Preview</span>
+	          				<span className="hidden sm:inline">Show Preview</span>
               </>
             )}
           </button>
