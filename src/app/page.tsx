@@ -203,8 +203,8 @@ const Page: React.FC = () => {
             </div>
 
             <p className="text-xl md:text-4xl text-red-400 mb-12 max-w-5xl mx-auto leading-relaxed">
-              <span className="font-bold text-gray-200">Technology That</span>
-              <span className="font-bold text-red-500"> Amplifies Your Potential</span>
+              <span className="font-bold text-gray-200">Beat The Bots</span>
+              <span className="font-bold text-red-500"> Land The Job</span>
             </p>
 
             {/* Trust Indicators */}
