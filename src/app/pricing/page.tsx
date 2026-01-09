@@ -95,22 +95,6 @@ const PricingPage = () => {
       priceId: null
     },
     {
-      name: 'Sprint Pass',
-      price: 9,
-      period: '7 days',
-      mascotImage: '/logo.png',
-      description: '7-day access for urgent resume fixes',
-      features: [
-        'Full Pro features for 7 days',
-        'One-week access to premium templates',
-        'AI-powered optimization',
-        '1 downloadable PDF',
-      ],
-      highlighted: false,
-      buttonText: 'Start Sprint Pass',
-      priceId: process.env.NEXT_PUBLIC_STRIPE_SPRINT_PRICE_ID
-    },
-    {
       name: 'Pro Monthly',
       price: 22,
       period: 'month',
