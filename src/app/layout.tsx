@@ -133,8 +133,9 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
         />
         {/* End Google Tag Manager */}
 
-        {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-LW218B0V79"></script>
+	        {/* Google tag (gtag.js) */}
+	        {/* Google Ads + Analytics */}
+	        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17692753265"></script>
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -147,7 +148,8 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-LW218B0V79');
+	              gtag('config', 'G-LW218B0V79');
+	              gtag('config', 'AW-17692753265');
               
               // Reddit Pixel - Data Layer for purchase events
               window.trackRedditPurchase = function(email, phone, value, currency, items) {
