@@ -1,25 +1,20 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, FileText, CheckCircle, XCircle, Zap, Download, ArrowRight } from 'lucide-react';
-import { SEO } from '@/components/SEO';
 
-interface SEOMetadata {
-  title: string;
-  description: string;
-  url: string;
-}
+import { getSEOMetadata } from '@/lib/seo-config';
+
+const seo = getSEOMetadata('ats-resume-guide-2025');
+
+export const metadata: Metadata = {
+  title: seo.title,
+  description: seo.description,
+  keywords: seo.keywords,
+  alternates: { canonical: seo.url },
+};
 
 export default function ATSResumeGuidePage() {
-  const seoData = getSEOMetadata('ats-resume-guide-2025');
-  
   return (
-    <>
-      <SEO 
-        title={seoData.title}
-        description={seoData.description}
-        url={seoData.url}
-      />
     <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Hero Section */}
       <div className="relative py-16 border-b border-gray-800 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
@@ -292,24 +287,5 @@ export default function ATSResumeGuidePage() {
         </div>
       </article>
     </main>
-    </>
   );
 }
-
-function getSEOMetadata(slug: string): SEOMetadata {
-  const seoMap: Record<string, SEOMetadata> = {
-    'ats-resume-guide-2025': {
-      title: 'The Ultimate 2025 ATS Resume Guide | Smart ATS',
-      description: 'Learn how to pass ATS systems and get your resume noticed. Over 75% of resumes get rejected automatically. Master keyword optimization, formatting, and ATS best practices.',
-      url: '/thecareerhub/ats-resume-guide-2025',
-    },
-  };
-
-  // Return metadata for the slug, or provide sensible defaults
-  return seoMap[slug] || {
-    title: 'Career Hub Guide | Smart ATS',
-    description: 'Discover career resources and guides to help you succeed.',
-    url: `/thecareerhub/${slug}`,
-  };
-}
-

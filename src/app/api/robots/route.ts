@@ -1,0 +1,20 @@
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const baseUrl = 'https://smartatsresume.com';
+
+  // Keep this conservative: allow indexing of marketing pages, discourage crawling API.
+  const robots = `User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: ${baseUrl}/sitemap.xml
+`;
+
+  return new NextResponse(robots, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+    },
+  });
+}

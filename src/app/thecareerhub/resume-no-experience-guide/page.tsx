@@ -1,20 +1,20 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, GraduationCap, CheckCircle, Lightbulb, ArrowRight, Zap, FileText } from 'lucide-react';
-import { SEO } from '@/components/SEO';
+import { ArrowLeft, GraduationCap, CheckCircle, Lightbulb, ArrowRight, FileText } from 'lucide-react';
+
 import { getSEOMetadata } from '@/lib/seo-config';
 
+const seo = getSEOMetadata('resume-no-experience-guide');
+
+export const metadata: Metadata = {
+  title: seo.title,
+  description: seo.description,
+  keywords: seo.keywords,
+  alternates: { canonical: seo.url },
+};
+
 export default function ResumeNoExperiencePage() {
-  const seoData = getSEOMetadata('resume-no-experience-guide');
-  
   return (
-    <>
-      <SEO 
-        title={seoData.title}
-        description={seoData.description}
-        url={seoData.url}
-      />
     <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white">
       {/* Hero Section */}
       <div className="relative py-16 border-b border-gray-800 bg-gradient-to-br from-gray-900 via-gray-950 to-black">
@@ -261,6 +261,5 @@ export default function ResumeNoExperiencePage() {
         </div>
       </article>
     </main>
-    </>
   );
 }
