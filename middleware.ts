@@ -2,6 +2,8 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { getSupabasePublicEnv } from './src/lib/supabase/env'
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -9,9 +11,17 @@ export async function middleware(request: NextRequest) {
     },
   })
 
+  const env = getSupabasePublicEnv()
+  if (!env) {
+    // Avoid taking the whole site down if Supabase env vars are missing/invalid.
+    // Auth-gated routes will behave as unprotected until env is fixed.
+    console.warn('Middleware: Supabase env is missing/invalid; skipping auth enforcement.')
+    return response
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.url,
+    env.anonKey,
     {
       cookies: {
         get(name: string) {

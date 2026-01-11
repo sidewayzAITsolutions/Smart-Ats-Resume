@@ -3,12 +3,17 @@ import { unstable_cache } from 'next/cache';
 
 import { createServerClient } from '@supabase/ssr';
 
+import { getSupabasePublicEnv } from './src/lib/supabase/env';
+
 export const getCachedTemplates = unstable_cache(
   async () => {
+    const env = getSupabasePublicEnv();
+    if (!env) return [];
+
     // Create a simple client for public data (no cookies needed)
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      env.url,
+      env.anonKey,
       {
         cookies: {
           get: () => undefined,

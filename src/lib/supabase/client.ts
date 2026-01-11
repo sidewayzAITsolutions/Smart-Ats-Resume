@@ -1,14 +1,17 @@
 // src/lib/supabase/client.ts
 import { createBrowserClient } from '@supabase/ssr';
 
-export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+import { getSupabasePublicEnv } from './env';
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+export function createClient() {
+  const env = getSupabasePublicEnv();
+
+  if (!env) {
     // Do not crash builds in environments without env vars (e.g., CI/static export).
     // Return a minimal no-op client that surfaces configuration errors at runtime only.
-    console.warn('Missing Supabase env vars; returning a no-op Supabase client.');
+    console.warn(
+      'Supabase is not configured (missing/invalid NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY); returning a no-op client.'
+    );
     const noop = {
       auth: {
         getSession: async () => ({ data: { session: null }, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
@@ -30,5 +33,5 @@ export function createClient() {
     return noop;
   }
 
-  return createBrowserClient(supabaseUrl, supabaseAnonKey);
+  return createBrowserClient(env.url, env.anonKey);
 }
