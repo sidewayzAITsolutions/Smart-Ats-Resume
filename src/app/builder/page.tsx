@@ -25,7 +25,7 @@ function BuilderPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const supabase = useSupabase();
-  const { updateResumeData } = useResumeStore();
+  const { updateResumeData, resetResumeData } = useResumeStore();
 
   const [loading, setLoading] = useState(true);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
@@ -68,7 +68,10 @@ function BuilderPageInner() {
 
         setResumeData(data.content);
       } else {
-        // New resume flow: apply template selection if provided
+        // New resume flow: reset to blank state first
+        resetResumeData();
+
+        // Apply template selection if provided
         const tpl = searchParams.get('template');
         if (tpl) {
           updateResumeData({ templateId: tpl });

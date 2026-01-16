@@ -1025,15 +1025,16 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           </div>
         </div>
 
-        {/* Preview Panel - Responsive */}
+        {/* Preview Panel - Desktop sidebar */}
         {showPreview && (
-	          <div className="hidden xl:block xl:w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
+          <div className="hidden xl:block xl:w-1/2 border-l border-gray-800 bg-gray-900/80 backdrop-blur-sm overflow-y-auto">
             <ResumePreview
               resumeData={resumeData}
               onTemplateChange={(templateId) => {
                 updateResumeData({ templateId });
               }}
               isPremium={isPremium}
+              onClose={() => setShowPreview(false)}
             />
           </div>
         )}
@@ -1041,24 +1042,30 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
       {/* Mobile Preview Modal - Full screen on mobile when preview is toggled */}
       {showPreview && (
-	        <div className="xl:hidden fixed inset-0 z-[70] bg-gray-900 flex flex-col">
+        <div className="xl:hidden fixed inset-0 z-[70] bg-gray-900 flex flex-col">
           {/* Mobile preview header with close button */}
-	          <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+12px)] flex items-center justify-between">
+          <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+12px)] flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">Resume Preview</h2>
             <button
-              onClick={() => setShowPreview(false)}
-              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowPreview(false);
+              }}
+              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors z-40"
+              aria-label="Close preview"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
-	          <div className="flex-1 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5rem)]">
+          <div className="flex-1 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5rem)]">
             <ResumePreview
               resumeData={resumeData}
               onTemplateChange={(templateId) => {
                 updateResumeData({ templateId });
               }}
               isPremium={isPremium}
+              onClose={() => setShowPreview(false)}
             />
           </div>
         </div>

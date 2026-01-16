@@ -22,6 +22,7 @@ interface ResumePreviewProps {
   template?: string;
   onTemplateChange?: (templateId: string) => void;
   isPremium?: boolean;
+  onClose?: () => void;
 }
 
 const templates: Record<string, string> = {
@@ -84,7 +85,8 @@ export default function ResumePreview({
   resumeData,
   template = 'modern',
   onTemplateChange,
-  isPremium = false
+  isPremium = false,
+  onClose
 }: ResumePreviewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -1835,15 +1837,28 @@ export default function ResumePreview({
           </div>
         </div>
 
-        {/* Fullscreen Toggle */}
+        {/* Minimize/Close Toggle */}
         <button
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1 text-gray-500 hover:text-gray-700 transition-colors"
+          type="button"
+          onClick={(e) => {
+            // prevent clicks from bubbling to underlying elements which may re-open or capture the event
+            e.stopPropagation();
+            if (isFullscreen) {
+              setIsFullscreen(false);
+            } else if (onClose) {
+              onClose();
+            } else {
+              setIsFullscreen(!isFullscreen);
+            }
+          }}
+          className="p-1 text-gray-500 hover:text-gray-700 transition-colors z-20"
+          title={isFullscreen ? "Exit fullscreen" : onClose ? "Hide preview" : "Fullscreen"}
+          aria-label={isFullscreen ? "Exit fullscreen" : onClose ? "Hide preview" : "Toggle fullscreen"}
         >
           {isFullscreen ? (
             <Minimize2 className="h-4 w-4" />
           ) : (
-            <Maximize2 className="h-4 w-4" />
+            <Minimize2 className="h-4 w-4" />
           )}
         </button>
       </div>

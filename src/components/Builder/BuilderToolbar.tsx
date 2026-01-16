@@ -118,12 +118,12 @@ export default function BuilderToolbar({
 
   {/* Right Section */}
         <div className="flex items-center gap-1 sm:gap-3">
-          {/* ATS Score Button */}
+          {/* ATS Score Button - Prominent dark red glow */}
           <button type="button"
             onClick={onCheckATS}
-            className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-teal-300 bg-gradient-to-r from-teal-900/60 to-teal-800/60 border border-teal-600/50 rounded-lg hover:from-teal-800/80 hover:to-teal-700/80 transition-all duration-200 flex items-center gap-1 sm:gap-2 shadow-lg shadow-teal-900/20 backdrop-blur-sm"
+            className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold text-red-100 bg-gradient-to-r from-red-900 via-red-800 to-red-900 border border-red-500/60 rounded-lg hover:from-red-800 hover:via-red-700 hover:to-red-800 hover:border-red-400/80 transition-all duration-200 flex items-center gap-1 sm:gap-2 shadow-[0_0_15px_rgba(220,38,38,0.4),0_0_30px_rgba(185,28,28,0.2)] hover:shadow-[0_0_20px_rgba(220,38,38,0.5),0_0_40px_rgba(185,28,28,0.3)] backdrop-blur-sm animate-pulse-subtle"
           >
-            <Zap className="h-4 w-4" />
+            <Zap className="h-4 w-4 text-red-300" />
             <span className="hidden sm:inline">Check ATS Score</span>
             <span className="sm:hidden">ATS</span>
           </button>

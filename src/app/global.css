@@ -908,3 +908,17 @@ div[onClick],
 div[onclick] {
   cursor: pointer !important;
 }
+
+/* Subtle pulse animation for ATS button glow */
+@keyframes pulse-subtle {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.4), 0 0 30px rgba(185, 28, 28, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6), 0 0 40px rgba(185, 28, 28, 0.35);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
