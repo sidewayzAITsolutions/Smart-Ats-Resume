@@ -5,6 +5,7 @@ import { Inter, Roboto, Playfair_Display, Crimson_Pro, Lora, Montserrat, Open_Sa
 import './global.css'
 import { Toaster } from 'react-hot-toast'
 import React from 'react'
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] })
 const roboto = Roboto({
@@ -197,6 +198,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
         {/* End Google Tag Manager (noscript) */}
         {children}
         <Toaster position="top-right" />
+        <Analytics />
       </body>
     </html>
   )
