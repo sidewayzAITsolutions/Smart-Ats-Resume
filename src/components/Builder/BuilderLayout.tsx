@@ -1012,10 +1012,12 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
           }}
         />
 
-        {/* Editor */}
+        {/* Editor - expands when preview is hidden */}
         <div className="flex-1 overflow-y-auto bg-gray-900/50 backdrop-blur-sm min-h-0">
           {/* Add padding-bottom on mobile for bottom nav, extra in landscape */}
-	          <div className="max-w-4xl mx-auto py-4 sm:py-8 px-3 sm:px-6 pb-28 xl:pb-8">
+          <div className={`mx-auto py-4 sm:py-8 px-3 sm:px-6 pb-28 xl:pb-8 transition-all duration-300 ${
+            showPreview ? 'max-w-4xl' : 'max-w-6xl'
+          }`}>
             <ResumeEditor
               activeSection={activeSection}
               resumeData={resumeData}
