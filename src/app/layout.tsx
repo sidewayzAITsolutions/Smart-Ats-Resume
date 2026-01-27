@@ -184,6 +184,10 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
           }}
         />
         <script async src="https://js.stripe.com/v3/"></script>
+        
+        {/* Start of HubSpot Embed Code */}
+        <script type="text/javascript" id="hs-script-loader" async defer src="//js-na2.hs-scripts.com/244982286.js"></script>
+        {/* End of HubSpot Embed Code */}
       </head>
       <body className={`${inter.className} ${roboto.variable} ${playfairDisplay.variable} ${crimsonPro.variable} ${lora.variable} ${montserrat.variable} ${openSans.variable}`}>
         {/* Google Tag Manager (noscript) */}
