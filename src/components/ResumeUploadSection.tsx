@@ -158,13 +158,18 @@ export default function ResumeUploadSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Check Your ATS Score in Seconds
           </h2>
-          {/* Emotional pressure line */}
-          <p className="text-lg text-red-400/90 font-medium mb-3">
-            Most resumes fail ATS before a human ever sees them. Yours might too.
-          </p>
           <p className="text-gray-400 mb-6">
             Upload your resume and find out in 60 seconds. No signup required.
           </p>
+
+          {/* Consolidated stats - all critical ATS facts in one place */}
+          <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-4 max-w-lg mx-auto mb-6">
+            <div className="flex flex-col gap-2 text-center">
+              <p className="text-red-400 font-bold text-lg">75% of resumes fail because of ATS.</p>
+              <p className="text-gray-300 text-sm">ATS scans and rejects your resume in 6 seconds or less.</p>
+              <p className="text-gray-300 text-sm">Resumes scoring under 80 rarely see human hands.</p>
+            </div>
+          </div>
 
           {/* Example blockers - primes action and curiosity */}
           <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-4 max-w-lg mx-auto">
@@ -230,6 +235,10 @@ export default function ResumeUploadSection() {
               <button className="px-8 py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-lg font-semibold hover:from-teal-500 hover:to-teal-400 transition-all transform hover:scale-105">
                 Choose File
               </button>
+              {/* Micro-momentum - lowers resistance */}
+              <p className="text-gray-400 text-sm mt-4">
+                You'll see your ATS score before we ask for anything.
+              </p>
             </div>
           </div>
         )}
@@ -274,10 +283,6 @@ export default function ResumeUploadSection() {
                 <span className="text-gray-300">Fix what's blocking interviews</span>
               </div>
             </div>
-            {/* Stakes line */}
-            <p className="text-center text-red-400 text-lg font-bold mt-4">
-              Most resumes scoring under 80 never see human hands.
-            </p>
           </div>
         )}
 

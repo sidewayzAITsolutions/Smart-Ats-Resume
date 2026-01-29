@@ -183,7 +183,7 @@ const Page: React.FC = () => {
 
             {/* Mechanism clarifier - answers HOW immediately */}
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              We simulate real ATS filters and show exactly what blocks interviews.
+              We simulate real ATS filters and show exactly why your resume gets rejected — in under 60 seconds.
             </p>
 
             {/* Single Dominant CTA */}
@@ -198,7 +198,7 @@ const Page: React.FC = () => {
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
               {/* Trust signals directly under CTA - reduces hesitation before scroll */}
-              <p className="text-gray-400 text-sm mt-3">No signup • No credit card • Resume auto-deleted</p>
+              <p className="text-gray-400 text-sm mt-3">No signup • No credit card</p>
               {/* De-emphasized secondary link */}
               <button
                 type="button"
@@ -275,7 +275,7 @@ const Page: React.FC = () => {
               <p className="text-xl text-gray-400 mt-4">See how we match up the biggest names in resume building</p>
               {/* Bold summary line - reframes entire table */}
               <p className="text-lg md:text-xl text-white font-bold mt-6 bg-gradient-to-r from-teal-900/40 to-amber-900/40 border border-teal-700/30 rounded-lg px-6 py-3 inline-block">
-                Most tools show suggestions. SmartATS simulates real ATS rejection logic.
+                Most tools help you write prettier resumes. SmartATS shows whether your resume survives real ATS filters.
               </p>
             </div>
 
@@ -322,15 +322,15 @@ const Page: React.FC = () => {
                     <td className="p-6 text-center"><CheckCircle className="w-6 h-6 text-green-400 mx-auto" /></td>
                   </tr>
                   {/* ATS Simulation - proprietary advantage, positions SmartATS as infrastructure-level */}
-                  <tr className="hover:bg-gray-800/50 transition-colors bg-teal-900/10">
+                  <tr className="hover:bg-teal-800/30 transition-colors bg-teal-900/20 border-l-4 border-teal-500">
                     <td className="p-6">
-                      <span className="text-gray-300 font-medium">ATS Simulation (Real Parser Behavior)</span>
-                      <span className="block text-xs text-gray-500 mt-1">Simulates real ATS rejection logic, not suggestions.</span>
+                      <span className="text-white font-bold">ATS Simulation (Real Parser Behavior)</span>
+                      <span className="block text-xs text-teal-400 mt-1 font-medium">Our key differentiator — shows if your resume survives real filters.</span>
                     </td>
-                    <td className="p-6 text-center"><CheckCircle className="w-6 h-6 text-green-400 mx-auto" /></td>
-                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
-                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
-                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
+                    <td className="p-6 text-center"><CheckCircle className="w-7 h-7 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto opacity-60" /></td>
+                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto opacity-60" /></td>
+                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto opacity-60" /></td>
                   </tr>
                   <tr className="hover:bg-gray-800/50 transition-colors">
                     <td className="p-6 text-gray-300">All Templates ATS-Optimized</td>
@@ -464,7 +464,7 @@ const Page: React.FC = () => {
             </p>
             {/* Upgrade trigger - reframes upgrade as reactive and rational */}
             <p className="text-center text-gray-400 mb-8">
-              Most users upgrade after seeing their ATS score and blocker list.
+              Most users upgrade after seeing exactly what's blocking interviews.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
               {/* Free Plan Card */}
@@ -476,7 +476,7 @@ const Page: React.FC = () => {
                     <DollarSign className="w-7 h-7 text-white group-hover:animate-pulse" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-amber-400 transition-colors duration-300">Free ATS Diagnostic</h3>
-                  <p className="text-sm text-gray-400 mb-2">(See what's blocking you)</p>
+                  <p className="text-sm text-gray-400 mb-2">See what's blocking you. Fixes unlock with upgrade.</p>
                   <div className="text-center my-4">
                     <div className="text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">$0</div>
                     <div className="text-gray-400">Forever Free</div>
@@ -664,7 +664,7 @@ const Page: React.FC = () => {
 
             {/* Urgency without lying */}
             <p className="text-white/70 text-sm mt-3">
-              New job postings reset weekly. Don't apply blind.
+              Most job postings reset weekly. Don't apply blind.
             </p>
 
             {/* Social proof badges - de-emphasized, smaller */}
