@@ -71,7 +71,7 @@ const LogoSplashScreen = () => {
         }`}>
           <h2 className="text-3xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-amber-100 text-center">
             Welcome to SmartATS Resume<br />
-            <span className="text-purple-300 text-xl md:text-4xl gap-2">Putting People Back in Front of People</span>
+            <span className="text-purple-300 text-xl md:text-4xl gap-2">Beat The Bots.. Land The Job!</span>
           </h2>
         </div>
       </div>
