@@ -449,22 +449,13 @@ const Page: React.FC = () => {
               </table>
             </div>
 
-            <div className="mt-12 text-center animate-fade-in-up">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl hover:border-orange-500/70 hover:scale-105 transition-all duration-300 cursor-default mb-8">
-                <Sparkles className="w-7 h-7 text-orange-400 animate-pulse" />
-                <p className="text-orange-300 font-medium">
-                  SmartATS SAVES you TIME and DOLLARS while delivering the BEST Quality! <span className="text-orange-400 font-bold">30% more</span> value than competitors
-                </p>
-              </div>
-
-              {/* CTA under comparison - ties it back to user action */}
+            {/* CTA under comparison - simple and direct */}
+            <div className="mt-10 text-center">
               <button
                 onClick={() => router.push('/login')}
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-teal-500/20 transform hover:scale-105 transition-all duration-200"
               >
-                <Target className="w-5 h-5" />
-                Check how your resume compares
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Check how your resume compares →
               </button>
             </div>
           </div>
