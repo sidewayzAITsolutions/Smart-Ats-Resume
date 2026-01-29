@@ -230,9 +230,9 @@ const Page: React.FC = () => {
               </div>
             </div>
 
-            {/* Stakes-based line */}
-            <p className="text-center text-red-400/80 text-sm font-medium mb-4">
-              Most resumes scoring under 70 never reach a human recruiter.
+            {/* Stakes-based line - bigger and bolder */}
+            <p className="text-center text-red-400 text-lg md:text-xl font-bold mb-4">
+              Most resumes scoring under 80 never see human hands.
             </p>
 
             {/* Zero-risk emphasis */}
