@@ -84,6 +84,11 @@ const TrustBar: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* Qualifier - increases credibility */}
+        <p className="text-center text-gray-500 text-xs mt-8">
+          Based on anonymized resume data and user-reported outcomes.
+        </p>
       </div>
     </section>
   );

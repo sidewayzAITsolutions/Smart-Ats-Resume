@@ -461,48 +461,35 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Why Choose SmartATS */}
+        {/* Why Choose SmartATS - Simplified */}
         <section className="py-20 px-6 bg-gradient-to-br from-gray-900 to-black">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 animate-fade-in-up">
-              <h2 className="text-4xl font-bold text-white mb-4">{WhyChooseSmartATS.title}</h2>
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto">{WhyChooseSmartATS.subtitle}</p>
-            </div>
+          <div className="max-w-3xl mx-auto text-center">
+            {/* Bold claim */}
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+              SmartATS doesn't make resumes look better.<br />
+              <span className="text-teal-400">It makes them pass filters.</span>
+            </h2>
 
-            <div className="grid lg:grid-cols-2 gap-8 mb-12">
-              {WhyChooseSmartATS.features.map((feature, idx) => (
-                <div key={idx} className="group bg-gray-800/50 border border-gray-700 rounded-2xl p-8 hover:border-orange-500/50 hover-card transition-all duration-300 animate-fade-in-up" style={{ animationDelay: `${idx * 0.15}s` }}>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="text-4xl group-hover:scale-125 transition-transform duration-300">{feature.icon}</div>
-                    <h3 className="text-2xl font-bold text-white">{feature.title}</h3>
-                  </div>
+            {/* Three bullets */}
+            <ul className="space-y-4 text-left max-w-md mx-auto mb-8">
+              <li className="flex items-center gap-3 text-gray-300">
+                <CheckCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <span>Real ATS parsing logic</span>
+              </li>
+              <li className="flex items-center gap-3 text-gray-300">
+                <CheckCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <span>Keyword density scoring</span>
+              </li>
+              <li className="flex items-center gap-3 text-gray-300">
+                <CheckCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <span>Section structure validation</span>
+              </li>
+            </ul>
 
-                  <p className="text-gray-300 mb-6 leading-relaxed">{feature.description}</p>
-
-                  <ul className="space-y-3">
-                    {feature.highlights.map((highlight, highlightIdx) => (
-                      <li key={highlightIdx} className="flex items-center gap-3 text-gray-300 hover:translate-x-2 transition-transform duration-300">
-                        <div className="w-2 h-2 bg-teal-400 rounded-full group-hover:scale-150 transition-transform duration-300"></div>
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-5">
-                <img src="/Donkey.png" alt="" className="w-12 h-12 object-contain" />
-              </div>
-            </div>
-
-            {/* Summary */}
-            <div className="bg-gradient-to-r from-teal-900/30 via-amber-900/30 to-orange-900/30 border border-orange-500/30 rounded-2xl p-8 text-center animate-fade-in-up hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
-              <p className="text-lg text-gray-200 leading-relaxed max-w-4xl mx-auto">
-                {WhyChooseSmartATS.summary}
-              </p>
-            </div>
+            {/* One proof sentence */}
+            <p className="text-gray-400">
+              Built on the same logic Fortune 500 companies use to filter candidates.
+            </p>
           </div>
         </section>
 
@@ -710,6 +697,11 @@ const Page: React.FC = () => {
 
             <p className="text-white/80 text-sm mt-6 animate-fade-in-up">
               No credit card required • Takes 2 minutes
+            </p>
+
+            {/* Urgency without lying */}
+            <p className="text-white/70 text-sm mt-3">
+              New job postings reset weekly. Don't apply blind.
             </p>
 
             {/* Social proof badges - de-emphasized, smaller */}
