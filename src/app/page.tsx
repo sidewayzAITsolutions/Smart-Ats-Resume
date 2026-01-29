@@ -194,19 +194,12 @@ const Page: React.FC = () => {
                 className="group px-10 py-5 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-teal-500/25 transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-3"
               >
                 <Target className="w-6 h-6" />
-                Check My ATS Score (Free)
+                See Why My Resume Gets Rejected
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
               {/* Trust signals directly under CTA - reduces hesitation before scroll */}
               <p className="text-gray-400 text-sm mt-3">No signup • No credit card</p>
-              {/* De-emphasized secondary link */}
-              <button
-                type="button"
-                onClick={() => setShowDemoModal(true)}
-                className="text-gray-400 hover:text-gray-300 text-xs underline underline-offset-4 transition-colors mt-1"
-              >
-                See a sample ATS analysis
-              </button>
+              <p className="text-gray-500 text-xs mt-1">Free</p>
             </div>
           </div>
         </section>
@@ -224,7 +217,7 @@ const Page: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">The Brutal Truth</h3>
                   <p className="text-gray-300 text-lg leading-relaxed">
-                    75% of resumes are rejected by ATS for fixable reasons.
+                    ATS filters reject resumes in 6 seconds — for fixable reasons.
                   </p>
                 </div>
               </div>
@@ -462,9 +455,9 @@ const Page: React.FC = () => {
             <p className="text-center text-amber-400/90 font-medium mb-4 text-lg">
               One missed interview costs more than a year of SmartATS.
             </p>
-            {/* Upgrade trigger - reframes upgrade as reactive and rational */}
+            {/* Upgrade trigger - emotional bridge to pricing */}
             <p className="text-center text-gray-400 mb-8">
-              Most users upgrade after seeing exactly what's blocking interviews.
+              Most users upgrade after seeing exactly what's blocking interviews — and how close they already are.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
               {/* Free Plan Card */}

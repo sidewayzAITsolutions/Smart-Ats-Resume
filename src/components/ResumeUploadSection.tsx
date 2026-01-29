@@ -162,13 +162,11 @@ export default function ResumeUploadSection() {
             Upload your resume and find out in 60 seconds. No signup required.
           </p>
 
-          {/* Consolidated stats - all critical ATS facts in one place */}
+          {/* Single stat - no repetition */}
           <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-4 max-w-lg mx-auto mb-6">
-            <div className="flex flex-col gap-2 text-center">
-              <p className="text-red-400 font-bold text-lg">75% of resumes fail because of ATS.</p>
-              <p className="text-gray-300 text-sm">ATS scans and rejects your resume in 6 seconds or less.</p>
-              <p className="text-gray-300 text-sm">Resumes scoring under 80 rarely see human hands.</p>
-            </div>
+            <p className="text-red-400 font-bold text-lg text-center">
+              75% of resumes are rejected by ATS before a human ever sees them.
+            </p>
           </div>
 
           {/* Example blockers - primes action and curiosity */}
@@ -235,8 +233,12 @@ export default function ResumeUploadSection() {
               <button className="px-8 py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-lg font-semibold hover:from-teal-500 hover:to-teal-400 transition-all transform hover:scale-105">
                 Choose File
               </button>
-              {/* Micro-momentum - lowers resistance */}
-              <p className="text-gray-400 text-sm mt-4">
+              {/* Privacy reassurance - inside upload box */}
+              <p className="text-gray-500 text-xs mt-3">
+                We analyze — we don't store.
+              </p>
+              {/* Micro-momentum - lowers resistance - BOLD */}
+              <p className="text-white font-semibold text-sm mt-3">
                 You'll see your ATS score before we ask for anything.
               </p>
             </div>
