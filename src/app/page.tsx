@@ -8,24 +8,18 @@ import {
   BarChart2,
   BookOpen,
   CheckCircle,
-  CheckCircle2,
-  Clock,
   DollarSign,
-  FileText,
   Sparkles,
   Star,
   Target,
   TrendingUp,
-  User,
   X,
-  Zap,
 } from 'lucide-react';
 
 import GlobalNavigation from '@/components/GlobalNavigation';
 import LogoSplashScreen from '@/components/LogoSplashScreen';
 import ResumeUploadSection from '@/components/ResumeUploadSection';
 import TrustBar from '@/components/TrustBar';
-import SprintBanner from '@/components/SprintBanner';
 
 type ATSDemoModalProps = {
   open: boolean;
@@ -494,6 +488,10 @@ const Page: React.FC = () => {
         {/* Pricing Plans */}
         <section className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
+            {/* Pricing context - reduces anxiety, reinforces upload-first */}
+            <p className="text-center text-gray-400 mb-8 text-lg">
+              Most users start free, then upgrade once they see their ATS score.
+            </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
               {/* Free Plan Card */}
               <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up relative overflow-hidden">
@@ -631,117 +629,60 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Career Hub Section */}
-        <section className="py-20 px-6 relative">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Content */}
-              <div className="animate-fade-in-up">
-                <div className="inline-flex items-center gap-2 bg-teal-500/10 text-teal-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                  <BookOpen className="w-4 h-4" />
-                  Free Resources
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                  The Career Hub
-                </h2>
-                <p className="text-lg text-gray-300 mb-6">
-                  Your go-to resource center for job search success. Access expert guides,
-                  resume tips, interview strategies, and career advice — all designed to help
-                  you stand out and land your dream job.
-                </p>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center gap-3 text-gray-300">
-                    <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
-                    Expert resume writing guides & ATS tips
-                  </li>
-                  <li className="flex items-center gap-3 text-gray-300">
-                    <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
-                    Interview preparation strategies
-                  </li>
-                  <li className="flex items-center gap-3 text-gray-300">
-                    <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
-                    Career transition & job search advice
-                  </li>
-                </ul>
-                <Link
-                  href="/thecareerhub"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 hover-lift group"
-                >
-                  Explore Career Hub
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-
-              {/* Preview Cards */}
-              <div className="grid grid-cols-2 gap-4 animate-fade-in-up stagger-2">
-                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-amber-500/50 transition-all">
-                  <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3">
-                    <FileText className="w-5 h-5 text-amber-300" />
-                  </div>
-                  <h4 className="font-semibold text-white text-sm mb-1">Resume Tips</h4>
-                  <p className="text-xs text-gray-400">Beat ATS systems with proven strategies</p>
-                </div>
-                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-teal-500/50 transition-all">
-                  <div className="w-10 h-10 bg-teal-500/10 rounded-lg flex items-center justify-center mb-3">
-                    <User className="w-5 h-5 text-teal-300" />
-                  </div>
-                  <h4 className="font-semibold text-white text-sm mb-1">Interview Prep</h4>
-                  <p className="text-xs text-gray-400">Ace your interviews with confidence</p>
-                </div>
-                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-emerald-500/50 transition-all">
-                  <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-3">
-                    <Target className="w-5 h-5 text-emerald-300" />
-                  </div>
-                  <h4 className="font-semibold text-white text-sm mb-1">Job Search</h4>
-                  <p className="text-xs text-gray-400">Strategic job hunting guides</p>
-                </div>
-                <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-purple-500/50 transition-all">
-                  <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center mb-3">
-                    <TrendingUp className="w-5 h-5 text-purple-300" />
-                  </div>
-                  <h4 className="font-semibold text-white text-sm mb-1">Career Advice</h4>
-                  <p className="text-xs text-gray-400">Navigate your career path</p>
-                </div>
-              </div>
-            </div>
+        {/* Career Hub Section - Reframed as post-conversion reward */}
+        <section className="py-16 px-6 relative bg-gray-900/30">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Post-conversion framing */}
+            <p className="text-sm text-gray-500 uppercase tracking-wider mb-3">After you check your ATS score...</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+              Unlock the Career Hub
+            </h2>
+            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
+              Expert guides, interview strategies, and career advice — available once you've seen your score.
+            </p>
+            {/* Secondary/muted CTA - not competing with primary action */}
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm text-gray-400 border border-gray-700 rounded-lg hover:border-gray-600 hover:text-gray-300 transition-all duration-300"
+            >
+              <BookOpen className="w-4 h-4" />
+              Check your score to unlock
+            </Link>
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* CTA Section - Fear-based, specific headline */}
         <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600 relative overflow-hidden">
           {/* Animated background pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_transparent_50%,_rgba(0,0,0,0.3)_100%)]"></div>
           </div>
           <div className="max-w-4xl mx-auto text-center relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in-up">
-              Change Your Life Today...
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up">
+              Stop Guessing Why You're Not Getting Interviews
             </h2>
             <p className="text-xl text-white/90 mb-8 animate-fade-in-up stagger-1">
-              75% of resumes fail ATS. You won't be one of them.
+              See what ATS systems see — before you apply again.
             </p>
 
+            {/* Single dominant CTA - behavioral gravity */}
             <div className="flex flex-wrap gap-4 justify-center animate-fade-in-up stagger-2">
               <button
                 onClick={() => router.push('/login')}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-amber-600 font-bold rounded-xl hover:shadow-2xl hover:shadow-white/25 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 btn-shine"
+                className="group inline-flex items-center gap-3 px-10 py-5 bg-white text-amber-600 font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-white/25 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 btn-shine"
               >
-                <Zap className="w-5 h-5 group-hover:animate-pulse" />
-                Start Building Now
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-
-              <button
-                onClick={() => router.push('/pricing')}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-amber-700 text-white font-bold rounded-xl hover:bg-amber-800 hover:shadow-lg transition-all duration-300"
-              >
-                View Pricing
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                <Target className="w-6 h-6 group-hover:animate-pulse" />
+                Check My ATS Score
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
               </button>
             </div>
 
-            {/* Product Hunt & Uneed Badges - moved directly under the primary CTA and slightly larger */}
-            <div className="flex justify-center items-center gap-6 mt-6 mb-2 flex-wrap animate-fade-in-up">
+            <p className="text-white/80 text-sm mt-6 animate-fade-in-up">
+              No credit card required • Takes 2 minutes
+            </p>
+
+            {/* Social proof badges - de-emphasized, smaller */}
+            <div className="flex justify-center items-center gap-4 mt-8 flex-wrap animate-fade-in-up opacity-80">
               <a
                 href="https://www.producthunt.com/products/smart-ats-resume?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-smart-ats-resume"
                 target="_blank"
@@ -752,9 +693,9 @@ const Page: React.FC = () => {
                 <img
                   src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1043803&theme=light&t=1764512215784"
                   alt="Smart ATS Resume on Product Hunt"
-                  style={{ width: 280, height: 64 }}
-                  width={280}
-                  height={64}
+                  style={{ width: 200, height: 46 }}
+                  width={200}
+                  height={46}
                 />
               </a>
 
@@ -768,14 +709,10 @@ const Page: React.FC = () => {
                 <img
                   src="https://www.uneed.best/EMBED1.png"
                   alt="Uneed Embed Badge"
-                  style={{ width: 180, height: 64 }}
+                  style={{ width: 130, height: 46 }}
                 />
               </a>
             </div>
-
-            <p className="text-white/80 text-sm mt-6 animate-fade-in-up">
-              No credit card required • 5 minute setup
-            </p>
           </div>
         </section>
 
