@@ -158,12 +158,16 @@ export default function ResumeUploadSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Check Your ATS Score in Seconds
           </h2>
-          <p className="text-lg text-gray-300">
-            Upload your resume and get instant feedback on how ATS systems will read it. No signup required.
+          {/* Emotional pressure line */}
+          <p className="text-lg text-red-400/90 font-medium mb-3">
+            Most resumes fail ATS before a human ever sees them. Yours might too.
+          </p>
+          <p className="text-gray-400">
+            Upload your resume and find out in 60 seconds. No signup required.
           </p>
         </div>
 
-        {/* Upload Area */}
+        {/* Upload Area - Made larger to feel like the main event */}
         {!atsScore && !isLoading && (
           <div
             onDragEnter={handleDragEnter}
@@ -171,7 +175,7 @@ export default function ResumeUploadSection() {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`relative p-12 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
+            className={`relative p-16 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
               isDragging
                 ? 'border-teal-400 bg-teal-500/10 scale-[1.02]'
                 : 'border-gray-600 bg-gray-800/30 hover:border-teal-400 hover:bg-teal-500/5'

@@ -186,29 +186,29 @@ const Page: React.FC = () => {
               Upload your resume, get an ATS score, and see exactly what's blocking interviews — before a recruiter ever sees it.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+            {/* Single Dominant CTA */}
+            <div className="flex flex-col items-center gap-3 mb-6">
               <button
                 type="button"
                 onClick={() => navigateTo('/login')}
-                className="group px-8 py-4 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                className="group px-10 py-5 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-teal-500/25 transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-3"
               >
-                <Target className="w-5 h-5" />
-                Check My ATS Score
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Target className="w-6 h-6" />
+                Check My ATS Score (Free)
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
+              {/* De-emphasized secondary link */}
               <button
                 type="button"
                 onClick={() => setShowDemoModal(true)}
-                className="px-8 py-4 bg-gray-800 text-gray-200 font-semibold rounded-xl border-2 border-gray-700 hover:border-teal-500 hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                className="text-gray-400 hover:text-gray-300 text-sm underline underline-offset-4 transition-colors"
               >
-                <BarChart2 className="w-5 h-5" />
-                See ATS Analysis Demo
+                See a sample ATS analysis
               </button>
             </div>
 
             {/* 3-Step Flow - removes decision anxiety */}
-            <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto mb-10">
+            <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto mb-6">
               <p className="text-sm font-medium text-gray-400 mb-4">How it works:</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm">
                 <div className="flex items-center gap-2">
@@ -218,15 +218,20 @@ const Page: React.FC = () => {
                 <div className="hidden sm:block text-gray-600">→</div>
                 <div className="flex items-center gap-2">
                   <span className="text-lg">2️⃣</span>
-                  <span className="text-gray-300">Get your ATS score + keyword gaps</span>
+                  <span className="text-gray-300">Get scored in 60 seconds</span>
                 </div>
                 <div className="hidden sm:block text-gray-600">→</div>
                 <div className="flex items-center gap-2">
                   <span className="text-lg">3️⃣</span>
-                  <span className="text-gray-300">Fix issues and apply with confidence</span>
+                  <span className="text-gray-300">Fix what's blocking interviews</span>
                 </div>
               </div>
             </div>
+
+            {/* Zero-risk emphasis */}
+            <p className="text-center text-gray-500 text-sm mb-10">
+              No signup required • No credit card • Free instant analysis
+            </p>
 
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-4 text-md text-gray-500">
@@ -430,12 +435,22 @@ const Page: React.FC = () => {
             </div>
 
             <div className="mt-12 text-center animate-fade-in-up">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl hover:border-orange-500/70 hover:scale-105 transition-all duration-300 cursor-default">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-900/30 via-amber-900/30 to-orange-800/30 border border-orange-700/50 rounded-xl hover:border-orange-500/70 hover:scale-105 transition-all duration-300 cursor-default mb-8">
                 <Sparkles className="w-7 h-7 text-orange-400 animate-pulse" />
                 <p className="text-orange-300 font-medium">
                   SmartATS SAVES you TIME and DOLLARS while delivering the BEST Quality! <span className="text-orange-400 font-bold">30% more</span> value than competitors
                 </p>
               </div>
+
+              {/* CTA under comparison - ties it back to user action */}
+              <button
+                onClick={() => router.push('/login')}
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-teal-500/20 transform hover:scale-105 transition-all duration-200"
+              >
+                <Target className="w-5 h-5" />
+                Check how your resume compares
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
         </section>
@@ -527,11 +542,17 @@ const Page: React.FC = () => {
                 </div>
               </div>
 
-              {/* Monthly Plan Card */}
-              <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-amber-500/50 hover-card transition-all duration-500 animate-fade-in-up stagger-1 relative overflow-hidden">
+              {/* Monthly Plan Card - Most Popular */}
+              <div className="group bg-gray-800/30 backdrop-blur-sm rounded-2xl p-8 border-2 border-amber-500/50 hover:border-amber-400 hover-card transition-all duration-500 animate-fade-in-up stagger-1 relative overflow-hidden">
+                {/* Most Popular Badge */}
+                <div className="absolute -top-px left-1/2 -translate-x-1/2">
+                  <div className="px-4 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-b-lg">
+                    MOST POPULAR
+                  </div>
+                </div>
                 {/* Animated gradient background on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-orange-500/10 group-hover:to-amber-500/5 transition-all duration-500"></div>
-                <div className="relative z-10">
+                <div className="relative z-10 mt-2">
                   <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
                     <DollarSign className="w-7 h-7 text-white group-hover:animate-pulse" />
                   </div>
