@@ -181,13 +181,13 @@ const Page: React.FC = () => {
               </span>
             </h1>
 
-            {/* Subheadline - how you're different */}
+            {/* Subheadline - personal and inevitable */}
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Upload your resume, get an ATS score, and see exactly what's blocking interviews — before a recruiter ever sees it.
+              ATS systems are rejecting your resume for specific reasons. See them in 60 seconds — before you waste another application.
             </p>
 
             {/* Single Dominant CTA */}
-            <div className="flex flex-col items-center gap-3 mb-6">
+            <div className="flex flex-col items-center gap-2 mb-6">
               <button
                 type="button"
                 onClick={() => navigateTo('/login')}
@@ -197,18 +197,20 @@ const Page: React.FC = () => {
                 Check My ATS Score (Free)
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
+              {/* Microtext - sets expectation */}
+              <p className="text-gray-500 text-sm">Most users discover 5–12 hidden blockers</p>
               {/* De-emphasized secondary link */}
               <button
                 type="button"
                 onClick={() => setShowDemoModal(true)}
-                className="text-gray-400 hover:text-gray-300 text-sm underline underline-offset-4 transition-colors"
+                className="text-gray-400 hover:text-gray-300 text-xs underline underline-offset-4 transition-colors mt-1"
               >
                 See a sample ATS analysis
               </button>
             </div>
 
             {/* 3-Step Flow - removes decision anxiety */}
-            <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto mb-6">
+            <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto mb-4">
               <p className="text-sm font-medium text-gray-400 mb-4">How it works:</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm">
                 <div className="flex items-center gap-2">
@@ -227,6 +229,11 @@ const Page: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Stakes-based line */}
+            <p className="text-center text-red-400/80 text-sm font-medium mb-4">
+              Most resumes scoring under 70 never reach a human recruiter.
+            </p>
 
             {/* Zero-risk emphasis */}
             <p className="text-center text-gray-500 text-sm mb-10">
@@ -354,6 +361,14 @@ const Page: React.FC = () => {
                     <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
                     <td className="p-6 text-center"><CheckCircle className="w-6 h-6 text-green-400 mx-auto" /></td>
                     <td className="p-6 text-center"><CheckCircle className="w-6 h-6 text-green-400 mx-auto" /></td>
+                  </tr>
+                  {/* ATS Simulation - proprietary advantage, positions SmartATS as infrastructure-level */}
+                  <tr className="hover:bg-gray-800/50 transition-colors bg-teal-900/10">
+                    <td className="p-6 text-gray-300 font-medium">ATS Simulation (Real Parser Behavior)</td>
+                    <td className="p-6 text-center"><CheckCircle className="w-6 h-6 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
+                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
+                    <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-gray-800/50 transition-colors">
                     <td className="p-6 text-gray-300">All Templates ATS-Optimized</td>
@@ -503,8 +518,12 @@ const Page: React.FC = () => {
         {/* Pricing Plans */}
         <section className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
+            {/* Money anchor - reframes cost as opportunity cost */}
+            <p className="text-center text-amber-400/90 font-medium mb-4 text-lg">
+              One missed interview costs more than a year of SmartATS.
+            </p>
             {/* Pricing context - reduces anxiety, reinforces upload-first */}
-            <p className="text-center text-gray-400 mb-8 text-lg">
+            <p className="text-center text-gray-400 mb-8">
               Most users start free, then upgrade once they see their ATS score.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
@@ -524,7 +543,7 @@ const Page: React.FC = () => {
                   <ul className="space-y-3 mt-6">
                     <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[0ms]">
                       <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />
-                      <span>1 ATS-optimized resume</span>
+                      <span>1 ATS diagnostic scan</span>
                     </li>
                     <li className="flex items-start gap-2 text-gray-300 group-hover:translate-x-2 transition-transform duration-300 delay-[50ms]">
                       <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform duration-300" />

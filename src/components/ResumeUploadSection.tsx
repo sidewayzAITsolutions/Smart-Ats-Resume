@@ -150,7 +150,7 @@ export default function ResumeUploadSection() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 animate-fade-in-up">
+        <div className="text-center mb-10 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/30 rounded-full text-teal-300 mb-4">
             <Zap className="w-4 h-4" />
             <span className="text-sm font-medium">Instant ATS Analysis</span>
@@ -162,9 +162,28 @@ export default function ResumeUploadSection() {
           <p className="text-lg text-red-400/90 font-medium mb-3">
             Most resumes fail ATS before a human ever sees them. Yours might too.
           </p>
-          <p className="text-gray-400">
+          <p className="text-gray-400 mb-6">
             Upload your resume and find out in 60 seconds. No signup required.
           </p>
+
+          {/* Example blockers - primes action and curiosity */}
+          <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-4 max-w-lg mx-auto">
+            <p className="text-sm text-gray-400 mb-3">Common ATS blockers we detect instantly:</p>
+            <div className="flex flex-col gap-2 text-left">
+              <div className="flex items-center gap-2 text-sm text-gray-300">
+                <span className="text-red-400">•</span>
+                <span>Missing role-specific keywords</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-300">
+                <span className="text-red-400">•</span>
+                <span>Formatting that breaks ATS parsers</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-300">
+                <span className="text-red-400">•</span>
+                <span>Section ordering that auto-filters your resume</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Upload Area - Made larger to feel like the main event */}
