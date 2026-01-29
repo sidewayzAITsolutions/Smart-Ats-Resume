@@ -45,13 +45,13 @@ const TrustBar: React.FC = () => {
   return (
     <section className="py-16 px-6 bg-gradient-to-r from-gray-900/80 via-gray-800/50 to-gray-900/80 border-y border-gray-800">
       <div className="max-w-7xl mx-auto">
-        {/* Section Title - Safer phrasing to avoid implied endorsement */}
+        {/* Section Title - Outcome-focused, not endorsement */}
         <div className="text-center mb-12 animate-fade-in-up">
           <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            Smart ATS is used by job seekers applying to roles at:
+            SmartATS users land interviews at companies like:
           </h3>
           <p className="text-gray-400 text-sm md:text-base">
-            Trusted by professionals targeting top-tier companies
+            Based on anonymized resume data and user-reported outcomes
           </p>
         </div>
 

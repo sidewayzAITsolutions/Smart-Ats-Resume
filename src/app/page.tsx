@@ -181,13 +181,13 @@ const Page: React.FC = () => {
               </span>
             </h1>
 
-            {/* Subheadline - personal and inevitable */}
+            {/* Differentiator - THE key message, above the fold */}
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              ATS systems are rejecting your resume for specific reasons. See them in 60 seconds — before you waste another application.
+              SmartATS doesn't make resumes look better. It makes them pass filters used by Fortune 500 ATS systems.
             </p>
 
             {/* Single Dominant CTA */}
-            <div className="flex flex-col items-center gap-2 mb-6">
+            <div className="flex flex-col items-center gap-2">
               <button
                 type="button"
                 onClick={() => navigateTo('/login')}
@@ -198,7 +198,7 @@ const Page: React.FC = () => {
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
               {/* Microtext - sets expectation */}
-              <p className="text-gray-500 text-sm">Most users discover 5–12 hidden blockers</p>
+              <p className="text-gray-500 text-sm mt-2">Most users discover 5–12 hidden blockers</p>
               {/* De-emphasized secondary link */}
               <button
                 type="button"
@@ -207,51 +207,6 @@ const Page: React.FC = () => {
               >
                 See a sample ATS analysis
               </button>
-            </div>
-
-            {/* 3-Step Flow - removes decision anxiety */}
-            <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto mb-4">
-              <p className="text-sm font-medium text-gray-400 mb-4">How it works:</p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">1️⃣</span>
-                  <span className="text-gray-300">Upload your resume</span>
-                </div>
-                <div className="hidden sm:block text-gray-600">→</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">2️⃣</span>
-                  <span className="text-gray-300">Get scored in 60 seconds</span>
-                </div>
-                <div className="hidden sm:block text-gray-600">→</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">3️⃣</span>
-                  <span className="text-gray-300">Fix what's blocking interviews</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Stakes-based line - bigger and bolder */}
-            <p className="text-center text-red-400 text-lg md:text-xl font-bold mb-4">
-              Most resumes scoring under 80 never see human hands.
-            </p>
-
-            {/* Zero-risk emphasis */}
-            <p className="text-center text-gray-500 text-sm mb-10">
-              No signup required • No credit card • Free instant analysis
-            </p>
-
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-md text-gray-500">
-              <div className="flex flex-wrap items-center justify-center gap-8 text md text-gray-500">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="w-7 h-7 text-green-400" />
-                  <span><strong className="text-gray-300">60%</strong> faster hiring with ATS optimization</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Award className="w-7 h-7 text-amber-400" />
-                  <span><strong className="text-gray-300">94%</strong> of recruiters rely on ATS</span>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -318,6 +273,10 @@ const Page: React.FC = () => {
                 </span>
               </h2>
               <p className="text-xl text-gray-400 mt-4">See how we match up the biggest names in resume building</p>
+              {/* Bold summary line - reframes entire table */}
+              <p className="text-lg md:text-xl text-white font-bold mt-6 bg-gradient-to-r from-teal-900/40 to-amber-900/40 border border-teal-700/30 rounded-lg px-6 py-3 inline-block">
+                Most tools show suggestions. SmartATS simulates real ATS rejection logic.
+              </p>
             </div>
 
             <div className="overflow-x-auto animate-fade-in-up stagger-2">
@@ -513,7 +472,8 @@ const Page: React.FC = () => {
                   <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
                     <DollarSign className="w-7 h-7 text-white group-hover:animate-pulse" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors duration-300">Free Plan</h3>
+                  <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-amber-400 transition-colors duration-300">Free ATS Diagnostic</h3>
+                  <p className="text-sm text-gray-400 mb-2">(See what's blocking you)</p>
                   <div className="text-center my-4">
                     <div className="text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">$0</div>
                     <div className="text-gray-400">Forever Free</div>
@@ -677,7 +637,7 @@ const Page: React.FC = () => {
           </div>
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up">
-              Stop Guessing Why You're Not Getting Interviews
+              Stop Applying Blind
             </h2>
             <p className="text-xl text-white/90 mb-8 animate-fade-in-up stagger-1">
               See what ATS systems see — before you apply again.

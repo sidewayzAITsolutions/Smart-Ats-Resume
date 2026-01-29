@@ -230,6 +230,53 @@ export default function ResumeUploadSection() {
           </div>
         )}
 
+        {/* Trust Strip - directly under upload box */}
+        {!atsScore && !isLoading && (
+          <div className="mt-6 bg-gradient-to-r from-teal-900/30 via-gray-800/50 to-teal-900/30 border border-teal-700/50 rounded-xl p-4 max-w-2xl mx-auto">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm font-medium">
+              <div className="flex items-center gap-2 text-gray-200">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
+                <span>No signup required</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-200">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
+                <span>No credit card</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-200">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
+                <span>Resume deleted after analysis</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 3-Step Flow - How it works */}
+        {!atsScore && !isLoading && (
+          <div className="mt-8 bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto">
+            <p className="text-sm font-medium text-gray-400 mb-4 text-center">How it works:</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">1️⃣</span>
+                <span className="text-gray-300">Upload your resume</span>
+              </div>
+              <div className="hidden sm:block text-gray-600">→</div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">2️⃣</span>
+                <span className="text-gray-300">Get scored in 60 seconds</span>
+              </div>
+              <div className="hidden sm:block text-gray-600">→</div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">3️⃣</span>
+                <span className="text-gray-300">Fix what's blocking interviews</span>
+              </div>
+            </div>
+            {/* Stakes line */}
+            <p className="text-center text-red-400 text-lg font-bold mt-4">
+              Most resumes scoring under 80 never see human hands.
+            </p>
+          </div>
+        )}
+
         {/* Loading State */}
         {isLoading && (
           <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-12 text-center">
