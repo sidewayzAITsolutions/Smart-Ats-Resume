@@ -181,9 +181,9 @@ const Page: React.FC = () => {
               </span>
             </h1>
 
-            {/* Differentiator - THE key message, above the fold */}
+            {/* Mechanism clarifier - answers HOW immediately */}
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              SmartATS doesn't make resumes look better. It makes them pass filters used by Fortune 500 ATS systems.
+              We simulate real ATS filters and show exactly what blocks interviews.
             </p>
 
             {/* Single Dominant CTA */}
@@ -197,8 +197,8 @@ const Page: React.FC = () => {
                 Check My ATS Score (Free)
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
-              {/* Microtext - sets expectation */}
-              <p className="text-gray-500 text-sm mt-2">Most users discover 5–12 hidden blockers</p>
+              {/* Trust signals directly under CTA - reduces hesitation before scroll */}
+              <p className="text-gray-400 text-sm mt-3">No signup • No credit card • Resume auto-deleted</p>
               {/* De-emphasized secondary link */}
               <button
                 type="button"
@@ -224,7 +224,7 @@ const Page: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">The Brutal Truth</h3>
                   <p className="text-gray-300 text-lg leading-relaxed">
-                    Most resumes fail ATS before a human ever sees them.
+                    75% of resumes are rejected by ATS for fixable reasons.
                   </p>
                 </div>
               </div>
@@ -323,7 +323,10 @@ const Page: React.FC = () => {
                   </tr>
                   {/* ATS Simulation - proprietary advantage, positions SmartATS as infrastructure-level */}
                   <tr className="hover:bg-gray-800/50 transition-colors bg-teal-900/10">
-                    <td className="p-6 text-gray-300 font-medium">ATS Simulation (Real Parser Behavior)</td>
+                    <td className="p-6">
+                      <span className="text-gray-300 font-medium">ATS Simulation (Real Parser Behavior)</span>
+                      <span className="block text-xs text-gray-500 mt-1">Simulates real ATS rejection logic, not suggestions.</span>
+                    </td>
                     <td className="p-6 text-center"><CheckCircle className="w-6 h-6 text-green-400 mx-auto" /></td>
                     <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
                     <td className="p-6 text-center"><X className="w-6 h-6 text-red-400 mx-auto" /></td>
@@ -459,9 +462,9 @@ const Page: React.FC = () => {
             <p className="text-center text-amber-400/90 font-medium mb-4 text-lg">
               One missed interview costs more than a year of SmartATS.
             </p>
-            {/* Pricing context - reduces anxiety, reinforces upload-first */}
+            {/* Upgrade trigger - reframes upgrade as reactive and rational */}
             <p className="text-center text-gray-400 mb-8">
-              Most users start free, then upgrade once they see their ATS score.
+              Most users upgrade after seeing their ATS score and blocker list.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center snap-center">
               {/* Free Plan Card */}
@@ -637,7 +640,7 @@ const Page: React.FC = () => {
           </div>
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up">
-              Stop Applying Blind
+              Stop Applying Blind. Check Your ATS Score.
             </h2>
             <p className="text-xl text-white/90 mb-8 animate-fade-in-up stagger-1">
               See what ATS systems see — before you apply again.

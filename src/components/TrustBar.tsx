@@ -51,7 +51,7 @@ const TrustBar: React.FC = () => {
             SmartATS users land interviews at companies like:
           </h3>
           <p className="text-gray-400 text-sm md:text-base">
-            Based on anonymized resume data and user-reported outcomes
+            Based on anonymized resume scans and user-reported interview outcomes.
           </p>
         </div>
 

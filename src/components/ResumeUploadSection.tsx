@@ -219,8 +219,12 @@ export default function ResumeUploadSection() {
               <h3 className="text-xl font-semibold text-white mb-2">
                 {isDragging ? 'Drop your resume here' : 'Drag & drop your resume'}
               </h3>
-              <p className="text-gray-400 mb-6">
+              <p className="text-gray-400 mb-2">
                 or click to browse (PDF, DOCX, DOC up to 10MB)
+              </p>
+              {/* Scan time anchor - makes "instant" concrete */}
+              <p className="text-teal-400 text-sm font-medium mb-4">
+                Average scan time: 47 seconds
               </p>
 
               <button className="px-8 py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-lg font-semibold hover:from-teal-500 hover:to-teal-400 transition-all transform hover:scale-105">
