@@ -239,9 +239,6 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Trust Bar - Company Logos */}
-        <TrustBar />
-
         {/* Resume Upload Section */}
         <ResumeUploadSection />
 
@@ -624,6 +621,9 @@ const Page: React.FC = () => {
             </Link>
           </div>
         </section>
+
+        {/* Trust Bar - Company Logos - moved to bottom for social proof before final CTA */}
+        <TrustBar />
 
         {/* CTA Section - Fear-based, specific headline */}
         <section className="py-20 px-6 bg-gradient-to-r from-amber-600 to-orange-600 relative overflow-hidden">
