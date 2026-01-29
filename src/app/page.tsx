@@ -173,39 +173,66 @@ const Page: React.FC = () => {
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-900/50 to-amber-900/50 border border-teal-700/50 rounded-full mb-8 animate-bounce-slow">
+            {/* Brand line - smaller, above headline */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-900/50 to-amber-900/50 border border-teal-700/50 rounded-full mb-6 animate-bounce-slow">
               <Sparkles className="w-4 h-4 text-teal-400" />
-              <span className="text-sm font-medium text-gray-300">Enterprise-Grade ATS Optimization</span>
+              <span className="text-sm font-medium text-gray-300">Smart ATS Resume</span>
             </div>
 
-            <h1 className="text-8xl md:text-12xl lg:text-15xl font-bold text-white mb-12 leading-tight" style={{ textShadow: '0 0 20px #fbff00ff, 0 0 40px #00c7b3ff, 0 0 60px #00c7b3ff' }}>
-              Smart ATS<br />
-              Resume
+            {/* Pain + Outcome Headline */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              Your Resume Is Getting Rejected by ATS
+              <span className="block mt-2 bg-gradient-to-r from-red-400 to-amber-400 bg-clip-text text-transparent">
+                — Fix It Before You Apply
+              </span>
             </h1>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            {/* Subheadline - how you're different */}
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Upload your resume, get an ATS score, and see exactly what's blocking interviews — before a recruiter ever sees it.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <button
                 type="button"
                 onClick={() => navigateTo('/login')}
                 className="group px-8 py-4 bg-gradient-to-r from-teal-600 to-amber-600 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
               >
-                Build Your Resume Free
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform gap-4" />
+                <Target className="w-5 h-5" />
+                Check My ATS Score
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 type="button"
                 onClick={() => setShowDemoModal(true)}
-                className="px-8 py-4 bg-gray-800 text-gray-200 font-semibold rounded-xl border-2 border-gray-700 hover:border-teal-500 hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-4"
+                className="px-8 py-4 bg-gray-800 text-gray-200 font-semibold rounded-xl border-2 border-gray-700 hover:border-teal-500 hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <BarChart2 className="w-5 h-5" />
                 See ATS Analysis Demo
               </button>
             </div>
 
-            <p className="text-xl md:text-4xl text-red-400 mb-12 max-w-5xl mx-auto leading-relaxed">
-              <span className="font-bold text-gray-200">Beat The Bots</span>
-              <span className="font-bold text-red-500"> Land The Job</span>
-            </p>
+            {/* 3-Step Flow - removes decision anxiety */}
+            <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6 max-w-2xl mx-auto mb-10">
+              <p className="text-sm font-medium text-gray-400 mb-4">How it works:</p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">1️⃣</span>
+                  <span className="text-gray-300">Upload your resume</span>
+                </div>
+                <div className="hidden sm:block text-gray-600">→</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">2️⃣</span>
+                  <span className="text-gray-300">Get your ATS score + keyword gaps</span>
+                </div>
+                <div className="hidden sm:block text-gray-600">→</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">3️⃣</span>
+                  <span className="text-gray-300">Fix issues and apply with confidence</span>
+                </div>
+              </div>
+            </div>
 
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-4 text-md text-gray-500">
@@ -223,67 +250,35 @@ const Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Problem/Solution Section */}
-        <section className="py-20 px-6 relative">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+        {/* Problem/Solution Section - Tightened to one-liners */}
+        <section className="py-16 px-6 relative">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 items-stretch">
+              {/* The Brutal Truth - Simplified */}
               <div className="relative group animate-fade-in-up stagger-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-900/30 to-orange-900/30 rounded-3xl transform rotate-3 group-hover:rotate-6 transition-transform duration-500"></div>
-                <div className="relative bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-xl hover-card group-hover:border-red-700/50 transition-all duration-300">
-                  <div className="w-16 h-16 bg-red-900/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-red-800/60 transition-all duration-300">
-                    <X className="w-8 h-8 text-red-400 group-hover:rotate-90 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-red-900/30 to-orange-900/30 rounded-2xl transform rotate-2 group-hover:rotate-3 transition-transform duration-500"></div>
+                <div className="relative bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl hover-card group-hover:border-red-700/50 transition-all duration-300 h-full flex flex-col items-center text-center">
+                  <div className="w-14 h-14 bg-red-900/50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-red-800/60 transition-all duration-300">
+                    <X className="w-7 h-7 text-red-400 group-hover:rotate-90 transition-transform duration-500" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">The Brutal Truth</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
-                        <X className="w-3 h-3 text-red-400" />
-                      </div>
-                      <span className="text-gray-300">98.4% of Fortune 500 companies use ATS filters</span>
-                    </li>
-                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
-                        <X className="w-3 h-3 text-red-400" />
-                      </div>
-                      <span className="text-gray-300">75% of qualified candidates get rejected by keyword mismatches</span>
-                    </li>
-                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-5 h-5 bg-red-900/50 rounded-full flex items-center justify-center mt-0.5">
-                        <X className="w-3 h-3 text-red-400" />
-                      </div>
-                      <span className="text-gray-300">70% of resumes get auto-rejected before human review</span>
-                    </li>
-                  </ul>
+                  <h3 className="text-xl font-bold text-white mb-3">The Brutal Truth</h3>
+                  <p className="text-gray-300 text-lg leading-relaxed">
+                    Most resumes fail ATS before a human ever sees them.
+                  </p>
                 </div>
               </div>
 
+              {/* Your Secret Weapon - Simplified */}
               <div className="relative group animate-fade-in-up stagger-2">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-900/30 to-teal-900/30 rounded-3xl transform -rotate-3 group-hover:-rotate-6 transition-transform duration-500"></div>
-                <div className="relative bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-xl hover-card group-hover:border-green-700/50 transition-all duration-300">
-                  <div className="w-16 h-16 bg-green-900/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-green-800/60 transition-all duration-300">
-                    <CheckCircle className="w-8 h-8 text-green-400 group-hover:scale-110 transition-transform duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-green-900/30 to-teal-900/30 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform duration-500"></div>
+                <div className="relative bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl hover-card group-hover:border-green-700/50 transition-all duration-300 h-full flex flex-col items-center text-center">
+                  <div className="w-14 h-14 bg-green-900/50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-green-800/60 transition-all duration-300">
+                    <CheckCircle className="w-7 h-7 text-green-400 group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Your Secret Weapon</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
-                      </div>
-                      <span className="text-gray-300">AI analyzes job descriptions to deliver perfect keyword matches</span>
-                    </li>
-                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
-                      </div>
-                      <span className="text-gray-300">Real-time ATS score with actionable improvements that work</span>
-                    </li>
-                    <li className="flex items-start gap-3 hover:translate-x-2 transition-transform duration-300">
-                      <div className="w-5 h-5 bg-green-900/50 rounded-full flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
-                      </div>
-                      <span className="text-gray-300">Proven templates that dominate all major ATS systems</span>
-                    </li>
-                  </ul>
+                  <h3 className="text-xl font-bold text-white mb-3">Your Secret Weapon</h3>
+                  <p className="text-gray-300 text-lg leading-relaxed">
+                    See exactly what ATS systems look for — and fix it instantly.
+                  </p>
                 </div>
               </div>
             </div>
