@@ -188,6 +188,22 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
         {/* Start of HubSpot Embed Code */}
         <script type="text/javascript" id="hs-script-loader" async defer src="//js-na2.hs-scripts.com/244982286.js"></script>
         {/* End of HubSpot Embed Code */}
+        
+        {/* Apollo Tracking */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              function initApollo(){
+                var n=Math.random().toString(36).substring(7),o=document.createElement("script");
+                o.src="https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache="+n,o.async=!0,o.defer=!0,
+                o.onload=function(){window.trackingFunctions.onLoad({appId:"6977c247ccb0ba0019bdbfa5"})},
+                document.head.appendChild(o)
+              }
+              initApollo();
+            `,
+          }}
+        />
+        {/* End Apollo Tracking */}
       </head>
       <body className={`${inter.className} ${roboto.variable} ${playfairDisplay.variable} ${crimsonPro.variable} ${lora.variable} ${montserrat.variable} ${openSans.variable}`}>
         {/* Google Tag Manager (noscript) */}
