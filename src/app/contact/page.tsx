@@ -182,14 +182,27 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-white">Email Us</h3>
-                  <a href="mailto:support@smartatsresume.com" className="text-amber-300 hover:text-amber-200 transition-colors">
-                    contact@smartatsresume.com
+                  <a href="mailto:benjamin@sidewayz8solutions.com" className="text-amber-300 hover:text-amber-200 transition-colors">
+                    benjamin@sidewayz8solutions.com
                   </a>
                   <p className="text-sm text-gray-400 mt-1">We respond within 24 hours</p>
                 </div>
               </div>
               
               <div className="flex items-start gap-4 p-4 bg-gray-900/70 border border-gray-800 rounded-xl shadow-md hover-card animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+                <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-6 h-6 text-blue-300" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Call Us</h3>
+                  <a href="tel:+12253019908" className="text-amber-300 hover:text-amber-200 transition-colors">
+                    225-301-9908
+                  </a>
+                  <p className="text-sm text-gray-400 mt-1">Available during business hours</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4 p-4 bg-gray-900/70 border border-gray-800 rounded-xl shadow-md hover-card animate-fade-in-up" style={{ animationDelay: '600ms' }}>
                 <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Clock className="w-6 h-6 text-emerald-300" />
                 </div>
@@ -200,7 +213,7 @@ export default function ContactPage() {
                 </div>
               </div>
               
-              <div className="flex items-start gap-4 p-4 bg-gray-900/70 border border-gray-800 rounded-xl shadow-md hover-card animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+              <div className="flex items-start gap-4 p-4 bg-gray-900/70 border border-gray-800 rounded-xl shadow-md hover-card animate-fade-in-up" style={{ animationDelay: '700ms' }}>
                 <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-6 h-6 text-purple-300" />
                 </div>
@@ -213,7 +226,7 @@ export default function ContactPage() {
             </div>
             
             {/* FAQ Section */}
-            <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 animate-fade-in-up" style={{ animationDelay: '700ms' }}>
+            <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
               <h3 className="font-semibold text-white mb-4">Quick Links</h3>
               <div className="space-y-3">
                 <Link href="/ats-guide" className="flex items-center text-amber-300 hover:text-amber-200 transition-colors group">
