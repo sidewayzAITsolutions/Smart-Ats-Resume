@@ -204,6 +204,80 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
           }}
         />
         {/* End Apollo Tracking */}
+
+        {/* JSON-LD Structured Data - Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "@id": "https://smartatsresume.com/#organization",
+              "name": "SmartATSResume",
+              "alternateName": "Smart ATS Resume",
+              "url": "https://smartatsresume.com/",
+              "logo": "https://smartatsresume.com/horse-logo.png",
+              "image": "https://smartatsresume.com/horse-logo.png",
+              "description": "AI-powered resume builder with ATS scoring, templates, and optimization tools to help job seekers improve interview rates.",
+              "sameAs": [
+                "https://www.linkedin.com/company/smartatsresume",
+                "https://twitter.com/smartatsresume"
+              ],
+              "contactPoint": [
+                {
+                  "@type": "ContactPoint",
+                  "contactType": "customer support",
+                  "email": "support@smartatsresume.com",
+                  "availableLanguage": ["en"]
+                }
+              ]
+            })
+          }}
+        />
+
+        {/* JSON-LD Structured Data - WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": "https://smartatsresume.com/#website",
+              "url": "https://smartatsresume.com/",
+              "name": "SmartATSResume",
+              "publisher": {
+                "@id": "https://smartatsresume.com/#organization"
+              }
+            })
+          }}
+        />
+
+        {/* JSON-LD Structured Data - SoftwareApplication */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "@id": "https://smartatsresume.com/#software",
+              "name": "SmartATSResume",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "Web",
+              "url": "https://smartatsresume.com/",
+              "description": "Resume builder and ATS optimization platform with an ATS scorecard, templates, and guided improvements.",
+              "publisher": {
+                "@id": "https://smartatsresume.com/#organization"
+              },
+              "offers": {
+                "@type": "Offer",
+                "url": "https://smartatsresume.com/pricing",
+                "price": "0",
+                "priceCurrency": "USD",
+                "category": "Free"
+              }
+            })
+          }}
+        />
       </head>
       <body className={`${inter.className} ${roboto.variable} ${playfairDisplay.variable} ${crimsonPro.variable} ${lora.variable} ${montserrat.variable} ${openSans.variable}`}>
         {/* Google Tag Manager (noscript) */}

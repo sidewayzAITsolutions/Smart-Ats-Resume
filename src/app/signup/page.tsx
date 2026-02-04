@@ -37,9 +37,11 @@ export default function SignupPage(): React.JSX.Element {
       console.log('Auth state change:', event, session?.user?.email);
 
       if (event === 'SIGNED_IN' && session?.user) {
-        console.log('User signed in, redirecting to templates');
-        toast.success('Welcome! Redirecting to templates...');
-        router.push('/templates');
+        // After signup, some setups will auto-sign-in the user (email confirmation disabled).
+        // Product requirement here: always route to login after signup, not to templates/landing.
+        console.log('User signed in after signup, routing to login');
+        toast.success('Account created! Please sign in.');
+        router.push('/login');
       }
     });
 
@@ -130,7 +132,8 @@ export default function SignupPage(): React.JSX.Element {
           }
 
           toast.success('Account created successfully!');
-          router.push('/templates');
+          // Route to login after successful signup (even when email confirmation is disabled)
+          router.push('/login');
         } else {
           // Email confirmation is enabled - user needs to check email
           console.log('Email confirmation required');

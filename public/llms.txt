@@ -1,0 +1,41 @@
+# SmartATSResume — LLM Context Index
+# Website: https://smartatsresume.com/
+# Purpose: AI-powered resume builder + ATS scoring + templates.
+
+## Primary
+- Home: https://smartatsresume.com/
+- Resume Builder: https://smartatsresume.com/builder
+- Templates Library: https://smartatsresume.com/templates
+- ATS Guide: https://smartatsresume.com/ats-guide
+- Resume Checker: https://smartatsresume.com/resume-checker
+- Pricing: https://smartatsresume.com/pricing
+- Blog: https://smartatsresume.com/blog
+- Contact: https://smartatsresume.com/contact
+
+## Trust & Legal
+- About: https://smartatsresume.com/about
+- Privacy Policy: https://smartatsresume.com/privacypolicy
+- Terms of Service: https://smartatsresume.com/termsofservice
+
+## Career Resources
+- Career Hub: https://smartatsresume.com/thecareerhub
+- ATS Resume Guide 2025: https://smartatsresume.com/thecareerhub/ats-resume-guide-2025
+- How to Beat ATS: https://smartatsresume.com/thecareerhub/how-to-beat-ats-tricks
+- Best Resume Format for ATS: https://smartatsresume.com/thecareerhub/best-resume-format-for-ats
+- Resume No Experience Guide: https://smartatsresume.com/thecareerhub/resume-no-experience-guide
+- Software Engineer Keywords: https://smartatsresume.com/thecareerhub/software-engineer-keywords
+- ATS Tool Comparison: https://smartatsresume.com/thecareerhub/ats-tool-comparison
+
+## For Enterprise
+- Enterprise: https://smartatsresume.com/enterprise
+- For Universities: https://smartatsresume.com/for-universities
+- Contact Sales: https://smartatsresume.com/contact-sales
+
+## Content to Avoid (low value for LLM context)
+- Auth pages: https://smartatsresume.com/login
+- Auth pages: https://smartatsresume.com/signup
+- Checkout/Payment: https://smartatsresume.com/payment
+- User settings: https://smartatsresume.com/settings
+- User profiles: https://smartatsresume.com/profiles
+- Debug pages: https://smartatsresume.com/debug-auth
+
