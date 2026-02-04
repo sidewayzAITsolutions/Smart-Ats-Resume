@@ -89,13 +89,21 @@ export default function ResumeUploadSection() {
       });
 
       if (!scoringResponse.ok) {
-        // Fallback to basic scoring if endpoint not available
-        const basicScore = calculateBasicScore(parseData.data.text);
-        setAtsScore(basicScore);
-      } else {
-        const scoreData = await scoringResponse.json();
-        setAtsScore(scoreData.score);
+        // In production we should not silently fall back to a placeholder-like score.
+        // Treat scoring failures as real errors so users don't see misleading results.
+        const errorPayload = await scoringResponse.json().catch(() => null);
+        const message =
+          errorPayload?.error ||
+          `ATS scoring failed (${scoringResponse.status}). Please try again in a moment.`;
+        throw new Error(message);
       }
+
+      const scoreData = await scoringResponse.json();
+      if (!scoreData?.score || typeof scoreData.score.overall !== 'number') {
+        throw new Error('ATS scoring returned an invalid response');
+      }
+
+      setAtsScore(scoreData.score);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred while processing your resume';
       setError(errorMessage);
@@ -340,15 +348,19 @@ export default function ResumeUploadSection() {
                     <span className="text-gray-400 text-2xl">/100</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg relative">
-                  <div className="blur-sm select-none flex items-center gap-2">
-                    {getPassRateIcon(atsScore.passRate)}
-                    <span className={`text-sm font-semibold ${
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
+                  {getPassRateIcon(atsScore.passRate)}
+                  <span
+                    className={`text-sm font-semibold ${
                       atsScore.passRate === 'high' ? 'text-green-300' : 'text-amber-300'
-                    }`}>
-                      {atsScore.passRate === 'high' ? 'Excellent' : atsScore.passRate === 'medium' ? 'Good' : 'Needs Work'}
-                    </span>
-                  </div>
+                    }`}
+                  >
+                    {atsScore.passRate === 'high'
+                      ? 'Excellent'
+                      : atsScore.passRate === 'medium'
+                        ? 'Good'
+                        : 'Needs Work'}
+                  </span>
                 </div>
               </div>
 
@@ -362,8 +374,8 @@ export default function ResumeUploadSection() {
                 ].map((item) => (
                   <div key={item.label} className="bg-white/5 rounded-lg p-4 relative">
                     <div className="text-sm text-gray-400 mb-2">{item.label}</div>
-                    <div className="text-2xl font-bold text-gray-200 blur-sm select-none">{item.score}</div>
-                    <div className="w-full h-1.5 bg-gray-700 rounded-full mt-2 overflow-hidden blur-sm">
+                    <div className="text-2xl font-bold text-gray-200">{item.score}</div>
+                    <div className="w-full h-1.5 bg-gray-700 rounded-full mt-2 overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-teal-500 to-amber-500"
                         style={{ width: `${item.score}%` }}
@@ -378,51 +390,37 @@ export default function ResumeUploadSection() {
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               {/* Issues */}
               {atsScore.issues.length > 0 && (
-                <div className="bg-red-950/30 border border-red-700/50 rounded-xl p-6 relative">
-                  <div className="blur-sm select-none">
-                    <div className="flex items-center gap-2 mb-4">
-                      <AlertCircle className="w-5 h-5 text-red-400" />
-                      <h3 className="font-semibold text-red-300">Areas to Improve</h3>
-                    </div>
-                    <ul className="space-y-3">
-                      {atsScore.issues.map((issue, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-red-200 text-sm">
-                          <span className="text-red-400 mt-1">•</span>
-                          <span>{issue}</span>
-                        </li>
-                      ))}
-                    </ul>
+                <div className="bg-red-950/30 border border-red-700/50 rounded-xl p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <AlertCircle className="w-5 h-5 text-red-400" />
+                    <h3 className="font-semibold text-red-300">Areas to Improve</h3>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-gray-900/80 px-4 py-2 rounded-lg border border-gray-700">
-                      <span className="text-gray-300 text-sm font-medium">🔒 Premium Feature</span>
-                    </div>
-                  </div>
+                  <ul className="space-y-3">
+                    {atsScore.issues.map((issue, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-red-200 text-sm">
+                        <span className="text-red-400 mt-1">•</span>
+                        <span>{issue}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
               {/* Suggestions */}
               {atsScore.suggestions.length > 0 && (
-                <div className="bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 relative">
-                  <div className="blur-sm select-none">
-                    <div className="flex items-center gap-2 mb-4">
-                      <CheckCircle className="w-5 h-5 text-teal-400" />
-                      <h3 className="font-semibold text-teal-300">Quick Fixes</h3>
-                    </div>
-                    <ul className="space-y-3">
-                      {atsScore.suggestions.map((suggestion, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-teal-200 text-sm">
-                          <span className="text-teal-400 mt-1">•</span>
-                          <span>{suggestion}</span>
-                        </li>
-                      ))}
-                    </ul>
+                <div className="bg-teal-950/30 border border-teal-700/50 rounded-xl p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle className="w-5 h-5 text-teal-400" />
+                    <h3 className="font-semibold text-teal-300">Quick Fixes</h3>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-gray-900/80 px-4 py-2 rounded-lg border border-gray-700">
-                      <span className="text-gray-300 text-sm font-medium">🔒 Premium Feature</span>
-                    </div>
-                  </div>
+                  <ul className="space-y-3">
+                    {atsScore.suggestions.map((suggestion, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-teal-200 text-sm">
+                        <span className="text-teal-400 mt-1">•</span>
+                        <span>{suggestion}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
