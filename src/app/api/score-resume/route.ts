@@ -50,13 +50,13 @@ Return ONLY valid JSON, no markdown or explanation.`;
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': \`Bearer \${apiKey}\`,
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: \`Analyze this resume:\n\n\${resumeText.slice(0, 12000)}\` },
+          { role: 'user', content: `Analyze this resume:\n\n${resumeText.slice(0, 12000)}` },
         ],
         temperature: 0.3,
         max_tokens: 1000,
@@ -77,7 +77,7 @@ Return ONLY valid JSON, no markdown or explanation.`;
       return null;
     }
 
-    const jsonString = content.replace(/\`\`\`json\n?|\n?\`\`\`/g, '').trim();
+    const jsonString = content.replace(/```json\n?|\n?```/g, '').trim();
     const parsed = JSON.parse(jsonString);
 
     if (
