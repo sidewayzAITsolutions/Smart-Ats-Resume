@@ -420,9 +420,11 @@ export default function ResumeUploadSection() {
             </div>
 
             {/* Issues and Suggestions */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {/* Paywall: detail insights are premium-only */}
-              <div className="relative">
+            {/* Only show these cards when we actually have detail items; don't let the paywall overlay render by itself */}
+            {(atsScore.issues.length > 0 || atsScore.suggestions.length > 0) && (
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {/* Paywall: detail insights are premium-only */}
+                <div className="relative">
                 {/* Issues */}
                 {atsScore.issues.length > 0 && (
                   <div className={`bg-red-950/30 border border-red-700/50 rounded-xl p-6 ${!isPremium ? 'blur-md select-none pointer-events-none' : ''}`}>
@@ -458,9 +460,9 @@ export default function ResumeUploadSection() {
                     </div>
                   </div>
                 )}
-              </div>
+                </div>
 
-              <div className="relative">
+                <div className="relative">
                 {/* Suggestions */}
                 {atsScore.suggestions.length > 0 && (
                   <div className={`bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 ${!isPremium ? 'blur-md select-none pointer-events-none' : ''}`}>
@@ -482,8 +484,9 @@ export default function ResumeUploadSection() {
                 {!isPremium && (
                   <div className="absolute inset-0" aria-hidden="true" />
                 )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
