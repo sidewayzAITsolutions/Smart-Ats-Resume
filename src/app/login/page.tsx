@@ -32,7 +32,8 @@ function LoginContent() {
   const [error, setError] = useState('');
 
   // Get redirect URL from query params
-  const next = searchParams.get('next') || '/templates';
+  // Standard param is `next`, but keep backward compatibility with older links using `redirectTo`.
+  const next = searchParams.get('next') || searchParams.get('redirectTo') || '/templates';
   const message = searchParams.get('message');
   const errorParam = searchParams.get('error');
 

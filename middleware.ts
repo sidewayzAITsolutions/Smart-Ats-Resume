@@ -5,6 +5,16 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { getSupabasePublicEnv } from './src/lib/supabase/env'
 
 export async function middleware(request: NextRequest) {
+  // Never interfere with the OAuth callback flow.
+  // Supabase sets/reads cookies here and redirects based on `next`.
+  if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+    return NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    })
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -90,7 +100,8 @@ export async function middleware(request: NextRequest) {
   if (isProtectedRoute && (!user || error)) {
     console.log('Middleware - Redirecting to login from protected route:', request.nextUrl.pathname)
     const redirectUrl = new URL('/login', request.url)
-    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+    // Standardize on `next` so all pages can reliably redirect post-login.
+    redirectUrl.searchParams.set('next', request.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
   }
 

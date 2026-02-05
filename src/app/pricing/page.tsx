@@ -145,7 +145,7 @@ const PricingPage = () => {
 
       if (authError || !user) {
         toast.error('Please sign in to continue with your purchase.');
-        router.push('/login?redirectTo=/pricing');
+  router.push('/login?next=/pricing');
         return;
       }
 
@@ -177,7 +177,7 @@ const PricingPage = () => {
 
         if (response.status === 401) {
           toast.error('Please sign in to continue with your purchase.');
-          router.push('/login?redirectTo=/pricing');
+          router.push('/login?next=/pricing');
           return;
         }
 
@@ -205,7 +205,7 @@ const PricingPage = () => {
     // Check if user is authenticated for paid plans
     if ((planName === 'Pro Monthly' || planName === 'Pro Yearly') && !userData) {
       toast.error('Please sign in to subscribe to Pro plan.');
-      router.push('/login?redirectTo=/pricing');
+  router.push('/login?next=/pricing');
       return;
     }
 
