@@ -21,7 +21,7 @@ function calculateATSScore(resumeText: string): ATSScoreResult {
       overall: 15,
       breakdown: { keywords: 10, formatting: 20, content: 10, completeness: 20 },
       issues: [
-        'We couldn't read any text from your resume file.',
+        "We couldn't read any text from your resume file.",
         'This usually means the resume is an image-based PDF or a scanned document.',
       ],
       suggestions: [
