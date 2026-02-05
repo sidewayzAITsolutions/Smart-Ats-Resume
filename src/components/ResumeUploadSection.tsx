@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Upload, FileText, CheckCircle, AlertCircle, Zap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 
 interface ATSScoreResult {
   overall: number;
@@ -23,7 +24,39 @@ export default function ResumeUploadSection() {
   const [atsScore, setAtsScore] = useState<ATSScoreResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Determine whether the viewer has premium access.
+  // For anonymous visitors, this will remain false.
+  useEffect(() => {
+    let cancelled = false;
+
+    const checkPremium = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_premium')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (!cancelled) {
+          setIsPremium(!!profile?.is_premium);
+        }
+      } catch {
+        // Ignore premium lookup failures on landing page.
+      }
+    };
+
+    checkPremium();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -388,41 +421,68 @@ export default function ResumeUploadSection() {
 
             {/* Issues and Suggestions */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {/* Issues */}
-              {atsScore.issues.length > 0 && (
-                <div className="bg-red-950/30 border border-red-700/50 rounded-xl p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <AlertCircle className="w-5 h-5 text-red-400" />
-                    <h3 className="font-semibold text-red-300">Areas to Improve</h3>
+              {/* Paywall: detail insights are premium-only */}
+              <div className="relative">
+                {/* Issues */}
+                {atsScore.issues.length > 0 && (
+                  <div className={`bg-red-950/30 border border-red-700/50 rounded-xl p-6 ${!isPremium ? 'blur-md select-none pointer-events-none' : ''}`}>
+                    <div className="flex items-center gap-2 mb-4">
+                      <AlertCircle className="w-5 h-5 text-red-400" />
+                      <h3 className="font-semibold text-red-300">Areas to Improve</h3>
+                    </div>
+                    <ul className="space-y-3">
+                      {atsScore.issues.map((issue, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-red-200 text-sm">
+                          <span className="text-red-400 mt-1">•</span>
+                          <span>{issue}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-3">
-                    {atsScore.issues.map((issue, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-red-200 text-sm">
-                        <span className="text-red-400 mt-1">•</span>
-                        <span>{issue}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                )}
 
-              {/* Suggestions */}
-              {atsScore.suggestions.length > 0 && (
-                <div className="bg-teal-950/30 border border-teal-700/50 rounded-xl p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <CheckCircle className="w-5 h-5 text-teal-400" />
-                    <h3 className="font-semibold text-teal-300">Quick Fixes</h3>
+                {!isPremium && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="max-w-xs w-full bg-black/60 border border-white/10 rounded-xl p-4 text-center backdrop-blur-sm">
+                      <div className="text-sm font-semibold text-white mb-1">Premium Insights</div>
+                      <div className="text-xs text-gray-200/90 mb-3">
+                        Unlock the detailed red/green feedback after upgrading.
+                      </div>
+                      <Link
+                        href="/pricing"
+                        className="inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-amber-600 to-teal-600 hover:from-amber-500 hover:to-teal-500 text-white"
+                      >
+                        Upgrade to Premium
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    </div>
                   </div>
-                  <ul className="space-y-3">
-                    {atsScore.suggestions.map((suggestion, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-teal-200 text-sm">
-                        <span className="text-teal-400 mt-1">•</span>
-                        <span>{suggestion}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                )}
+              </div>
+
+              <div className="relative">
+                {/* Suggestions */}
+                {atsScore.suggestions.length > 0 && (
+                  <div className={`bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 ${!isPremium ? 'blur-md select-none pointer-events-none' : ''}`}>
+                    <div className="flex items-center gap-2 mb-4">
+                      <CheckCircle className="w-5 h-5 text-teal-400" />
+                      <h3 className="font-semibold text-teal-300">Quick Fixes</h3>
+                    </div>
+                    <ul className="space-y-3">
+                      {atsScore.suggestions.map((suggestion, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-teal-200 text-sm">
+                          <span className="text-teal-400 mt-1">•</span>
+                          <span>{suggestion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {!isPremium && (
+                  <div className="absolute inset-0" aria-hidden="true" />
+                )}
+              </div>
             </div>
 
             {/* CTA Buttons */}
