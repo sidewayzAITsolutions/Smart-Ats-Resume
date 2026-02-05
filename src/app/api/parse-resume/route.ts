@@ -52,7 +52,7 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
       const textContent = await page.getTextContent({
         normalizeWhitespace: true,
         disableCombineTextItems: false,
-      });
+      } as any);
 
       const items = (textContent.items as any[])
         .filter((it) => it?.str)
