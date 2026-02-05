@@ -423,11 +423,11 @@ export default function ResumeUploadSection() {
             {/* Only show these cards when we actually have detail items; don't let the paywall overlay render by itself */}
             {(atsScore.issues.length > 0 || atsScore.suggestions.length > 0) && (
               <div className="grid md:grid-cols-2 gap-6 mb-8">
-                {/* Paywall: detail insights are premium-only */}
+                {/* Paywall: detail insights are premium-only — light blur so content is teased */}
                 <div className="relative">
                 {/* Issues */}
                 {atsScore.issues.length > 0 && (
-                  <div className={`bg-red-950/30 border border-red-700/50 rounded-xl p-6 ${!isPremium ? 'blur-md select-none pointer-events-none' : ''}`}>
+                  <div className={`bg-red-950/30 border border-red-700/50 rounded-xl p-6 ${!isPremium ? 'blur-[3px] select-none' : ''}`}>
                     <div className="flex items-center gap-2 mb-4">
                       <AlertCircle className="w-5 h-5 text-red-400" />
                       <h3 className="font-semibold text-red-300">Areas to Improve</h3>
@@ -443,21 +443,15 @@ export default function ResumeUploadSection() {
                   </div>
                 )}
 
-                {!isPremium && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="max-w-xs w-full bg-black/60 border border-white/10 rounded-xl p-4 text-center backdrop-blur-sm">
-                      <div className="text-sm font-semibold text-white mb-1">Premium Insights</div>
-                      <div className="text-xs text-gray-200/90 mb-3">
-                        Unlock the detailed red/green feedback after upgrading.
-                      </div>
-                      <Link
-                        href="/pricing"
-                        className="inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-amber-600 to-teal-600 hover:from-amber-500 hover:to-teal-500 text-white"
-                      >
-                        Upgrade to Premium
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Link>
-                    </div>
+                {!isPremium && atsScore.issues.length > 0 && (
+                  <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4">
+                    <Link
+                      href="/pricing"
+                      className="inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-amber-600 to-teal-600 hover:from-amber-500 hover:to-teal-500 text-white shadow-lg"
+                    >
+                      Unlock Insights
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
                   </div>
                 )}
                 </div>
@@ -465,7 +459,7 @@ export default function ResumeUploadSection() {
                 <div className="relative">
                 {/* Suggestions */}
                 {atsScore.suggestions.length > 0 && (
-                  <div className={`bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 ${!isPremium ? 'blur-md select-none pointer-events-none' : ''}`}>
+                  <div className={`bg-teal-950/30 border border-teal-700/50 rounded-xl p-6 ${!isPremium ? 'blur-[3px] select-none' : ''}`}>
                     <div className="flex items-center gap-2 mb-4">
                       <CheckCircle className="w-5 h-5 text-teal-400" />
                       <h3 className="font-semibold text-teal-300">Quick Fixes</h3>
@@ -481,8 +475,16 @@ export default function ResumeUploadSection() {
                   </div>
                 )}
 
-                {!isPremium && (
-                  <div className="absolute inset-0" aria-hidden="true" />
+                {!isPremium && atsScore.suggestions.length > 0 && (
+                  <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4">
+                    <Link
+                      href="/pricing"
+                      className="inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-amber-600 to-teal-600 hover:from-amber-500 hover:to-teal-500 text-white shadow-lg"
+                    >
+                      Unlock Insights
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
+                  </div>
                 )}
                 </div>
               </div>
