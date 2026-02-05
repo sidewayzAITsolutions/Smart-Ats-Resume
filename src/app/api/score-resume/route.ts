@@ -14,12 +14,21 @@ interface ATSScoreResult {
 }
 
 function calculateATSScore(resumeText: string): ATSScoreResult {
-  if (!resumeText || resumeText.trim().length === 0) {
+  // Handle empty or placeholder text (e.g., from image-based PDFs)
+  const isPlaceholder = resumeText.includes('[Unable to extract text from resume]');
+  if (!resumeText || resumeText.trim().length === 0 || isPlaceholder) {
     return {
-      overall: 0,
-      breakdown: { keywords: 0, formatting: 0, content: 0, completeness: 0 },
-      issues: ['Resume text could not be extracted'],
-      suggestions: ['Try re-uploading your resume in a different format'],
+      overall: 15,
+      breakdown: { keywords: 10, formatting: 20, content: 10, completeness: 20 },
+      issues: [
+        'We couldn't read any text from your resume file.',
+        'This usually means the resume is an image-based PDF or a scanned document.',
+      ],
+      suggestions: [
+        'Export your resume as a text-based PDF (not a scan) so ATS software can read it.',
+        'Open the original Word file and re-save it as a PDF.',
+        'If your resume is a graphic design, consider creating a plain-text version for online applications.',
+      ],
       passRate: 'low',
     };
   }

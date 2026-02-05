@@ -167,13 +167,24 @@ export async function POST(req: NextRequest) {
     const fileName = (file as any).name || '';
 
     // Fallback type detection by file extension if browser didn't set a useful type
-    if (fileType === 'application/octet-stream' && fileName) {
-      const lower = fileName.toLowerCase();
+    // Also normalize synonyms (e.g., application/msword) to the canonical type we handle
+    const lower = fileName.toLowerCase();
+    if (
+      fileType === 'application/octet-stream' ||
+      fileType === 'application/x-pdf' ||
+      fileType === 'binary/octet-stream'
+    ) {
       if (lower.endsWith('.pdf')) fileType = 'application/pdf';
       // cspell:disable-next-line
       else if (lower.endsWith('.docx')) fileType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      else if (lower.endsWith('.doc')) fileType = 'application/msword';
       else if (lower.endsWith('.rtf')) fileType = 'application/rtf';
       else if (lower.endsWith('.txt')) fileType = 'text/plain';
+    }
+
+    // Normalize older Word MIME types to the types we explicitly handle
+    if (fileType === 'application/msword' && lower.endsWith('.docx')) {
+      fileType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     }
 
     console.log('📋 Detected file type:', fileType);
@@ -215,12 +226,16 @@ export async function POST(req: NextRequest) {
     }
 
     if (!parsedText || parsedText.trim().length < 10) {
-      console.error('❌ Parse failed, no usable text extracted');
-      return NextResponse.json({ 
-        success: false, 
-        error: parseError || 'Failed to extract text from the resume. The file may be image-based, corrupted, or password-protected. Try exporting your resume as a text-based PDF or DOCX.', 
-        fileType 
-      }, { status: 422 });
+      // Instead of 422, return minimal placeholder text so scoring can still run
+      // (the scorer will give a bad score due to lack of content)
+      console.warn('⚠️ Parse returned minimal text; returning placeholder so scoring can proceed');
+      const fallbackText = '[Unable to extract text from resume]';
+      return NextResponse.json({
+        success: true,
+        parsedText: fallbackText,
+        fileType,
+        warning: parseError || 'Could not extract readable text from the file. Score may be inaccurate.',
+      });
     }
 
     console.log('✅ Successfully parsed resume, text length:', parsedText.length);
