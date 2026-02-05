@@ -6,6 +6,26 @@ import {
 
 import { createClientFromRequest } from '@/lib/supabase/server';
 
+const cleanupExtractedText = (text: string) =>
+  text
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\s+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/([.,:;!?])([A-Za-z])/g, '$1 $2')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([a-zA-Z])(\d)/g, '$1 $2')
+    .replace(/(\d)([a-zA-Z])/g, '$1 $2')
+    .replace(/([.!?]\s)([A-Z])([a-z]{2,})/g, '$1$2 $3')
+    .trim();
+
+const hasBadSpacing = (text: string) => {
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!words.length) return true;
+  const avgWordLen = words.reduce((sum, w) => sum + w.length, 0) / words.length;
+  const longRatio = words.filter((w) => w.length > 18).length / words.length;
+  return avgWordLen > 12 || longRatio > 0.25;
+};
+
 // Helper to parse PDF content using pdfjs-dist (more reliable in serverless)
 const parseEnhancedPDF = async (buffer: Buffer) => {
   // Primary method: pdfjs-dist (works better in serverless environments)
@@ -29,16 +49,79 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
     let extractedText = '';
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      extractedText += pageText + '\n';
+      const textContent = await page.getTextContent({
+        normalizeWhitespace: true,
+        disableCombineTextItems: false,
+      });
+
+      const items = (textContent.items as any[])
+        .filter((it) => it?.str)
+        .map((it) => {
+          const x = it.transform?.[4] ?? 0;
+          const y = it.transform?.[5] ?? 0;
+          const width = it.width ?? 0;
+          const height = it.height ?? 12;
+          return { ...it, x, y, width, height };
+        });
+
+      // Sort by reading order (top-to-bottom, left-to-right)
+      items.sort((a, b) => {
+        const dy = b.y - a.y;
+        if (Math.abs(dy) > 1) return dy;
+        return a.x - b.x;
+      });
+
+      let lastX: number | null = null;
+      let lastY: number | null = null;
+      let lastHeight = 12;
+      let lastCharW = 6;
+      let pageText = '';
+
+      for (const item of items) {
+        const str = String(item.str);
+        const x = item.x as number;
+        const y = item.y as number;
+        const width = item.width as number;
+        const height = item.height as number;
+
+        const chars = Math.max(1, str.length);
+        const charW = width > 0 ? width / chars : lastCharW;
+
+        if (lastY !== null) {
+          const lineBreakThreshold = Math.max(3, Math.max(lastHeight, height) * 0.6);
+          if (Math.abs(y - lastY) > lineBreakThreshold) {
+            pageText += '\n';
+            lastX = null;
+          } else if (lastX !== null) {
+            const gap = x - lastX;
+            const spaceThreshold = Math.max(0.5, Math.min(lastCharW, charW) * 0.3);
+            if (gap > spaceThreshold) pageText += ' ';
+            // If glyphs appear to move backwards, treat as a new line
+            if (gap < -2) {
+              pageText += '\n';
+              lastX = null;
+            }
+          }
+        }
+
+        pageText += str;
+        if (item.hasEOL) pageText += '\n';
+        lastX = x + width;
+        lastY = y;
+        lastHeight = height || lastHeight;
+        lastCharW = charW || lastCharW;
+      }
+
+      extractedText += pageText + '\n\n';
     }
 
-    if (extractedText.trim().length > 10) {
+    extractedText = cleanupExtractedText(extractedText);
+
+    if (extractedText.length > 10 && !hasBadSpacing(extractedText)) {
       console.log('✅ pdfjs-dist extraction successful, text length:', extractedText.length);
-      return { text: extractedText.trim(), error: null };
+      return { text: extractedText, error: null };
+    } else if (extractedText.length > 10) {
+      console.warn('⚠️ pdfjs-dist extracted suspicious text, trying fallback...');
     }
   } catch (pdfJsError) {
     console.error('❌ pdfjs-dist failed:', pdfJsError instanceof Error ? pdfJsError.message : String(pdfJsError));
@@ -51,7 +134,8 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
     const data = await pdfParse(buffer);
     if (data?.text && data.text.trim().length > 10) {
       console.log('✅ PDF parsed successfully with pdf-parse, text length:', data.text.length);
-      return { text: data.text, error: null };
+      const cleanedText = cleanupExtractedText(data.text);
+      return { text: cleanedText, error: null };
     }
   } catch (error) {
     console.error('❌ pdf-parse failed:', error instanceof Error ? error.message : String(error));
@@ -71,7 +155,7 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
 
     if (extractedText.length > 20) {
       console.log('✅ Raw buffer extraction successful, text length:', extractedText.length);
-      return { text: extractedText, error: null };
+      return { text: cleanupExtractedText(extractedText), error: null };
     }
   } catch (fallbackError) {
     console.error('❌ Raw buffer extraction failed:', fallbackError instanceof Error ? fallbackError.message : String(fallbackError));
