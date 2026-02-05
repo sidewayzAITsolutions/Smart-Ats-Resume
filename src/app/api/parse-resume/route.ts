@@ -26,6 +26,66 @@ const hasBadSpacing = (text: string) => {
   return avgWordLen > 12 || longRatio > 0.25;
 };
 
+const performOcrOnPdf = async (buffer: Buffer) => {
+  if (process.env.ENABLE_OCR === 'false') {
+    return { text: null, error: 'OCR disabled by ENABLE_OCR=false' };
+  }
+
+  console.log('🔄 Attempting OCR fallback...');
+  let worker: any;
+  try {
+  const pdfjsLib = await import('pdfjs-dist');
+  // Load native canvas and tesseract at runtime to avoid bundler issues
+  const runtimeRequire = (0, eval)('require') as (id: string) => any;
+  const { createCanvas } = runtimeRequire('@napi-rs/canvas');
+  const { createWorker } = runtimeRequire('tesseract.js');
+
+    if (typeof pdfjsLib.GlobalWorkerOptions !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+    }
+
+    const pdfData = new Uint8Array(buffer);
+    const loadingTask = pdfjsLib.getDocument({
+      data: pdfData,
+      useSystemFonts: true,
+      disableFontFace: true,
+    });
+    const pdf = await loadingTask.promise;
+
+    worker = await createWorker();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+
+    let ocrText = '';
+    const maxPages = Math.min(2, pdf.numPages);
+    for (let i = 1; i <= maxPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 2 });
+      const canvas = createCanvas(viewport.width, viewport.height);
+      const context = canvas.getContext('2d');
+
+  await page.render({ canvasContext: context as any, viewport } as any).promise;
+      const png = canvas.toBuffer('image/png');
+      const { data } = await worker.recognize(png);
+      if (data?.text) ocrText += data.text + '\n\n';
+    }
+
+    ocrText = cleanupExtractedText(ocrText);
+    if (ocrText.length > 20) {
+      console.log('✅ OCR extraction successful, text length:', ocrText.length);
+      return { text: ocrText, error: null };
+    }
+  } catch (error) {
+    console.error('❌ OCR fallback failed:', error instanceof Error ? error.message : String(error));
+  } finally {
+    if (worker?.terminate) {
+      await worker.terminate();
+    }
+  }
+
+  return { text: null, error: 'OCR failed or produced no text.' };
+};
+
 // Helper to parse PDF content using pdfjs-dist (more reliable in serverless)
 const parseEnhancedPDF = async (buffer: Buffer) => {
   // Primary method: pdfjs-dist (works better in serverless environments)
@@ -135,7 +195,10 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
     if (data?.text && data.text.trim().length > 10) {
       console.log('✅ PDF parsed successfully with pdf-parse, text length:', data.text.length);
       const cleanedText = cleanupExtractedText(data.text);
-      return { text: cleanedText, error: null };
+      if (!hasBadSpacing(cleanedText)) {
+        return { text: cleanedText, error: null };
+      }
+      console.warn('⚠️ pdf-parse extracted suspicious text, trying OCR fallback...');
     }
   } catch (error) {
     console.error('❌ pdf-parse failed:', error instanceof Error ? error.message : String(error));
@@ -155,10 +218,20 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
 
     if (extractedText.length > 20) {
       console.log('✅ Raw buffer extraction successful, text length:', extractedText.length);
-      return { text: cleanupExtractedText(extractedText), error: null };
+      const cleanedText = cleanupExtractedText(extractedText);
+      if (!hasBadSpacing(cleanedText)) {
+        return { text: cleanedText, error: null };
+      }
+      console.warn('⚠️ Raw buffer extraction suspicious, trying OCR fallback...');
     }
   } catch (fallbackError) {
     console.error('❌ Raw buffer extraction failed:', fallbackError instanceof Error ? fallbackError.message : String(fallbackError));
+  }
+
+  // OCR fallback for hard-to-parse PDFs
+  const ocrResult = await performOcrOnPdf(buffer);
+  if (ocrResult.text) {
+    return ocrResult;
   }
 
   return { text: null, error: 'Failed to parse PDF: All parsing methods failed. The PDF may be image-based or corrupted.' };
