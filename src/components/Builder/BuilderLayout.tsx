@@ -83,6 +83,18 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
       if (!indices[h]) indices[h] = headingPos;
     }
   }
+
+  // Remove short headings when a longer variant containing them is also found.
+  // e.g., if 'professional experience' is detected, remove 'experience' — its
+  // position is likely a false match (the word appearing at a line break inside
+  // a different section) and would corrupt the section boundary order.
+  for (const short of Object.keys(indices)) {
+    const dominated = Object.keys(indices).some(
+      long => long !== short && long.length > short.length && long.includes(short)
+    );
+    if (dominated) delete indices[short];
+  }
+
   const order = Object.entries(indices).sort((a, b) => a[1] - b[1]);
   const slice = (startLabel: string) => {
     const start = indices[startLabel];
@@ -102,16 +114,18 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     return '';
   };
 
+  // Try longer / more-specific headings first so that short generic words like
+  // "experience" or "skills" don't shadow the real multi-word section heading.
   const summaryRaw = sectionOr('professional summary', 'professional profile', 'profile', 'summary', 'objective', 'about me') || normalizedText.split(/\n\n/)[0] || '';
-  const skillsRaw = sectionOr('skills', 'technical skills', 'core competencies', 'expertise');
-  const projectsRaw = sectionOr('projects', 'personal projects', 'key projects');
+  const skillsRaw = sectionOr('technical skills', 'core competencies', 'expertise', 'skills');
+  const projectsRaw = sectionOr('personal projects', 'key projects', 'projects');
   const certsRaw = sectionOr('certifications', 'certificates', 'licenses');
-  const expRaw = sectionOr('experience', 'work experience', 'professional experience', 'employment history', 'work history');
+  const expRaw = sectionOr('professional experience', 'work experience', 'employment history', 'work history', 'experience');
   const eduRaw = sectionOr('education', 'academic background', 'qualifications');
-  const keywordsRaw = sectionOr('keywords', 'key words', 'ats keywords');
+  const keywordsRaw = sectionOr('ats keywords', 'key words', 'keywords');
   const jobDescriptionRaw = sectionOr('job description', 'target role');
   const portfolioRaw = sectionOr('portfolio');
-  const titleRaw = sectionOr('title', 'professional title');
+  const titleRaw = sectionOr('professional title', 'title');
 
   const toLines = (s: string) => {
     if (!s) return [] as string[];
