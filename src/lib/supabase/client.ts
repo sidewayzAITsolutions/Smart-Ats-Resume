@@ -12,23 +12,34 @@ export function createClient() {
     console.warn(
       'Supabase is not configured (missing/invalid NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY); returning a no-op client.'
     );
+    const configError = { message: 'SUPABASE_NOT_CONFIGURED' };
+    const noopQuery: any = {
+      select: () => noopQuery,
+      update: () => noopQuery,
+      insert: () => noopQuery,
+      delete: () => noopQuery,
+      eq: () => noopQuery,
+      neq: () => noopQuery,
+      single: () => noopQuery,
+      maybeSingle: () => noopQuery,
+      order: () => noopQuery,
+      limit: () => noopQuery,
+      then: (resolve: any) => resolve({ data: null, error: configError }),
+      data: null,
+      error: configError,
+    };
     const noop = {
       auth: {
-        getSession: async () => ({ data: { session: null }, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        getUser: async () => ({ data: { user: null }, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        signInWithPassword: async () => ({ data: { user: null }, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        signUp: async () => ({ data: { user: null }, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        signOut: async () => ({ error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+        getSession: async () => ({ data: { session: null }, error: configError }),
+        getUser: async () => ({ data: { user: null }, error: configError }),
+        signInWithOAuth: async () => ({ data: { url: null, provider: 'google' }, error: configError }),
+        signInWithPassword: async () => ({ data: { user: null, session: null }, error: configError }),
+        signUp: async () => ({ data: { user: null, session: null }, error: configError }),
+        signOut: async () => ({ error: configError }),
+        onAuthStateChange: (_event: any, _callback: any) => ({ data: { subscription: { unsubscribe: () => {} } } }),
+        exchangeCodeForSession: async () => ({ data: { user: null, session: null }, error: configError }),
       },
-      from: () => ({
-        select: () => ({ data: null, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        update: () => ({ data: null, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        insert: () => ({ data: null, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        delete: () => ({ data: null, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        eq: () => ({ data: null, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-        single: () => ({ data: null, error: { message: 'SUPABASE_NOT_CONFIGURED' } }),
-      }),
+      from: () => noopQuery,
     } as any;
     return noop;
   }
