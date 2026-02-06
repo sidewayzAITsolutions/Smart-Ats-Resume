@@ -13,9 +13,12 @@ const cleanupExtractedText = (text: string) =>
     .replace(/\n{3,}/g, '\n\n')
     .replace(/([.,:;!?])([A-Za-z])/g, '$1 $2')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
+    // Fix PDF extraction artifact: single uppercase letter separated from rest of word.
+    // e.g., "D eveloped" → "Developed", "S hirley" → "Shirley".
+    // Excludes "I" (common pronoun) to avoid merging "I was", "I have", etc.
+    .replace(/\b([A-HJ-Z]) ([a-z]{2,})/g, '$1$2')
     .replace(/([a-zA-Z])(\d)/g, '$1 $2')
     .replace(/(\d)([a-zA-Z])/g, '$1 $2')
-    .replace(/([.!?]\s)([A-Z])([a-z]{2,})/g, '$1$2 $3')
     .trim();
 
 const hasBadSpacing = (text: string) => {
