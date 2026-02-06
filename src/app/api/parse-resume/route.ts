@@ -80,10 +80,12 @@ const performOcrOnPdf = async (buffer: Buffer) => {
     await worker.initialize('eng');
 
     let ocrText = '';
-    const maxPages = Math.min(2, pdf.numPages);
+    const ocrMaxPages = Math.max(1, Number(process.env.OCR_MAX_PAGES ?? '2') || 2);
+    const maxPages = Math.min(ocrMaxPages, pdf.numPages);
+    const ocrScale = Math.max(1, Number(process.env.OCR_SCALE ?? '2') || 2);
     for (let i = 1; i <= maxPages; i++) {
       const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 2 });
+      const viewport = page.getViewport({ scale: ocrScale });
       const canvas = createCanvas(viewport.width, viewport.height);
       const context = canvas.getContext('2d');
 
@@ -111,6 +113,17 @@ const performOcrOnPdf = async (buffer: Buffer) => {
 
 // Helper to parse PDF content using pdfjs-dist (more reliable in serverless)
 const parseEnhancedPDF = async (buffer: Buffer) => {
+  // OCR-first (user request): gives consistent spacing & avoids broken PDF text extraction.
+  // If OCR is disabled or fails, fall back to text extraction methods.
+  const ocrFirst = process.env.PDF_OCR_FIRST !== 'false';
+  if (ocrFirst) {
+    const ocrResult = await performOcrOnPdf(buffer);
+    if (ocrResult.text) {
+      return ocrResult;
+    }
+    console.warn('⚠️ OCR-first produced no text; attempting text-based PDF extraction fallbacks...');
+  }
+
   // Primary method: pdfjs-dist (works better in serverless environments)
   console.log('📖 Attempting to parse PDF with pdfjs-dist, buffer size:', buffer.length);
   try {
@@ -251,10 +264,12 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
     console.error('❌ Raw buffer extraction failed:', fallbackError instanceof Error ? fallbackError.message : String(fallbackError));
   }
 
-  // OCR fallback for hard-to-parse PDFs
-  const ocrResult = await performOcrOnPdf(buffer);
-  if (ocrResult.text) {
-    return ocrResult;
+  // OCR fallback (if not already tried first)
+  if (!ocrFirst) {
+    const ocrResult = await performOcrOnPdf(buffer);
+    if (ocrResult.text) {
+      return ocrResult;
+    }
   }
 
   return { text: null, error: 'Failed to parse PDF: All parsing methods failed. The PDF may be image-based or corrupted.' };
