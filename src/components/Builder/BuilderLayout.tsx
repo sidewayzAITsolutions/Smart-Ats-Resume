@@ -251,10 +251,37 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     date: '',
   }));
 
+  // Split experience text into blocks — first by double newlines, and if that
+  // yields too few blocks for the amount of text, also split on lines that
+  // contain date ranges (indicating a new job entry boundary).
+  const splitExperienceBlocks = (text: string): string[] => {
+    const blocks = text.split(/\n\s*\n/).filter(b => b.trim());
+    if (blocks.length > 2 || text.length < 300) return blocks;
+
+    // Try smarter splitting: lines with date ranges mark new entries
+    const dateRangeRe = /\d{4}\s*[-–—]\s*(?:\d{4}|present|current|now)/i;
+    const result: string[] = [];
+    let current: string[] = [];
+
+    for (const line of text.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      const isBullet = /^[•\-\u2022]/.test(trimmed);
+      if (dateRangeRe.test(trimmed) && !isBullet && current.length > 0) {
+        result.push(current.join('\n'));
+        current = [trimmed];
+      } else {
+        current.push(trimmed);
+      }
+    }
+    if (current.length > 0) result.push(current.join('\n'));
+
+    return result.length > blocks.length ? result : blocks;
+  };
+
   // Improved experience parsing - handle multiple formats
   const experience = expRaw
-    ? expRaw
-        .split(/\n\s*\n/)
+    ? splitExperienceBlocks(expRaw)
         .map((block, i) => {
           const lines = toLines(block);
           if (lines.length === 0) return null;

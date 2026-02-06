@@ -168,10 +168,15 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
           return { ...it, x, y, width, height };
         });
 
-      // Sort by reading order (top-to-bottom, left-to-right)
+      // Sort by reading order (top-to-bottom, left-to-right).
+      // Use a line-height-aware threshold so items on the same visual line stay
+      // together even when their Y coordinates differ slightly (font metrics,
+      // subscripts, multi-column layouts with fractional positioning, etc.).
       items.sort((a, b) => {
         const dy = b.y - a.y;
-        if (Math.abs(dy) > 1) return dy;
+        const avgHeight = ((a.height || 12) + (b.height || 12)) / 2;
+        const lineThreshold = Math.max(3, avgHeight * 0.5);
+        if (Math.abs(dy) > lineThreshold) return dy > 0 ? 1 : -1;
         return a.x - b.x;
       });
 
@@ -198,7 +203,7 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
             lastX = null;
           } else if (lastX !== null) {
             const gap = x - lastX;
-            const spaceThreshold = Math.max(0.5, Math.min(lastCharW, charW) * 0.3);
+            const spaceThreshold = Math.max(0.8, Math.min(lastCharW, charW) * 0.35);
             if (gap > spaceThreshold) pageText += ' ';
             // If glyphs appear to move backwards, treat as a new line
             if (gap < -2) {
