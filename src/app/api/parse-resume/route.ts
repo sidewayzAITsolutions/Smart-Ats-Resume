@@ -19,11 +19,34 @@ const cleanupExtractedText = (text: string) =>
     .trim();
 
 const hasBadSpacing = (text: string) => {
-  const words = text.split(/\s+/).filter(Boolean);
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (!normalized) return true;
+
+  // If we barely have any actual spaces/newlines, pdf text extraction likely failed.
+  const spaceCount = (normalized.match(/\s/g) || []).length;
+  if (normalized.length > 120 && spaceCount < Math.floor(normalized.length / 40)) return true;
+
+  const words = normalized.split(' ').filter(Boolean);
   if (!words.length) return true;
+
   const avgWordLen = words.reduce((sum, w) => sum + w.length, 0) / words.length;
   const longRatio = words.filter((w) => w.length > 18).length / words.length;
-  return avgWordLen > 12 || longRatio > 0.25;
+
+  // Detect lots of mid-word camelCase boundaries, common in concatenated PDFs:
+  // e.g. "WilliamB.Shirley" or "endedUpBeing".
+  const camelBoundaries = (normalized.match(/[a-z][A-Z]/g) || []).length;
+  const camelBoundaryDensity = camelBoundaries / Math.max(1, normalized.length);
+
+  // Detect very long runs of letters with no separators.
+  const veryLongAlphaTokens = words.filter((w) => /^[A-Za-z]{24,}$/.test(w)).length;
+  const veryLongAlphaRatio = veryLongAlphaTokens / words.length;
+
+  return (
+    avgWordLen > 12 ||
+    longRatio > 0.22 ||
+    camelBoundaryDensity > 0.012 ||
+    veryLongAlphaRatio > 0.08
+  );
 };
 
 const performOcrOnPdf = async (buffer: Buffer) => {
