@@ -75,8 +75,17 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
     // and followed by a colon, end-of-line, or end-of-string.
     // This prevents matching words like "skills" inside "communication skills"
     // or "experience" inside "5+ years of experience".
-    const pattern = new RegExp(`(?:^|\\n)[ \\t]*(${escaped})[ \\t]*(?::|\\n|$)`, 'i');
-    const match = pattern.exec(lower);
+    // Also handle multi-word headings that might be split across lines
+    // (e.g., "PROFESSIONAL\nEXPERIENCE" should match "professional experience")
+    const pattern = new RegExp(`(?:^|\\n)[ \\t]*(${escaped.replace(/\\s+/g, '[ \\t\\n]+')})[ \\t]*(?::|\\n|$)`, 'i');
+    let match = pattern.exec(lower);
+    
+    // If no match with flexible whitespace, try exact match
+    if (!match) {
+      const exactPattern = new RegExp(`(?:^|\\n)[ \\t]*(${escaped})[ \\t]*(?::|\\n|$)`, 'i');
+      match = exactPattern.exec(lower);
+    }
+    
     if (match) {
       // Position of the captured heading text (group 1) within the full string
       const headingPos = match.index + match[0].indexOf(match[1]);
@@ -267,25 +276,52 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
 
   // Split experience text into blocks — first by double newlines, and if that
   // yields too few blocks for the amount of text, also split on lines that
-  // contain date ranges (indicating a new job entry boundary).
+  // contain date ranges or job title patterns (indicating a new job entry boundary).
   const splitExperienceBlocks = (text: string): string[] => {
     const blocks = text.split(/\n\s*\n/).filter(b => b.trim());
+    // If we have multiple blocks or text is short, use simple splitting
     if (blocks.length > 2 || text.length < 300) return blocks;
 
-    // Try smarter splitting: lines with date ranges mark new entries
-    const dateRangeRe = /\d{4}\s*[-–—]\s*(?:\d{4}|present|current|now)/i;
+    // Try smarter splitting: detect job entry boundaries
+    // Pattern 1: Date ranges (e.g., "2020 - Present", "Jan 2020 - Dec 2021")
+    const dateRangeRe = /\d{4}\s*[-–—]\s*(?:\d{4}|present|current|now)|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{4}\s*[-–—]\s*(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+)?\d{4}/i;
+    // Pattern 2: Job title keywords followed by company or date
+    const jobTitleRe = /\b(?:engineer|developer|manager|analyst|designer|consultant|director|specialist|coordinator|lead|senior|junior|intern|associate|founder|owner|ceo|cto|cfo|president|vice president|vp)\b/i;
+    
     const result: string[] = [];
     let current: string[] = [];
+    let lastLineWasTitle = false;
 
     for (const line of text.split('\n')) {
       const trimmed = line.trim();
-      if (!trimmed) continue;
+      if (!trimmed) {
+        if (current.length > 0) {
+          current.push('');
+        }
+        continue;
+      }
+      
       const isBullet = /^[•\-\u2022]/.test(trimmed);
-      if (dateRangeRe.test(trimmed) && !isBullet && current.length > 0) {
-        result.push(current.join('\n'));
+      const hasDateRange = dateRangeRe.test(trimmed);
+      const looksLikeTitle = jobTitleRe.test(trimmed) && trimmed.length < 100;
+      
+      // Start new block if:
+      // 1. Line has date range and we have accumulated content
+      // 2. Line looks like a job title AND previous line was also a title (two titles = new entry)
+      // 3. Line looks like a job title AND it's at the start or after a blank line
+      const shouldSplit = hasDateRange && !isBullet && current.length > 0 ||
+                         (looksLikeTitle && lastLineWasTitle && current.length > 0) ||
+                         (looksLikeTitle && current.length === 0 && result.length > 0);
+      
+      if (shouldSplit) {
+        if (current.length > 0) {
+          result.push(current.join('\n'));
+        }
         current = [trimmed];
+        lastLineWasTitle = looksLikeTitle;
       } else {
         current.push(trimmed);
+        lastLineWasTitle = looksLikeTitle;
       }
     }
     if (current.length > 0) result.push(current.join('\n'));
@@ -308,15 +344,30 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
           const achievements: string[] = [];
 
           // Try to extract dates from the block (common formats)
-          const datePattern = /(\d{1,2}\/\d{4}|\d{4}|[A-Z][a-z]{2,8}\s+\d{4}|[A-Z][a-z]{2,8}\.\s+\d{4})/gi;
-          const dateMatches = block.match(datePattern);
-          if (dateMatches && dateMatches.length >= 1) {
-            startDate = dateMatches[0] || '';
-            endDate = dateMatches[1] || '';
-            // Check for "Present", "Current", "Now"
-            if (/present|current|now/i.test(block)) {
+          // Improved patterns: handle MM/YYYY, YYYY-MM-DD, Month YYYY, etc.
+          const datePattern = /(\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{4}|[A-Z][a-z]{2,8}\s+\d{4}|[A-Z][a-z]{2,8}\.\s+\d{4})/gi;
+          const dateRangePattern = /(\d{4}|[A-Z][a-z]{2,8}\s+\d{4})\s*[-–—]\s*(\d{4}|present|current|now|[A-Z][a-z]{2,8}\s+\d{4})/i;
+          
+          // First try to find a date range (start - end)
+          const rangeMatch = block.match(dateRangePattern);
+          if (rangeMatch) {
+            startDate = rangeMatch[1] || '';
+            endDate = rangeMatch[2] || '';
+            if (/present|current|now/i.test(endDate)) {
               current = true;
               endDate = 'Present';
+            }
+          } else {
+            // Fall back to individual dates
+            const dateMatches = block.match(datePattern);
+            if (dateMatches && dateMatches.length >= 1) {
+              startDate = dateMatches[0] || '';
+              endDate = dateMatches[1] || '';
+              // Check for "Present", "Current", "Now"
+              if (/present|current|now/i.test(block)) {
+                current = true;
+                endDate = 'Present';
+              }
             }
           }
 
@@ -774,8 +825,14 @@ export default function BuilderLayout({ initialData, resumeId }: BuilderLayoutPr
 
       if (!res.ok || !json?.success) {
         console.error('❌ Resume parse failed:', json?.error || res.statusText);
-        toast.error(json?.error || 'Failed to parse resume. Please try a different file.', { id: 'parse-resume' });
+        const errorMsg = json?.error || json?.warning || res.statusText || 'Failed to parse resume';
+        toast.error(`Parse failed: ${errorMsg}. Please try a different file or format.`, { id: 'parse-resume', duration: 6000 });
         return;
+      }
+      
+      // Log warning if present but don't fail
+      if (json?.warning) {
+        console.warn('⚠️ Parse warning:', json.warning);
       }
 
       if (json?.parsedText) {

@@ -8,17 +8,25 @@ import { createClientFromRequest } from '@/lib/supabase/server';
 
 const cleanupExtractedText = (text: string) =>
   text
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\s+\n/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')
+    // Normalize all whitespace types
+    .replace(/\r\n/g, '\n')  // Windows line endings
+    .replace(/\r/g, '\n')    // Old Mac line endings
+    .replace(/[ \t]+/g, ' ') // Multiple spaces/tabs to single space
+    .replace(/\s+\n/g, '\n') // Trailing spaces before newlines
+    .replace(/\n{3,}/g, '\n\n') // Multiple blank lines to double
+    // Fix punctuation spacing
     .replace(/([.,:;!?])([A-Za-z])/g, '$1 $2')
+    // Fix camelCase boundaries (but preserve intentional camelCase)
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     // Fix PDF extraction artifact: single uppercase letter separated from rest of word.
     // e.g., "D eveloped" → "Developed", "S hirley" → "Shirley".
-    // Excludes "I" (common pronoun) to avoid merging "I was", "I have", etc.
-    .replace(/\b([A-HJ-Z]) ([a-z]{2,})/g, '$1$2')
+    // Excludes "I" and "A" (common words) to avoid merging "I was", "A big", etc.
+    .replace(/\b([B-HJ-Z]) ([a-z]{2,})/g, '$1$2')
+    // Fix number-letter boundaries
     .replace(/([a-zA-Z])(\d)/g, '$1 $2')
     .replace(/(\d)([a-zA-Z])/g, '$1 $2')
+    // Remove zero-width spaces and other invisible characters
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .trim();
 
 const hasBadSpacing = (text: string) => {
@@ -323,7 +331,9 @@ const parseEnhancedDocument = async (buffer: Buffer) => {
     
     if (result.value && result.value.trim().length > 0) {
       console.log('✅ DOCX parsed successfully, text length:', result.value.length);
-      return result.value;
+      // Apply cleanup to DOCX text to normalize spacing and fix extraction artifacts
+      const cleanedText = cleanupExtractedText(result.value);
+      return cleanedText;
     }
     
     // Log any messages from mammoth
@@ -425,9 +435,18 @@ export async function POST(req: NextRequest) {
       // cspell:disable-next-line
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': // .docx
         console.log('🔄 Parsing DOCX...');
-        parsedText = await parseEnhancedDocument(buffer);
-        if (!parsedText) {
-          parseError = 'Failed to extract text from DOCX. The file may be corrupted or password-protected.';
+        try {
+          parsedText = await parseEnhancedDocument(buffer);
+          if (!parsedText || parsedText.trim().length < 10) {
+            parseError = 'Failed to extract text from DOCX. The file may be corrupted, password-protected, or contain only images.';
+            parsedText = null;
+          } else {
+            console.log('✅ DOCX parsing successful, text length:', parsedText.length);
+          }
+        } catch (docxError) {
+          console.error('❌ DOCX parsing error:', docxError);
+          parseError = `DOCX parsing failed: ${docxError instanceof Error ? docxError.message : String(docxError)}`;
+          parsedText = null;
         }
         break;
       case 'application/rtf':
@@ -466,7 +485,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, parsedText, fileType });
 
   } catch (error) {
-    console.error('Error in resume parsing API:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('❌ Error in resume parsing API:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Error details:', {
+      message: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      fileName: (file as any)?.name,
+      fileType,
+      fileSize: file?.size,
+    });
+    return NextResponse.json({ 
+      success: false,
+      error: `Failed to parse resume: ${errorMessage}. Please ensure the file is not corrupted and try again.` 
+    }, { status: 500 });
   }
 }
