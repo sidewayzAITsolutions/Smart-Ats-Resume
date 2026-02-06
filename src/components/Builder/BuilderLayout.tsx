@@ -70,16 +70,29 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
   const lower = normalizedText.toLowerCase();
   const indices: Record<string, number> = {};
   for (const h of headings) {
-    const idx = lower.indexOf(h);
-    if (idx !== -1 && !indices[h]) indices[h] = idx;
+    const escaped = h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Match heading only at the start of a line (with optional leading whitespace)
+    // and followed by a colon, end-of-line, or end-of-string.
+    // This prevents matching words like "skills" inside "communication skills"
+    // or "experience" inside "5+ years of experience".
+    const pattern = new RegExp(`(?:^|\\n)[ \\t]*(${escaped})[ \\t]*(?::|\\n|$)`, 'i');
+    const match = pattern.exec(lower);
+    if (match) {
+      // Position of the captured heading text (group 1) within the full string
+      const headingPos = match.index + match[0].indexOf(match[1]);
+      if (!indices[h]) indices[h] = headingPos;
+    }
   }
   const order = Object.entries(indices).sort((a, b) => a[1] - b[1]);
   const slice = (startLabel: string) => {
     const start = indices[startLabel];
     if (start == null) return '';
     const i = order.findIndex(([k]) => k === startLabel);
-    const end = i >= 0 && i < order.length - 1 ? order[i + 1][1] : text.length;
-    return normalizedText.slice(start + startLabel.length, end).trim();
+    const end = i >= 0 && i < order.length - 1 ? order[i + 1][1] : normalizedText.length;
+    let content = normalizedText.slice(start + startLabel.length, end).trim();
+    // Strip leading colon/separator that may follow the heading (e.g. "Skills: Python")
+    content = content.replace(/^[:\-|–—]\s*/, '');
+    return content;
   };
   const sectionOr = (...names: string[]) => {
     for (const n of names) {
@@ -296,8 +309,10 @@ function buildResumePatchFromParsedText(text: string): Partial<ResumeData> {
           }
 
           // Collect achievements from remaining lines
+          // Use a non-global regex to avoid lastIndex state issues with .test() in a loop
+          const dateTestPattern = /\d{1,2}\/\d{4}|\d{4}|[A-Z][a-z]{2,8}\s+\d{4}|[A-Z][a-z]{2,8}\.\s+\d{4}/i;
           rest.forEach(line => {
-            if (line && line.length > 10 && !datePattern.test(line)) {
+            if (line && line.length > 10 && !dateTestPattern.test(line)) {
               achievements.push(line);
             }
           });
