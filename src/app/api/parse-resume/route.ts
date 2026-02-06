@@ -124,6 +124,11 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
     console.warn('⚠️ OCR-first produced no text; attempting text-based PDF extraction fallbacks...');
   }
 
+  // Track best available text even if quality checks (hasBadSpacing) reject it.
+  // On serverless platforms like Vercel, OCR fallback isn't available, so returning
+  // imperfect text is far better than returning nothing.
+  let bestEffortText: string | null = null;
+
   // Primary method: pdfjs-dist (works better in serverless environments)
   console.log('📖 Attempting to parse PDF with pdfjs-dist, buffer size:', buffer.length);
   try {
@@ -217,6 +222,7 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
       console.log('✅ pdfjs-dist extraction successful, text length:', extractedText.length);
       return { text: extractedText, error: null };
     } else if (extractedText.length > 10) {
+      bestEffortText = extractedText;
       console.warn('⚠️ pdfjs-dist extracted suspicious text, trying fallback...');
     }
   } catch (pdfJsError) {
@@ -233,6 +239,9 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
       const cleanedText = cleanupExtractedText(data.text);
       if (!hasBadSpacing(cleanedText)) {
         return { text: cleanedText, error: null };
+      }
+      if (!bestEffortText || cleanedText.length > bestEffortText.length) {
+        bestEffortText = cleanedText;
       }
       console.warn('⚠️ pdf-parse extracted suspicious text, trying OCR fallback...');
     }
@@ -258,6 +267,9 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
       if (!hasBadSpacing(cleanedText)) {
         return { text: cleanedText, error: null };
       }
+      if (!bestEffortText || cleanedText.length > bestEffortText.length) {
+        bestEffortText = cleanedText;
+      }
       console.warn('⚠️ Raw buffer extraction suspicious, trying OCR fallback...');
     }
   } catch (fallbackError) {
@@ -270,6 +282,14 @@ const parseEnhancedPDF = async (buffer: Buffer) => {
     if (ocrResult.text) {
       return ocrResult;
     }
+  }
+
+  // Last resort: return best-effort text even with potentially poor spacing.
+  // Imperfect text is far better than no text — the client-side parser can still
+  // extract useful sections from it.
+  if (bestEffortText) {
+    console.warn('⚠️ Returning best-effort text (spacing quality uncertain), length:', bestEffortText.length);
+    return { text: bestEffortText, error: null };
   }
 
   return { text: null, error: 'Failed to parse PDF: All parsing methods failed. The PDF may be image-based or corrupted.' };
