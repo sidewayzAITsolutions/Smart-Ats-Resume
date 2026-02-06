@@ -374,10 +374,14 @@ export async function POST(req: NextRequest) {
   // Note: user may be null for guest uploads (homepage feature)
   // We still parse the resume but may limit features for guests later
 
+  // Declare file outside try block so it's accessible in catch block for error logging
+  let file: File | null = null;
+  let fileType = 'unknown';
+
   try {
     const formData = await req.formData();
     // Support both 'resume' and 'file' field names for backwards compatibility
-    const file = (formData.get('resume') || formData.get('file')) as File;
+    file = (formData.get('resume') || formData.get('file')) as File;
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -396,7 +400,7 @@ export async function POST(req: NextRequest) {
     console.log('📥 Received file:', file.name, 'Type:', file.type, 'Size:', file.size);
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    let fileType = file.type || 'application/octet-stream';
+    fileType = file.type || 'application/octet-stream';
     const fileName = (file as any).name || '';
 
     // Fallback type detection by file extension if browser didn't set a useful type
@@ -490,9 +494,9 @@ export async function POST(req: NextRequest) {
     console.error('Error details:', {
       message: errorMessage,
       stack: error instanceof Error ? error.stack : undefined,
-      fileName: (file as any)?.name,
-      fileType,
-      fileSize: file?.size,
+      fileName: file?.name || 'unknown',
+      fileType: fileType || 'unknown',
+      fileSize: file?.size || 0,
     });
     return NextResponse.json({ 
       success: false,
