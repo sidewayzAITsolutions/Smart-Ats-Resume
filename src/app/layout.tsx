@@ -6,6 +6,7 @@ import './global.css'
 import { Toaster } from 'react-hot-toast'
 import React from 'react'
 import { Analytics } from "@vercel/analytics/next"
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 const roboto = Roboto({
@@ -134,9 +135,12 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
         />
         {/* End Google Tag Manager */}
 
-	        {/* Google tag (gtag.js) */}
-	        {/* Google Ads + Analytics */}
-	        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17692753265"></script>
+
+        {/* Google tag (gtag.js) - Google Ads (AW-17692753265) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17692753265"
+          strategy="afterInteractive"
+        />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

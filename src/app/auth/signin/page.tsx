@@ -50,10 +50,19 @@ function SignInContent() {
       setLoading(true);
       setError(null);
 
+      // If Supabase isn't configured, the client returns a no-op auth implementation.
+      // Surface a clear message instead of silently failing.
+      const { error: envErr } = await supabase.auth.getUser();
+      if (envErr?.message === 'SUPABASE_NOT_CONFIGURED') {
+        setError('Sign-in is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment and redeploy.');
+        return;
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          // Pass the intended post-login destination through the callback route
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(callbackUrl)}`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

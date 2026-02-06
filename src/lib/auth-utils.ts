@@ -20,6 +20,14 @@ export class AuthService {
     try {
       console.log('🚀 Starting Google OAuth...');
 
+      // If Supabase env is missing/invalid, the client is a no-op.
+      const { error: envErr } = await this.supabase.auth.getUser();
+      if (envErr?.message === 'SUPABASE_NOT_CONFIGURED') {
+        const msg = 'Google sign-in is misconfigured. Please verify NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set correctly in Vercel.';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+
       const { data, error } = await this.supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

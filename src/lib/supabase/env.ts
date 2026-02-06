@@ -28,6 +28,11 @@ export function normalizeSupabaseUrl(raw: string): string | null {
   try {
     const u = new URL(withScheme);
     if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+    // Basic host sanity checks: must have a hostname and no obvious invalid chars
+    if (!u.hostname || /\s/.test(u.hostname)) return null;
+    // If it looks like a Supabase URL, require the expected host suffix.
+    // This prevents broken/typoed project refs from producing a non-resolving domain.
+    if (u.hostname.includes('supabase') && !u.hostname.endsWith('.supabase.co')) return null;
     return u.toString().replace(/\/$/, ''); // normalize trailing slash
   } catch {
     return null;
