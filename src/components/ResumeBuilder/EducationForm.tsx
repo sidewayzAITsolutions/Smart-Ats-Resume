@@ -192,16 +192,54 @@ export default function EducationForm({ initialData, onUpdate }: EducationFormPr
                 <label className="block text-sm font-medium text-white mb-2">
                   Graduation Date *
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Calendar className="h-5 w-5 text-gray-400" />
+                <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Calendar className="h-5 w-5" />
                   </div>
-                  <input
-                    type="month"
-                    value={typeof edu.graduationDate === 'string' ? edu.graduationDate : ''}
-                    onChange={(e) => updateEducation(index, 'graduationDate', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input" // Apply sleek-input
-                  />
+                  {/* Month dropdown */}
+                  <select
+                    value={(String(edu.graduationDate ?? '').split('-')[1]) ?? ''}
+                    onChange={(e) => {
+                      const year = (String(edu.graduationDate ?? '').split('-')[0]) ?? '';
+                      const month = e.target.value;
+                      updateEducation(index, 'graduationDate', year && month ? `${year}-${month}` : month ? `-${month}` : year);
+                    }}
+                    className="flex-1 px-3 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                  >
+                    <option value="">Month</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                  </select>
+                  {/* Year dropdown */}
+                  <select
+                    value={(String(edu.graduationDate ?? '').split('-')[0]) ?? ''}
+                    onChange={(e) => {
+                      const month = (String(edu.graduationDate ?? '').split('-')[1]) ?? '';
+                      const year = e.target.value;
+                      updateEducation(index, 'graduationDate', year && month ? `${year}-${month}` : year);
+                    }}
+                    className="flex-1 px-3 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sleek-input"
+                  >
+                    <option value="">Year</option>
+                    {Array.from({ length: 60 }, (_, i) => {
+                      const y = new Date().getFullYear() + 6 - i; // future 6 years to 54 years back
+                      return (
+                        <option key={y} value={String(y)}>
+                          {y}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
 
