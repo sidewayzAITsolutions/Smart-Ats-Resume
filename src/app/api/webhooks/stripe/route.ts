@@ -1,11 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClientFromRequest } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 
 let stripe: Stripe | null = null;
 
+/**
+ * Create a Supabase admin client using the service role key.
+ * Webhook requests come from Stripe's servers (no browser cookies),
+ * so a cookie-based client would have zero auth context and all
+ * RLS-protected writes would silently fail.
+ */
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !serviceKey) {
+    throw new Error(
+      'Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY – webhook cannot update the database.'
+    );
+  }
+
+  return createClient(url, serviceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
 export async function POST(req: NextRequest) {
-  const { supabase } = createClientFromRequest(req);
+  // Build a service-role Supabase client (bypasses RLS).
+  let supabase: ReturnType<typeof createClient>;
+  try {
+    supabase = getSupabaseAdmin();
+  } catch (err: any) {
+    console.error('❌ Webhook DB client error:', err.message);
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+  }
 
   // Ensure Stripe is configured and initialize lazily
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -87,9 +115,28 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session, 
   const userId = session.metadata?.userId || session.client_reference_id;
   if (!userId) {
     console.error('No userId found in session metadata or client_reference_id');
+    // Last-resort: try to find user by customer email
+    if (session.customer_email || session.customer_details?.email) {
+      const email = session.customer_email || session.customer_details?.email;
+      console.log('Attempting to find user by email:', email);
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .single();
+      if (profile?.id) {
+        console.log('Found user by email:', profile.id);
+        return upgradeUserToPremium(profile.id, session, supabase);
+      }
+    }
+    console.error('Could not resolve any user for this checkout session');
     return;
   }
 
+  return upgradeUserToPremium(userId, session, supabase);
+}
+
+async function upgradeUserToPremium(userId: string, session: Stripe.Checkout.Session, supabase: any) {
   // Update user profile to premium
   const { error } = await supabase
     .from('profiles')
@@ -110,14 +157,33 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session, 
   console.log(`✅ User ${userId} upgraded to premium via session ${session.id}`);
 }
 
+async function resolveUserIdFromSubscription(subscription: Stripe.Subscription, supabase: any): Promise<string | null> {
+  // 1. Try metadata (set during checkout creation)
+  if (subscription.metadata?.userId) return subscription.metadata.userId;
+
+  // 2. Fallback: look up the user by stripe_customer_id
+  const customerId = typeof subscription.customer === 'string' ? subscription.customer : (subscription.customer as any)?.id;
+  if (customerId) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('stripe_customer_id', customerId)
+      .single();
+    if (profile?.id) {
+      console.log(`Resolved userId ${profile.id} from stripe_customer_id ${customerId}`);
+      return profile.id;
+    }
+  }
+
+  console.error('Could not resolve userId for subscription:', subscription.id);
+  return null;
+}
+
 async function handleSubscriptionCreated(subscription: Stripe.Subscription, supabase: any) {
   console.log('Processing subscription created:', subscription.id);
 
-  const userId = subscription.metadata?.userId;
-  if (!userId) {
-    console.error('No userId found in subscription metadata');
-    return;
-  }
+  const userId = await resolveUserIdFromSubscription(subscription, supabase);
+  if (!userId) return;
 
   // Update user profile
   const { error } = await supabase
@@ -142,11 +208,8 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription, supa
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription, supabase: any) {
   console.log('Processing subscription updated:', subscription.id);
 
-  const userId = subscription.metadata?.userId;
-  if (!userId) {
-    console.error('No userId found in subscription metadata');
-    return;
-  }
+  const userId = await resolveUserIdFromSubscription(subscription, supabase);
+  if (!userId) return;
 
   // Update subscription status
   const { error } = await supabase
@@ -169,11 +232,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription, supa
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription, supabase: any) {
   console.log('Processing subscription deleted:', subscription.id);
 
-  const userId = subscription.metadata?.userId;
-  if (!userId) {
-    console.error('No userId found in subscription metadata');
-    return;
-  }
+  const userId = await resolveUserIdFromSubscription(subscription, supabase);
+  if (!userId) return;
 
   // Downgrade user to free
   const { error } = await supabase

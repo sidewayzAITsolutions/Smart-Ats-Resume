@@ -4,8 +4,7 @@ import {
 } from 'next/server';
 
 import { createClientFromRequest } from '@/lib/supabase/server';
-
-const Stripe = require('stripe');
+import Stripe from 'stripe';
 
 
 export async function GET(req: NextRequest) {
@@ -27,7 +26,9 @@ export async function GET(req: NextRequest) {
       console.error('STRIPE_SECRET_KEY is not configured');
       return NextResponse.redirect(new URL('/pricing?error=stripe_not_configured', req.url));
     }
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-08-27.basil',
+    });
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (!session) {
