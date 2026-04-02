@@ -11,6 +11,7 @@
      },
      "dependencies": {
           "@genkit-ai/mcp": "^1.21.0",
+          "@napi-rs/canvas": "^0.1.64",
           "@playwright/test": "^1.56.1",
           "@sentry/nextjs": "^10.0.0",
           "@stripe/stripe-js": "^7.4.0",
@@ -21,7 +22,6 @@
           "@vercel/analytics": "^1.5.0",
           "@vercel/speed-insights": "^1.2.0",
           "ai": "^5.0.1",
-          "@napi-rs/canvas": "^0.1.64",
           "docx": "^9.5.1",
           "dompurify": "^3.2.6",
           "fileinput": "^0.2.0",
@@ -49,7 +49,7 @@
      "devDependencies": {
           "@types/node": "^24.0.12",
           "@types/pdf-parse": "^1.1.5",
-          "@types/react": "^19.1.8",
+          "@types/react": "^19.2.14",
           "@types/react-dom": "^19.1.6",
           "autoprefixer": "^10.4.21",
           "jest": "^30.2.0",
