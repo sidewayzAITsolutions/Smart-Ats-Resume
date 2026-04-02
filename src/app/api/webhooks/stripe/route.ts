@@ -27,7 +27,7 @@ function getSupabaseAdmin() {
 
 export async function POST(req: NextRequest) {
   // Build a service-role Supabase client (bypasses RLS).
-  let supabase: ReturnType<typeof createClient>;
+  let supabase: ReturnType<typeof getSupabaseAdmin>;
   try {
     supabase = getSupabaseAdmin();
   } catch (err: any) {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   
   if (!stripe) {
     stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-08-27.basil',
+      apiVersion: '2026-03-25.dahlia',
     });
   }
 

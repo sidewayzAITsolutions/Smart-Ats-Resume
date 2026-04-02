@@ -10,9 +10,6 @@ module.exports = {
       'lg': '1024px',
       'xl': '1280px',
       '2xl': '1536px',
-      // Orientation variants
-      'landscape': { 'raw': '(orientation: landscape)' },
-      'portrait': { 'raw': '(orientation: portrait)' },
     },
     extend: {
       fontFamily: {

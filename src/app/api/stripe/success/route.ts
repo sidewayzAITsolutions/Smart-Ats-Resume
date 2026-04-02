@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL('/pricing?error=stripe_not_configured', req.url));
     }
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-08-27.basil',
+      apiVersion: '2026-03-25.dahlia',
     });
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 

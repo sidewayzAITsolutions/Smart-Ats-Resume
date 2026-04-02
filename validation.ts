@@ -39,7 +39,7 @@ export const contactFormSchema = z.object({
 
 export const feedbackSchema = z.object({
   type: z.enum(['bug', 'feature', 'general'], {
-    required_error: 'Please select a feedback type',
+    message: 'Please select a feedback type',
   }),
   message: z.string().min(10, 'Message must be at least 10 characters').max(1000),
   email: z.string().email('Invalid email address').optional(),
